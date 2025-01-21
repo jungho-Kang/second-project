@@ -1,6 +1,6 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import IndexPage from "./pages/IndexPage";
-import LoginPage from "./pages/LoginPage";
+import LoginPage from "./pages/auth/IndexPage";
 import MyInfo from "./pages/myInfo/IndexPage";
 import EditInfoPage from "./pages/myInfo/EditInfoPage";
 import EditPwPage from "./pages/myInfo/EditPwPage";
