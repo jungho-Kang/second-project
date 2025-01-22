@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+import scrollbarHide from "tailwind-scrollbar-hide";
+
 export default {
   content: [
     "./index.html",
@@ -7,12 +9,21 @@ export default {
   theme: {
     extend: {},
     screens: {
-      mw: "375px",
+      mw: "320px",
       sm: "640px",
       md: "768px",
       lg: "1024px",
       tb: "1400px",
     },
+    colors: {
+      primary: "#6F4CDB",
+      secondary: "#C4B6F0",
+      third: "E7E1F9",
+      white: "#ffffff",
+      black: "#333333",
+      darkGray: "#929292",
+      gray: "#eeeeee",
+    },
   },
-  plugins: [],
+  plugins: [scrollbarHide],
 };
