@@ -1,5 +1,6 @@
-function userAtom() {
-  return <div>userAtom</div>;
-}
+import { atom } from "recoil";
 
-export default userAtom;
+export const loginAtom = atom({
+  key: "loginAtom",
+  default: false,
+});

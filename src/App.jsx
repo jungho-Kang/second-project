@@ -6,10 +6,11 @@ import EditInfoPage from "./pages/myInfo/EditInfoPage";
 import EditPwPage from "./pages/myInfo/EditPwPage";
 import Order from "./pages/order/IndexPage";
 import Restaurant from "./pages/restaurant/IndexPage";
-import FindIdPage from "./pages/auth/FindIdPage";
 import FindPwPage from "./pages/auth/FindPwPage";
 import Start from "./pages/storeManager/startingPage";
 import Store from "./pages/storeManager/IndexPage";
+import FindIdPage from "./pages/auth/FindIdPage";
+
 function App() {
   return (
     <Router>
