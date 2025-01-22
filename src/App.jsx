@@ -1,6 +1,6 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import IndexPage from "./pages/IndexPage";
-import LoginPage from "./pages/LoginPage";
+import LoginPage from "./pages/auth/IndexPage";
 import MyInfo from "./pages/myInfo/IndexPage";
 import EditInfoPage from "./pages/myInfo/EditInfoPage";
 import EditPwPage from "./pages/myInfo/EditPwPage";
@@ -8,12 +8,13 @@ import Order from "./pages/order/IndexPage";
 import Restaurant from "./pages/restaurant/IndexPage";
 import FindIdPage from "./pages/auth/FindIdPage";
 import FindPwPage from "./pages/auth/FindPwPage";
+import Start from "./pages/storeManager/startingPage";
+import Store from "./pages/storeManager/IndexPage";
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<IndexPage />} />
-
         <Route path="/auth">
           <Route index element={<LoginPage />} />
           <Route path="findid" element={<FindIdPage />} />
@@ -30,9 +31,15 @@ function App() {
         <Route path="/restaurant">
           <Route index element={<Restaurant />} />
         </Route>
+        {/* 식당관리자 */}
+        <Route path="/start">
+          <Route index element={<Start />} />
+        </Route>
+        <Route path="/store">
+          <Route index element={<Store />} />
+        </Route>
       </Routes>
     </Router>
   );
 }
-
 export default App;
