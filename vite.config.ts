@@ -11,6 +11,7 @@ export default defineConfig({
     },
   },
   server: {
+    host: "0.0.0.0", // 모든 IP에서 접근 가능하도록 설정
     proxy: {
       "/api": {
         target: "http://112.222.157.156:5222",

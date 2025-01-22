@@ -6,8 +6,8 @@ import EditInfoPage from "./pages/myInfo/EditInfoPage";
 import EditPwPage from "./pages/myInfo/EditPwPage";
 import Order from "./pages/order/IndexPage";
 import Restaurant from "./pages/restaurant/IndexPage";
-import FindIdPage from "./pages/auth/FindIdPage";
 import FindPwPage from "./pages/auth/FindPwPage";
+import FindIdPage from "./pages/auth/FindIdPage";
 function App() {
   return (
     <Router>
