@@ -1,21 +1,30 @@
 import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import { loginAtom } from "../atoms/userAtom";
 
-function IndexPage() {
+const IndexPage = () => {
   const navigate = useNavigate();
-  const [isLogin, setIsLogin] = useRecoilState(loginAtom);
+
+  const routeHandler = () => {
+    navigate(`/auth`);
+  };
+
   return (
-    <div>
-      <div>{isLogin ? "로그인에 성공 했습니다!" : "로그인해주세요"}</div>
-      <div className="max-mw:text-slate-300">안녕</div>
-      {!isLogin ? (
-        <button onClick={() => navigate("/auth")}>로그인</button>
-      ) : (
-        <button onClick={() => setIsLogin(false)}>로그아웃</button>
-      )}
+    <div className="relative  min-h-dvh bg-[url('/startingPage.png')] bg-cover bg-center overflow-x-scroll scrollbar-hide">
+      <div className="absolute inset-0 flex flex-col items-center w-5/6 gap-8 mx-auto top-80 tb:w-1/2 lg:w-1/3">
+        <button
+          className="px-6 py-2 text-xl font-bold tracking-widest text-white transition duration-200 bg-primary shadow-lg sm:text-2xl tb:text-3xl tb:px-8 sm:px-10 rounded-xl hover:bg-indigo-700"
+          onClick={() => routeHandler()}
+        >
+          사용자
+        </button>
+        <button
+          className="px-6 py-2 text-xl font-bold tracking-widest text-white transition duration-200 bg-primary shadow-lg sm:text-2xl tb:text-3xl tb:px-8 sm:px-10 rounded-xl hover:bg-indigo-700"
+          onClick={() => routeHandler()}
+        >
+          매장관리자
+        </button>
+      </div>
     </div>
   );
-}
+};
 
 export default IndexPage;
