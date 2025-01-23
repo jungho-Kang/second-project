@@ -3,15 +3,12 @@ import Modal from "../components/Modal";
 
 const useModal = ({ useBlur = true, title } = {}) => {
   const [isOpen, setIsOpen] = useState(false);
-
   const open = useCallback(() => {
     setIsOpen(() => true);
   }, []);
-
   const close = useCallback(() => {
     setIsOpen(() => false);
   }, []);
-
   return {
     Modal: isOpen
       ? ({ children }) => (
@@ -25,5 +22,4 @@ const useModal = ({ useBlur = true, title } = {}) => {
     isOpen,
   };
 };
-
 export default useModal;
