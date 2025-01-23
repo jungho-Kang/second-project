@@ -17,8 +17,9 @@ export default {
     },
     colors: {
       primary: "#6F4CDB",
+      primaryFocus: "#4825b6",
       secondary: "#C4B6F0",
-      third: "E7E1F9",
+      third: "#E7E1F9",
       white: "#ffffff",
       black: "#333333",
       darkGray: "#929292",
