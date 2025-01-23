@@ -1,5 +1,5 @@
-import SideBar from "./sideBar";
-import SideBarRigtht from "./SideBarRight";
+import SideBar from "./SideBar";
+import SideBarRight from "./SideBarRight";
 import Table from "./tableManage/Table";
 
 const IndexPage = () => {
@@ -7,7 +7,7 @@ const IndexPage = () => {
     <div className="flex w-full h-dvh overflow-hidden scrollbar-hide justify-between">
       <SideBar />
       <Table />
-      <SideBarRigtht />
+      <SideBarRight />
     </div>
   );
 };
