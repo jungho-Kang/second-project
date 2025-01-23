@@ -1,21 +1,19 @@
 import React, { useCallback, useState } from "react";
 import Modal from "../components/Modal";
-
-const useModal = ({ useBlur = true } = {}) => {
+const useModal = ({ useBlur = true, title } = {}) => {
   const [isOpen, setIsOpen] = useState(false);
-
   const open = useCallback(() => {
     setIsOpen(() => true);
   }, []);
-
   const close = useCallback(() => {
     setIsOpen(() => false);
   }, []);
-
   return {
     Modal: isOpen
       ? ({ children }) => (
-          <Modal onClose={useBlur ? close : null}>{children}</Modal>
+          <Modal onClose={useBlur ? close : null} title={title}>
+            {children}
+          </Modal>
         )
       : () => null,
     open,
@@ -23,5 +21,4 @@ const useModal = ({ useBlur = true } = {}) => {
     isOpen,
   };
 };
-
 export default useModal;
