@@ -178,7 +178,7 @@ function IndexPage() {
       <TextSpan onClick={() => navigate("/auth/findpw")}>
         비밀번호 찾기
       </TextSpan>
-      <button onClick={() => navigate("/myinfo/editpw")}>여기</button>
+      <button onClick={() => navigate("/auth/editpw")}>여기</button>
     </LayoutDiv>
   );
 }
