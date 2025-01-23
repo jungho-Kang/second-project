@@ -1,4 +1,14 @@
-const SideBarRight = () => {
+import { useState } from "react";
+
+const OrderList = () => {
+  const orderData = useState({
+    orderNo: 0,
+    orderName: "홍길동",
+    orderDate: "01-03 13:47",
+    orderMenuList: [],
+    orderTotal: "27,000원",
+  });
+
   return (
     <div className="flex flex-col w-1/3 h-dvh border-l-2 bg-white border-l-gray shadow-xl">
       <div className="w-100% h-dvh">
@@ -45,4 +55,4 @@ const SideBarRight = () => {
     </div>
   );
 };
-export default SideBarRight;
+export default OrderList;

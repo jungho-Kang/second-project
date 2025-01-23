@@ -13,6 +13,8 @@ import OrderPage from "./pages/storeManager/order/IndexPage";
 import UserPage from "./pages/user/IndexPage";
 import EditPwPage from "./pages/auth/EditPwPage";
 
+import StoreSales from "./pages/storeManager/Sales";
+
 function App() {
   return (
     <Router>
@@ -43,6 +45,7 @@ function App() {
           <Route index element={<Store />} />
           <Route path="menu" element={<MenuPage />} />
           <Route path="order" element={<OrderPage />} />
+          <Route path="sales" element={<StoreSales />} />
         </Route>
       </Routes>
     </Router>

@@ -19,29 +19,24 @@ const SideBar = () => {
             className={
               "flex gap-3 pl-8 py-4 items-center hover:bg-primary hover:text-white hover:ml-6 hover:rounded-l-full"
             }
-
           >
             <MdTableBar className="text-2xl" />
             <span className="text-lg font-semibold">테이블</span>
           </div>
           <div
-
             className={
               "flex gap-3 pl-8 py-4 items-center hover:bg-primary hover:text-white hover:ml-6 hover:rounded-l-full"
             }
             onClick={() => navigate("/store/order")}
-
           >
             <LuClipboardList className="text-2xl" />
             <div className="text-lg font-semibold">주문내역</div>
           </div>
           <div
-
             className={
               "flex gap-3 pl-8 py-4 items-center hover:bg-primary hover:text-white hover:ml-6 hover:rounded-l-full"
             }
             onClick={() => navigate("/store/menu")}
-
           >
             <FaBowlFood className="text-2xl" />
             <div className="text-lg font-semibold">메뉴</div>
@@ -50,7 +45,6 @@ const SideBar = () => {
             className={
               "flex gap-3 pl-8 py-4 items-center hover:bg-primary hover:text-white hover:ml-6 hover:rounded-l-full"
             }
-
           >
             <PiMoneyWavyFill className="text-2xl" />
             <div className="text-lg font-semibold">매출확인</div>
