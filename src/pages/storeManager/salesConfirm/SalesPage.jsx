@@ -67,7 +67,7 @@ const TopTitleDiv = styled.div`
   border-bottom: 1px solid #929292;
 `;
 
-function IndexPage() {
+function SalesPage() {
   return (
     <LayoutDiv>
       <SideBar />
@@ -204,4 +204,4 @@ function IndexPage() {
     </LayoutDiv>
   );
 }
-export default IndexPage;
+export default SalesPage;

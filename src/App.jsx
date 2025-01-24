@@ -1,16 +1,16 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import IndexPage from "./pages/IndexPage";
-import LoginPage from "./pages/auth/IndexPage";
+import IndexPage from "./pages/UserInfoPage";
+import LoginPage from "./pages/auth/LoginPage";
 import UserInfo from "./pages/userInfo/IndexPage";
 import EditInfoPage from "./pages/userInfo/EditInfoPage";
 import Order from "./pages/order/IndexPage";
-import Restaurant from "./pages/restaurant/IndexPage";
+import Restaurant from "./pages/restaurant/RestaurantPage";
 import FindPwPage from "./pages/auth/FindPwPage";
-import Store from "./pages/storeManager/IndexPage";
+import Store from "./pages/storeManager/StorePage";
 import FindIdPage from "./pages/auth/FindIdPage";
-import MenuPage from "./pages/storeManager/menu/IndexPage";
-import OrderPage from "./pages/storeManager/salesConfirm/IndexPage";
-import UserPage from "./pages/user/IndexPage";
+import MenuPage from "./pages/storeManager/menu/StoreMenuPage";
+import OrderPage from "./pages/storeManager/salesConfirm/SalesPage";
+import UserPage from "./pages/user/UserPage";
 import EditPwPage from "./pages/auth/EditPwPage";
 
 import StoreSales from "./pages/storeManager/salesConfirm/Sales";
