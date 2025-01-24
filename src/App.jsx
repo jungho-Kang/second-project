@@ -13,7 +13,7 @@ import OrderPage from "./pages/storeManager/salesConfirm/IndexPage";
 import UserPage from "./pages/user/IndexPage";
 import EditPwPage from "./pages/auth/EditPwPage";
 
-import StoreSales from "./pages/storeManager/Sales";
+import StoreSales from "./pages/storeManager/salesConfirm/Sales";
 
 function App() {
   return (

@@ -1,3 +1,7 @@
+import { PieChart } from "recharts";
+import BarChartLayout from "./BarChart";
+import PieChartLayout from "./PieChart";
+
 const SalesConfirm = () => {
   return (
     <>
@@ -35,21 +39,17 @@ const SalesConfirm = () => {
                 </li>
               </div>
               <div className="flex pt-14 justify-between gap-10">
-                <li className="w-1/2 h-60 rounded-md border-2 border-darkGrays">
+                <li className="w-1/2 h-1/3 rounded-md border-2 border-darkGrays">
                   <span className="flex w-full text-start px-3 pt-2 text-darkGray">
-                    요일별
+                    요일별 매출현황
                   </span>
-                  <div className="flex w-full px-3 py-2 justify-center text-3xl">
-                    그래프
-                  </div>
+                  <BarChartLayout />
                 </li>
-                <li className="w-1/2 h-60 rounded-md border-2 border-darkGrays">
+                <li className="w-1/2 h-1/3 rounded-md border-2 border-darkGrays">
                   <span className="flex w-full text-start px-3 pt-2 text-darkGray">
                     결제 형태
                   </span>
-                  <div className="flex w-full px-3 py-2 justify-center text-3xl">
-                    그래프
-                  </div>
+                  <PieChartLayout />
                 </li>
               </div>
             </ul>

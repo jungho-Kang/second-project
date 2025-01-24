@@ -114,7 +114,7 @@ function IndexPage() {
     try {
       await axios.post("/api/user/sign-in", formData);
       setIsLogin(true);
-      navigate("/");
+      navigate("/user");
     } catch (error) {
       console.log(error);
     }
