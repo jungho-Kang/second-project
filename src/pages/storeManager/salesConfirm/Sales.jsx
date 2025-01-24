@@ -1,5 +1,5 @@
 import SalesConfirm from "./SalesConfirm";
-import SideBar from "./SideBar";
+import SideBar from "../SideBar";
 
 const Sales = () => {
   return (
