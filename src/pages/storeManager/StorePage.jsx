@@ -1,8 +1,7 @@
 import SideBar from "./SideBar";
-import SideBarRight from "./SideBarRight";
 import Table from "./tableManage/Table";
 
-const IndexPage = () => {
+const StorePage = () => {
   return (
     <div className="flex w-full h-dvh overflow-hidden scrollbar-hide justify-between">
       <SideBar />
@@ -11,4 +10,4 @@ const IndexPage = () => {
     </div>
   );
 };
-export default IndexPage;
+export default StorePage;

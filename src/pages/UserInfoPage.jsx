@@ -1,11 +1,7 @@
 import { useNavigate } from "react-router-dom";
 
-const IndexPage = () => {
+const UserInfoPage = () => {
   const navigate = useNavigate();
-
-  const routeHandler = () => {
-    navigate(`/auth`);
-  };
 
   return (
     <div className="relative  min-h-dvh bg-[url('/startingPage.png')] bg-cover bg-center overflow-x-scroll scrollbar-hide">
@@ -14,7 +10,7 @@ const IndexPage = () => {
           className={
             "px-6 py-2 text-xl font-bold tracking-widest text-white transition duration-200 bg-primary shadow-lg sm:text-2xl tb:text-3xl tb:px-8 sm:px-10 rounded-xl hover:bg-primaryFocus"
           }
-          onClick={() => routeHandler()}
+          onClick={() => navigate("/user")}
         >
           사용자
         </button>
@@ -22,7 +18,7 @@ const IndexPage = () => {
           className={
             "px-6 py-2 text-xl font-bold tracking-widest text-white transition duration-200 bg-primary shadow-lg sm:text-2xl tb:text-3xl tb:px-8 sm:px-10 rounded-xl hover:bg-primaryFocus"
           }
-          onClick={() => routeHandler()}
+          onClick={() => navigate("/auth")}
         >
           매장관리자
         </button>
@@ -31,4 +27,4 @@ const IndexPage = () => {
   );
 };
 
-export default IndexPage;
+export default UserInfoPage;

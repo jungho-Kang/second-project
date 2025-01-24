@@ -104,17 +104,22 @@ const TextSpan = styled.span`
   }
 `;
 
-function IndexPage() {
+function LoginPage() {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useRecoilState(loginAtom);
   const [formData, setFormData] = useState({ uid: "", upw: "" });
   const [hasVal, setHasVal] = useState(false);
 
+  // const routeHandler = () => {
+  //   navigate(`/auth`);
+  // };
+
   const postLogin = async () => {
     try {
       await axios.post("/api/user/sign-in", formData);
+
       setIsLogin(true);
-      navigate("/");
+      navigate("/user");
     } catch (error) {
       console.log(error);
     }
@@ -183,4 +188,4 @@ function IndexPage() {
   );
 }
 
-export default IndexPage;
+export default LoginPage;

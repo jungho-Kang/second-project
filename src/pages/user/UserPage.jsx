@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { loginAtom } from "../../atoms/userAtom";
 
-function IndexPage() {
+function UserPage() {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useRecoilState(loginAtom);
   return (
@@ -14,8 +14,11 @@ function IndexPage() {
       ) : (
         <button onClick={() => setIsLogin(false)}>로그아웃</button>
       )}
+      <div>
+        <button onClick={() => navigate("/user/restaurant")}>식당찾기</button>
+      </div>
     </div>
   );
 }
 
-export default IndexPage;
+export default UserPage;

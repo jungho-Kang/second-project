@@ -73,7 +73,7 @@ const RightMenuDiv = styled.div`
   cursor: pointer;
 `;
 
-function IndexPage() {
+function StoreMenuPage() {
   const { Modal, open, close } = useModal();
   const [menuAdd, setMenuAdd] = useState(false);
   const [menuEdit, setMenuEdit] = useState(false);
@@ -190,4 +190,4 @@ function IndexPage() {
     </>
   );
 }
-export default IndexPage;
+export default StoreMenuPage;
