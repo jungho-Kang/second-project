@@ -1,4 +1,5 @@
 import { IoMdClose } from "react-icons/io";
+
 const Modal = ({ onClose, children, title }) => {
   return (
     <div className="w-full h-dvh overflow-hidden fixed top-0 left-0 bg-darkGray bg-opacity-70 flex justify-center items-center text-center z-10">

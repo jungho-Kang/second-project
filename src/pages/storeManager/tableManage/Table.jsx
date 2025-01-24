@@ -1,70 +1,78 @@
+import { useState } from "react";
+import OrderList from "./OderList";
+
 const Table = () => {
+  const [isClick, setIsClick] = useState(false);
+
+  const openDescriptHandler = () => {
+    setIsClick(!isClick);
+  };
   const data = [
     {
-      tableNo: 1,
+      orderNo: 1,
       price: "27,000원",
       menuTitle: "돼지국밥",
       menuInfo: "내장섞어서",
       menuQuntity: 1,
     },
     {
-      tableNo: 2,
+      orderNo: 2,
       price: "27,000원",
       menuTitle: "돼지국밥",
       menuInfo: "내장섞어서",
       menuQuntity: 1,
     },
     {
-      tableNo: 3,
+      orderNo: 3,
       price: "27,000원",
       menuTitle: "돼지국밥",
       menuInfo: "내장섞어서",
       menuQuntity: 1,
     },
     {
-      tableNo: 4,
+      orderNo: 4,
       price: "27,000원",
       menuTitle: "돼지국밥",
       menuInfo: "내장섞어서",
       menuQuntity: 1,
     },
     {
-      tableNo: 5,
+      orderNo: 5,
       price: "27,000원",
       menuTitle: "돼지국밥",
       menuInfo: "내장섞어서",
       menuQuntity: 1,
     },
     {
-      tableNo: 6,
+      orderNo: 6,
       price: "27,000원",
       menuTitle: "돼지국밥",
       menuInfo: "내장섞어서",
       menuQuntity: 1,
     },
     {
-      tableNo: 7,
+      orderNo: 7,
       price: "27,000원",
       menuTitle: "돼지국밥",
       menuInfo: "내장섞어서",
       menuQuntity: 1,
     },
     {
-      tableNo: 8,
+      orderNo: 8,
       price: "27,000원",
       menuTitle: "돼지국밥",
       menuInfo: "내장섞어서",
       menuQuntity: 1,
     },
     {
-      tableNo: 9,
+      orderNo: 9,
       price: "27,000원",
       menuTitle: "돼지국밥",
       menuInfo: "내장섞어서",
       menuQuntity: 1,
     },
     {
-      tableNo: 10,
+      orderNo: 10,
       price: "27,000원",
       menuTitle: "돼지국밥",
       menuInfo: "내장섞어서",
@@ -80,13 +88,19 @@ const Table = () => {
             {/* 주문카드 시작 */}
             {data.map((item, index) => (
               <div
+                onClick={e => openDescriptHandler(e)}
                 key={index}
-                className="w-[calc(33%_-_1rem)] min-w-40 h-48 border-2 border-darkGray bg-white"
+                // className="w-[calc(33%_-_1rem)] min-w-40 h-48 border-2 border-darkGray bg-white"
+                className={`${isClick ? "w-[calc(33%_-_1rem)]" : "w-[calc(25%_-_1rem)]"} min-w-40 h-48 border-2 border-darkGray bg-white cursor-pointer`}
               >
-                <div className="flex justify-between px-4 pt-1 pb-4 bg-darkGray">
-                  <span>{item.tableNo}</span>
-                  <span>{item.price}</span>
+                <div className=" px-4 py-1 bg-third">
+                  <div className="flex justify-between">
+                    <span>{item.orderNo}</span>
+                    <span className="font-semibold">{item.price}</span>
+                  </div>
+                  <div>12:37 ~ (16분)</div>
                 </div>
+
                 <div className="px-3 py-3">
                   <div className="flex justify-between">
                     <span>{item.menuTitle}</span>
@@ -100,6 +114,7 @@ const Table = () => {
           </div>
         </div>
       </div>
+      {isClick ? <OrderList /> : <></>}
     </>
   );
 };

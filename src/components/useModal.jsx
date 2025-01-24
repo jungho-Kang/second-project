@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from "react";
 import Modal from "../components/Modal";
+
 const useModal = ({ useBlur = true, title } = {}) => {
   const [isOpen, setIsOpen] = useState(false);
   const open = useCallback(() => {

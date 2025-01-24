@@ -9,9 +9,11 @@ import FindPwPage from "./pages/auth/FindPwPage";
 import Store from "./pages/storeManager/IndexPage";
 import FindIdPage from "./pages/auth/FindIdPage";
 import MenuPage from "./pages/storeManager/menu/IndexPage";
-import SalesPage from "./pages/storeManager/salesConfirm/IndexPage";
+import OrderPage from "./pages/storeManager/salesConfirm/IndexPage";
 import UserPage from "./pages/user/IndexPage";
 import EditPwPage from "./pages/auth/EditPwPage";
+
+import StoreSales from "./pages/storeManager/Sales";
 
 function App() {
   return (
@@ -42,7 +44,8 @@ function App() {
         <Route path="/store">
           <Route index element={<Store />} />
           <Route path="menu" element={<MenuPage />} />
-          <Route path="sales" element={<SalesPage />} />
+          <Route path="order" element={<OrderPage />} />
+          <Route path="sales" element={<StoreSales />} />
         </Route>
       </Routes>
     </Router>
