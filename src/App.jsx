@@ -1,5 +1,5 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import IndexPage from "./pages/UserInfoPage";
+import IndexPage from "./pages/IndexPage";
 import LoginPage from "./pages/auth/LoginPage";
 import UserInfo from "./pages/userInfo/IndexPage";
 import EditInfoPage from "./pages/userInfo/EditInfoPage";
@@ -14,6 +14,7 @@ import UserPage from "./pages/user/UserPage";
 import EditPwPage from "./pages/auth/EditPwPage";
 
 import StoreSales from "./pages/storeManager/salesConfirm/Sales";
+import SignUpPage from "./pages/auth/SignUpPage";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="findid" element={<FindIdPage />} />
           <Route path="findpw" element={<FindPwPage />} />
           <Route path="editpw" element={<EditPwPage />} />
+          <Route path="signup" element={<SignUpPage />} />
         </Route>
 
         <Route path="/user">
