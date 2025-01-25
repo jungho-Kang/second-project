@@ -1,11 +1,10 @@
 import React, { useCallback, useState } from "react";
-import { PieChart, Pie, Sector } from "recharts";
+import { PieChart, Pie, Sector, Cell } from "recharts";
 
 const data = [
-  { name: "Group A", value: 400 },
-  { name: "Group B", value: 300 },
-  { name: "Group C", value: 300 },
-  { name: "Group D", value: 200 },
+  { name: "로드손님", value: 400, colors: "#8d87a0" },
+  { name: "예약 주문", value: 300, colors: "#5f2cfb" },
+  { name: "앉아서 주문", value: 300, colors: "#8061df" },
 ];
 
 const renderActiveShape = props => {
@@ -35,7 +34,14 @@ const renderActiveShape = props => {
 
   return (
     <g>
-      <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>
+      <text
+        x={cx}
+        y={cy}
+        dy={8}
+        textAnchor="middle"
+        fill={fill}
+        className="font-medium text-xl"
+      >
         {payload.name}
       </text>
       <Sector
@@ -67,15 +73,15 @@ const renderActiveShape = props => {
         y={ey}
         textAnchor={textAnchor}
         fill="#333"
-      >{`PV ${value}`}</text>
+      >{`${payload.name}`}</text>
       <text
-        x={ex + (cos >= 0 ? 1 : -1) * 12}
+        x={ex + (cos >= 0 ? 1 : -1) * 7}
         y={ey}
         dy={18}
         textAnchor={textAnchor}
         fill="#999"
       >
-        {`(Rate ${(percent * 100).toFixed(2)}%)`}
+        {`(${(percent * 100).toFixed(2)}%)`}
       </text>
     </g>
   );
@@ -89,21 +95,30 @@ const PieChartLayout = () => {
     },
     [setActiveIndex],
   );
+  console.log(data[0].name);
 
   return (
-    <PieChart width={400} height={300}>
+    <PieChart width={800} height={500}>
       <Pie
         activeIndex={activeIndex}
         activeShape={renderActiveShape}
         data={data}
-        cx={200}
+        cx={250}
         cy={150}
-        innerRadius={40}
+        innerRadius={50}
         outerRadius={80}
-        fill="#8884d8"
+        fill={
+          data[1].name === "로드손님"
+            ? "#8d87a0"
+            : data[1].name === "예약 주문"
+              ? "#5f2cfb"
+              : data[1].name === "앉아서 주문"
+                ? "#8061df"
+                : "#6f4cdb"
+        }
         dataKey="value"
         onMouseEnter={onPieEnter}
-      />
+      ></Pie>
     </PieChart>
   );
 };

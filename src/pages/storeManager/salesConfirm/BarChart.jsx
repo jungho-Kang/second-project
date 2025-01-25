@@ -13,31 +13,31 @@ import {
 const data = [
   {
     name: "월",
-    price: 150,
+    매출: 150,
   },
   {
     name: "화",
-    price: 98,
+    매출: 98,
   },
   {
     name: "수",
-    price: 203,
+    매출: 203,
   },
   {
     name: "목",
-    price: 170,
+    매출: 170,
   },
   {
     name: "금",
-    price: 104,
+    매출: 104,
   },
   {
     name: "토",
-    price: 360,
+    매출: 360,
   },
   {
     name: "일",
-    price: 430,
+    매출: 430,
   },
 ];
 
@@ -58,7 +58,7 @@ const BarChartLayout = () => {
         <YAxis />
         <Tooltip />
         <Bar
-          dataKey="price"
+          dataKey="매출"
           fill="#484482"
           activeBar={<Rectangle fill="#484482" stroke="#ffffff" />}
         />
