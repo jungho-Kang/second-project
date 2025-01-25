@@ -1,10 +1,12 @@
-import { IoMdClose } from "react-icons/io";
+import styled from "@emotion/styled";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { IoMdClose } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { roleAtom } from "../../atoms/roleAtom";
 import { loginAtom } from "../../atoms/userAtom";
-import styled from "@emotion/styled";
+import { STORE, USER } from "../../constants/Role";
 
 const LayoutDiv = styled.div`
   text-align: center;
@@ -104,12 +106,20 @@ const TextSpan = styled.span`
   }
 `;
 
+const RoleDiv = styled.div`
+  margin-left: 20px;
+  margin-top: 30px;
+  font-weight: 700;
+  color: #c4b6f0;
+`;
+
 function LoginPage() {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useRecoilState(loginAtom);
   const [formData, setFormData] = useState({ uid: "", upw: "" });
   const [hasVal, setHasVal] = useState(false);
 
+  const role = useRecoilValue(roleAtom);
   // const routeHandler = () => {
   //   navigate(`/auth`);
   // };
@@ -117,9 +127,12 @@ function LoginPage() {
   const postLogin = async () => {
     try {
       await axios.post("/api/user/sign-in", formData);
-
       setIsLogin(true);
-      navigate("/user");
+      if (role === USER) {
+        navigate("/user");
+      } else if (role === STORE) {
+        navigate("/store");
+      }
     } catch (error) {
       console.log(error);
     }
@@ -151,6 +164,9 @@ function LoginPage() {
         </HeaderDiv>
         <TitleDiv>
           <LogoImg src="/logo.png" alt="로고" />
+          <RoleDiv>
+            {role === USER ? "사용자" : role === STORE ? "사장님" : ""}
+          </RoleDiv>
         </TitleDiv>
         <div style={{ marginLeft: 20, marginRight: 20 }}>
           <Input
@@ -183,7 +199,18 @@ function LoginPage() {
       <TextSpan onClick={() => navigate("/auth/findpw")}>
         비밀번호 찾기
       </TextSpan>
-      <button onClick={() => navigate("/auth/editpw")}>여기</button>
+      {role === STORE && (
+        <>
+          <TextSpan style={{ color: "#bababa" }}>I</TextSpan>
+          <TextSpan
+            style={{ marginRight: 25 }}
+            onClick={() => navigate("/auth/signup")}
+          >
+            회원가입
+          </TextSpan>
+        </>
+      )}
+      {/* <button onClick={() => navigate("/auth/editpw")}>여기</button> */}
     </LayoutDiv>
   );
 }

@@ -1,4 +1,3 @@
-import { PieChart } from "recharts";
 import BarChartLayout from "./BarChart";
 import PieChartLayout from "./PieChart";
 import LineChartLayout from "./LineChart";
