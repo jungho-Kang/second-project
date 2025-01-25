@@ -6,6 +6,7 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
+  ResponsiveContainer,
 } from "recharts";
 
 const data = [
@@ -80,30 +81,30 @@ const CustomizedDot = props => {
 
 const LineChartLayout = () => {
   return (
-    <LineChart
-      width={900}
-      height={250}
-      data={data}
-      margin={{
-        top: 5,
-        right: 30,
-        left: 20,
-        bottom: 5,
-      }}
-    >
-      <CartesianGrid strokeDasharray="2 3" />
-      <XAxis dataKey="name" />
-      <YAxis />
-      <Tooltip />
-      <Legend />
-      <Line
-        type="monotone"
-        dataKey="예약주문"
-        stroke="#8884d8"
-        // dot={<CustomizedDot />}
-      />
-      <Line type="monotone" dataKey="앉아서주문" stroke="#1e0f4c" />
-    </LineChart>
+    <ResponsiveContainer width="100%" height={250}>
+      <LineChart
+        data={data}
+        margin={{
+          top: 5,
+          right: 30,
+          left: 20,
+          bottom: 5,
+        }}
+      >
+        <CartesianGrid strokeDasharray="2 3" />
+        <XAxis dataKey="name" />
+        <YAxis />
+        <Tooltip />
+        <Legend />
+        <Line
+          type="monotone"
+          dataKey="예약주문"
+          stroke="#8884d8"
+          // dot={<CustomizedDot />}
+        />
+        <Line type="monotone" dataKey="앉아서주문" stroke="#1e0f4c" />
+      </LineChart>
+    </ResponsiveContainer>
   );
 };
 export default LineChartLayout;
