@@ -24,15 +24,55 @@ export default {
       black: "#333333",
       darkGray: "#929292",
       gray: "#eeeeee",
+      red: "#D90416",
     },
     keyframes: {
       pulse: {
         "0%, 100%": { opacity: "1" },
         "50%": { opacity: "0.5" },
       },
+      ping: {
+        "75%, 100%": {
+          transform: "scale(1.2)",
+          opacity: "1",
+        },
+      },
+      bounce: {
+        "0%, 100%": {
+          transform: "translateY(-25%)",
+          animationTimingFunction: "cubic-bezier(0.8, 0, 1, 1)",
+        },
+        "50%": {
+          transform: "none",
+          animationTimingFunction: "cubic-bezier(0, 0, 0.2, 1)",
+        },
+      },
+      fadein: {
+        "0%": {
+          opacity: "0.5",
+          transform: "translateY(-10px)",
+        },
+        "100%": {
+          opacity: "1",
+          transform: "translateY(0)",
+        },
+      },
+      fadeout: {
+        "0%": {
+          opacity: "1",
+        },
+        "100%": {
+          opacity: "0",
+          transform: "translateY(-10px)",
+        },
+      },
     },
     animation: {
       pulse: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+      ping: "ping 2s cubic-bezier(0, 0, 0.2, 1) infinite",
+      bounce: "bounce 1s infinite",
+      fadein: "fadein 0.5s",
+      fadeout: "fadeout 1s",
     },
   },
   plugins: [scrollbarHide],
