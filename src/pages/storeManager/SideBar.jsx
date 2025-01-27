@@ -21,7 +21,15 @@ const SideBar = () => {
     sales: false,
     store: false,
   });
+  const [activeMenu, setActiveMenu] = useState("");
   const [subMenuClick, setSubMenuClick] = useState(false);
+
+  const handleMenuClick = (menu, path) => {
+    console.log(menu);
+
+    setActiveMenu(menu); // 활성화된 메뉴 업데이트
+    navigate(path); // 절대경로로 메뉴 클릭 시 라우팅
+  };
 
   return (
     <div className="flex flex-col w-44 h-dvh justify-between items-center bg-white border-r-2 border-r-gray shadow-xl">
@@ -30,37 +38,55 @@ const SideBar = () => {
           <img src={"/atta pparune.png"} />
         </div>
         <div className="flex flex-col justify-between">
+          {/* 테이블 메뉴 */}
           <div
-            className={
-              "flex gap-3 pl-8 py-4 items-center hover:bg-primary hover:text-white hover:ml-6 hover:rounded-l-full"
-            }
-            onClick={() => navigate("/store")}
+            className={`flex gap-3 pl-8 py-4 items-center ${
+              activeMenu === "table"
+                ? "bg-primary text-white ml-6 rounded-l-full"
+                : "hover:bg-primary hover:text-white hover:ml-6 hover:rounded-l-full"
+            }`}
+            onClick={() => handleMenuClick("table", "/store")}
           >
             <MdTableBar className="text-2xl" />
             <span className="text-lg font-semibold">테이블</span>
           </div>
+          {/* 메뉴 */}
           <div
-            className={
-              "flex gap-3 pl-8 py-4 items-center hover:bg-primary hover:text-white hover:ml-6 hover:rounded-l-full"
-            }
-            onClick={() => navigate("/store/menu")}
+            className={`flex gap-3 pl-8 py-4 items-center ${
+              activeMenu === "menu"
+                ? "bg-primary text-white ml-6 rounded-l-full"
+                : "hover:bg-primary hover:text-white hover:ml-6 hover:rounded-l-full"
+            }`}
+            onClick={() => handleMenuClick("menu", "/store/menu")}
           >
             <FaBowlFood className="text-2xl" />
             <div className="text-lg font-semibold">메뉴</div>
           </div>
+
+          {/* 매출확인 */}
           <div
-            className={
-              "flex gap-3 pl-8 py-4 items-center hover:bg-primary hover:text-white hover:ml-6 hover:rounded-l-full"
-            }
-            onClick={() => navigate("/store/sales")}
+            className={`flex gap-3 pl-8 py-4 items-center ${
+              activeMenu === "sales"
+                ? "bg-primary text-white ml-6 rounded-l-full"
+                : "hover:bg-primary hover:text-white hover:ml-6 hover:rounded-l-full"
+            }`}
+            onClick={() => handleMenuClick("sales", "/store/sales")}
           >
             <PiMoneyWavyFill className="text-2xl" />
             <div className="text-lg font-semibold">매출확인</div>
           </div>
         </div>
+
+        {/* 내 매장 메뉴 */}
         <div
-          className={"flex gap-3 pl-8 items-center mt-3"}
-          onClick={() => setMenuClick({ store: !menuClick.store })}
+          className={`flex gap-3 pl-8 items-center mt-3 ${
+            menuClick.store
+              ? "bg-primary text-white"
+              : "hover:bg-primary hover:text-white"
+          }`}
+          onClick={() =>
+            setMenuClick({ ...menuClick, store: !menuClick.store })
+          }
         >
           <IoStorefront className="text-2xl" />
           <div className="text-lg font-semibold">내 매장</div>
@@ -94,4 +120,5 @@ const SideBar = () => {
     </div>
   );
 };
+
 export default SideBar;
