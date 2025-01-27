@@ -14,8 +14,12 @@ import UserPage from "./pages/user/UserPage";
 import EditPwPage from "./pages/auth/EditPwPage";
 import StoreSales from "./pages/storeManager/salesConfirm/Sales";
 import SignUpPage from "./pages/auth/SignUpPage";
+
+import EmailAuthPage from "./pages/auth/EmailAuthPage";
+
 import UserMainPage from "./pages/user/UserMainPage";
 import PlaceToOrder from "./pages/order/PlaceToOrder";
+
 
 function App() {
   return (
@@ -27,7 +31,10 @@ function App() {
           <Route path="findid" element={<FindIdPage />} />
           <Route path="findpw" element={<FindPwPage />} />
           <Route path="editpw" element={<EditPwPage />} />
-          <Route path="signup" element={<SignUpPage />} />
+          <Route path="signup">
+            <Route index element={<SignUpPage />} />
+            <Route path="emailauth" element={<EmailAuthPage />} />
+          </Route>
         </Route>
 
         <Route path="/user">
