@@ -209,11 +209,8 @@
 import styled from "@emotion/styled";
 
 const TableDiv = styled.div`
-  margin-top: 30px;
-  margin-left: 35px;
-  margin-right: 35px;
+  margin: 30px 35px;
   overflow-y: scroll;
-  height: 540px;
 `;
 
 const TableBtn = styled.button`
@@ -251,12 +248,13 @@ const TopTitleDiv = styled.div`
 
 function SalesPage() {
   return (
-    <TableDiv>
+    <TableDiv className="scrollbar-hide">
       <TableTitleDiv>
         <div>매출 내역</div>
         <div style={{ display: "flex", gap: 30 }}>
-          <TableBtn>예약</TableBtn>
-          <TableBtn>앉아서 주문</TableBtn>
+          {/* <TableBtn>예약</TableBtn>
+          <TableBtn>앉아서 주문</TableBtn> */}
+          <TableBtn>기간 선택</TableBtn>
         </div>
       </TableTitleDiv>
       <TableTopDiv>
