@@ -1,121 +1,84 @@
-import { IoMdArrowBack } from "react-icons/io";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { IoMdArrowBack } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import { loginAtom } from "../../atoms/userAtom";
-import styled from "@emotion/styled";
+import {
+  CloseDiv,
+  FormDiv,
+  HeaderDiv,
+  Input,
+  InputYupDiv,
+  LayoutDiv,
+  LoginBtn,
+  SignUpInput,
+  TitleDiv,
+  YupDiv,
+} from "./loginStyle";
+import { useForm } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import Loading from "../../components/Loading";
 
-const LayoutDiv = styled.div`
-  text-align: center;
-`;
-
-const HeaderDiv = styled.div`
-  @media (max-width: 430px) {
-    width: 100%;
-    padding: 10px 15px;
-  }
-  @media (max-width: 1400px) and (min-width: 431px) {
-    width: 100%;
-    padding: 20px 30px;
-  }
-`;
-
-const CloseDiv = styled.div`
-  @media (max-width: 430px) {
-    width: 25px;
-    height: 25px;
-  }
-  @media (max-width: 1400px) and (min-width: 431px) {
-    width: 40px;
-    height: 40px;
-  }
-`;
-
-const TitleDiv = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 50px;
-  margin-bottom: 50px;
-  font-weight: 700;
-  @media (max-width: 430px) {
-    font-size: 20px;
-    width: 100%;
-    margin-top: 50px;
-    margin-bottom: 50px;
-  }
-  @media (max-width: 1400px) and (min-width: 431px) {
-    width: 100%;
-    font-size: 34px;
-  }
-`;
-
-const Input = styled.input`
-  border-bottom: 1px solid #bababa;
-  color: #bababa;
-  @media (max-width: 430px) {
-    max-width: 430px;
-    width: 100%;
-    padding: 10px 0;
-    margin-bottom: 25px;
-  }
-  @media (max-width: 1400px) and (min-width: 431px) {
-    width: 500px;
-    font-size: 24px;
-    margin-bottom: 40px;
-    padding: 15px 0;
-  }
-`;
-
-const LoginBtn = styled.button`
-  color: #fff;
-  border-radius: 5px;
-  @media (max-width: 430px) {
-    max-width: 430px;
-    width: 100%;
-    padding: 10px 0;
-    margin-bottom: 25px;
-  }
-  @media (max-width: 1400px) and (min-width: 431px) {
-    width: 500px;
-    padding: 15px 0;
-    font-size: 24px;
-    margin-bottom: 40px;
-  }
-`;
+const loginSchema = yup.object({
+  name: yup
+    .string()
+    .required("이름은 필수입니다.")
+    .min(2, "이름은 최소 2자 이상이어야 합니다."),
+  email: yup
+    .string()
+    .required("이메일은 필수입니다.")
+    .email("올바른 이메일 형식이 아닙니다."),
+});
 
 function FindIdPage() {
   const navigate = useNavigate();
-  const [isLogin, setIsLogin] = useRecoilState(loginAtom);
-  const [formData, setFormData] = useState({ uid: "", upw: "" });
-  const [hasVal, setHasVal] = useState(false);
+  const [formData, setFormData] = useState({ name: "", email: "" });
+  // const [hasVal, setHasVal] = useState(false);
+  const [isSubmit, setIsSubmit] = useState(false);
 
-  const postLogin = async () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+  } = useForm({
+    mode: "onSubmit",
+    resolver: yupResolver(loginSchema),
+  });
+
+  const getId = async () => {
     try {
-      await axios.post("/api/user/sign-in", formData);
-      setIsLogin(true);
-      navigate("/");
+      await axios.get(
+        `/api/user/find-id?name=${formData.name}&email=${formData.email}`,
+      );
+      alert(`${formData.email} 이메일로 아이디가 전송되었습니다.`);
+      navigate("/auth");
     } catch (error) {
+      alert("이름과 이메일이 일치하지 않습니다.");
+      setIsSubmit(false);
       console.log(error);
     }
   };
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    postLogin();
+  const handleSubmitForm = data => {
+    console.log(data);
+    setIsSubmit(prev => !prev);
+    getId();
   };
 
   useEffect(() => {
-    if (formData.uid && formData.upw) {
-      setHasVal(true);
+    if (formData.name && formData.email) {
+      // setHasVal(true);
     } else {
-      setHasVal(false);
+      // setHasVal(false);
     }
   }, [formData]);
 
+  const hasVal = watch("name") && watch("email");
+
   return (
-    <LayoutDiv>
-      <form onSubmit={e => handleSubmit(e)}>
+    <div>
+      <LayoutDiv style={{ position: "relative" }}>
         <HeaderDiv>
           <CloseDiv>
             <IoMdArrowBack
@@ -124,34 +87,42 @@ function FindIdPage() {
             />
           </CloseDiv>
         </HeaderDiv>
-        <TitleDiv>아이디 찾기</TitleDiv>
-        <div style={{ marginLeft: 20, marginRight: 20 }}>
-          <Input
-            type="text"
-            placeholder="이름"
-            onChange={e => setFormData({ ...formData, uid: e.target.value })}
-          />
-        </div>
-        <div style={{ marginLeft: 20, marginRight: 20 }}>
-          <Input
-            type="password"
-            placeholder="이메일"
-            onChange={e => setFormData({ ...formData, upw: e.target.value })}
-          />
-        </div>
-        <div style={{ marginLeft: 20, marginRight: 20 }}>
-          <LoginBtn
-            type="submit"
-            style={{
-              backgroundColor: hasVal ? "#6F4CDB" : "#ddd",
-            }}
-            disabled={!hasVal}
-          >
-            아이디 찾기
-          </LoginBtn>
-        </div>
-      </form>
-    </LayoutDiv>
+        <FormDiv>
+          <form onSubmit={handleSubmit(handleSubmitForm)}>
+            <TitleDiv>아이디 찾기</TitleDiv>
+            <InputYupDiv>
+              <SignUpInput
+                type="text"
+                placeholder="이름"
+                {...register("name")}
+              />
+              <YupDiv>{errors.name?.message}</YupDiv>
+            </InputYupDiv>
+            <InputYupDiv>
+              <SignUpInput
+                type="email"
+                placeholder="이메일"
+                {...register("email")}
+              />
+              <YupDiv>{errors.email?.message}</YupDiv>
+            </InputYupDiv>
+
+            <div style={{ marginLeft: 20, marginRight: 20 }}>
+              <LoginBtn
+                type="submit"
+                style={{
+                  backgroundColor: hasVal ? "#6F4CDB" : "#ddd",
+                }}
+                disabled={!hasVal}
+              >
+                아이디 찾기
+              </LoginBtn>
+            </div>
+          </form>
+        </FormDiv>
+      </LayoutDiv>
+      {isSubmit && <Loading />}
+    </div>
   );
 }
 

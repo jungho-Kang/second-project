@@ -1,221 +1,185 @@
-import { IoMdArrowBack } from "react-icons/io";
+import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { IoMdArrowBack } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import { loginAtom } from "../../atoms/userAtom";
-import styled from "@emotion/styled";
+import { useRecoilValue } from "recoil";
+import * as yup from "yup";
+import { roleAtom } from "../../atoms/roleAtom";
+import Loading from "../../components/Loading";
+import {
+  CloseDiv,
+  FormDiv,
+  HeaderDiv,
+  InputYupDiv,
+  LayoutDiv,
+  LoginBtn,
+  SignUpInput,
+  TitleDiv,
+  YupDiv,
+} from "./loginStyle";
 
-const LayoutDiv = styled.div`
-  text-align: center;
-`;
+// const SignBtn = styled.button`
+//   color: #fff;
+//   border-radius: 5px;
+//   @media (max-width: 430px) {
+//     font-size: 14px;
+//     max-width: 80px;
+//     width: 100%;
+//     padding: 10px 0;
+//   }
+//   @media (max-width: 1400px) and (min-width: 431px) {
+//     width: 120px;
+//     padding: 15px 0;
+//     font-size: 20px;
+//   }
+// `;
 
-const HeaderDiv = styled.div`
-  @media (max-width: 430px) {
-    width: 100%;
-    padding: 10px 15px;
-  }
-  @media (max-width: 1400px) and (min-width: 431px) {
-    width: 100%;
-    padding: 20px 30px;
-  }
-`;
+// const EmailInput = styled.input`
+//   border-bottom: 1px solid #bababa;
+//   color: #bababa;
+//   @media (max-width: 430px) {
+//     margin-right: 20px;
+//     max-width: 220px;
+//     width: 100%;
+//     padding: 10px 0;
+//   }
+//   @media (max-width: 1400px) and (min-width: 431px) {
+//     margin-right: 30px;
+//     width: 350px;
+//     font-size: 24px;
+//     padding: 15px 0;
+//   }
+// `;
 
-const CloseDiv = styled.div`
-  @media (max-width: 430px) {
-    width: 25px;
-    height: 25px;
-  }
-  @media (max-width: 1400px) and (min-width: 431px) {
-    width: 40px;
-    height: 40px;
-  }
-`;
-
-const TitleDiv = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 50px;
-  font-weight: 700;
-  @media (max-width: 430px) {
-    font-size: 20px;
-    width: 100%;
-    margin-top: 50px;
-    margin-bottom: 50px;
-  }
-  @media (max-width: 1400px) and (min-width: 431px) {
-    width: 100%;
-    font-size: 34px;
-  }
-`;
-
-const Input = styled.input`
-  border-bottom: 1px solid #bababa;
-  color: #bababa;
-  @media (max-width: 430px) {
-    max-width: 430px;
-    width: 100%;
-    padding: 10px 0;
-  }
-  @media (max-width: 1400px) and (min-width: 431px) {
-    width: 500px;
-    font-size: 24px;
-    padding: 15px 0;
-    margin-top: 20px;
-  }
-`;
-
-const LoginBtn = styled.button`
-  color: #fff;
-  border-radius: 5px;
-  margin-bottom: 30px;
-  @media (max-width: 430px) {
-    width: 100%;
-    padding: 10px 0;
-    margin-top: 25px;
-  }
-  @media (max-width: 1400px) and (min-width: 431px) {
-    width: 500px;
-    padding: 15px 0;
-    font-size: 24px;
-    margin-top: 40px;
-  }
-`;
-
-const YupDiv = styled.div`
-  color: #f00;
-  text-align: left;
-  @media (max-width: 430px) {
-    margin-top: 5px;
-    font-size: 11px;
-  }
-  @media (max-width: 1400px) and (min-width: 431px) {
-    margin-top: 10px;
-    font-size: 17px;
-  }
-`;
-
-const FormDiv = styled.div`
-  margin: 0 auto;
-  @media (max-width: 430px) {
-    width: 100%;
-  }
-  @media (max-width: 1400px) and (min-width: 431px) {
-    max-width: 500px;
-    width: 100%;
-  }
-`;
-
-const InputYupDiv = styled.div`
-  margin-left: 20px;
-  margin-right: 20px;
-`;
-
-const SignBtn = styled.button`
-  color: #fff;
-  border-radius: 5px;
-  @media (max-width: 430px) {
-    font-size: 14px;
-    max-width: 80px;
-    width: 100%;
-    padding: 10px 0;
-  }
-  @media (max-width: 1400px) and (min-width: 431px) {
-    width: 120px;
-    padding: 15px 0;
-    font-size: 20px;
-  }
-`;
-
-const EmailInput = styled.input`
-  border-bottom: 1px solid #bababa;
-  color: #bababa;
-  @media (max-width: 430px) {
-    margin-right: 20px;
-    max-width: 220px;
-    width: 100%;
-    padding: 10px 0;
-  }
-  @media (max-width: 1400px) and (min-width: 431px) {
-    margin-right: 30px;
-    width: 350px;
-    font-size: 24px;
-    padding: 15px 0;
-  }
-`;
+const loginSchema = yup.object({
+  roleId: yup.string(),
+  aid: yup
+    .string()
+    .min(6, "최소 6자 이상 작성해야 합니다.")
+    .max(12, "최대 12자까지 작성 가능합니다.")
+    .matches(
+      /^[A-Za-z][A-Za-z0-9_]{6,12}$/,
+      "아이디는 숫자, 영문으로 작성 가능합니다.",
+    ),
+  apw: yup
+    .string()
+    .required("비밀번호는 필수입니다.")
+    .min(8, "최소 8자 이상 작성해야 합니다.")
+    .max(16, "최대 16자까지 작성 가능합니다.")
+    .matches(
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]+$/,
+      "비밀번호는 영어, 숫자, 특수문자만 가능합니다.",
+    ),
+  name: yup
+    .string()
+    .required("이름은 필수입니다.")
+    .min(2, "이름은 최소 2자 이상이어야 합니다."),
+  email: yup
+    .string()
+    .required("이메일은 필수입니다.")
+    .email("올바른 이메일 형식이 아닙니다."),
+  phone: yup.string().required("전화번호는 필수입니다."),
+});
 
 function SignUpPage() {
   const navigate = useNavigate();
-  const [isLogin, setIsLogin] = useRecoilState(loginAtom);
-  const [formData, setFormData] = useState({ uid: "", upw: "" });
-  const [hasVal, setHasVal] = useState(false);
+  const role = useRecoilValue(roleAtom);
+  const [isSubmit, setIsSubmit] = useState(false);
 
-  const pathMove = () => {
-    navigate("/auth");
-  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    mode: "onChange",
+    resolver: yupResolver(loginSchema),
+  });
 
-  const postLogin = async () => {
+  const postLogin = async data => {
     try {
-      await axios.post("/api/user/sign-in", formData);
-      setIsLogin(true);
-      navigate("/");
+      await axios.post("/api/admin/sign-up", data);
+      navigate("/auth/signup/emailauth");
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    postLogin();
+  const handleSubmitForm = async data => {
+    console.log(data);
+    setIsSubmit(prev => !prev);
+    postLogin(data);
   };
 
-  useEffect(() => {
-    if (formData.uid && formData.upw) {
-      setHasVal(true);
-    } else {
-      setHasVal(false);
-    }
-  }, [formData]);
-
   return (
-    <LayoutDiv>
-      <HeaderDiv>
-        <CloseDiv>
-          <IoMdArrowBack
-            style={{ width: "100%", height: "100%", cursor: "pointer" }}
-            onClick={() => pathMove()}
-          />
-        </CloseDiv>
-      </HeaderDiv>
-      <FormDiv>
-        <form onSubmit={e => handleSubmit(e)}>
-          <TitleDiv>회원가입</TitleDiv>
-          <InputYupDiv>
-            <Input
-              type="text"
-              placeholder="아이디"
-              onChange={e => setFormData({ ...formData, uid: e.target.value })}
+    <div>
+      <LayoutDiv style={{ position: "relative" }}>
+        <HeaderDiv>
+          <CloseDiv>
+            <IoMdArrowBack
+              style={{ width: "100%", height: "100%", cursor: "pointer" }}
+              onClick={() => navigate("/auth")}
             />
+          </CloseDiv>
+        </HeaderDiv>
+        <FormDiv>
+          <form onSubmit={handleSubmit(handleSubmitForm)}>
+            {/* roleId를 보내기 위한 input */}
+            <input
+              type="text"
+              {...register("roleId")}
+              value={role}
+              style={{ display: "none" }}
+            />
+            <TitleDiv>회원가입</TitleDiv>
+            <InputYupDiv>
+              <SignUpInput
+                type="text"
+                placeholder="아이디"
+                {...register("aid")}
+              />
+              <YupDiv>{errors.aid?.message}</YupDiv>
+            </InputYupDiv>
+            <InputYupDiv>
+              <SignUpInput
+                type="password"
+                placeholder="비밀번호 (8-16자)"
+                {...register("apw")}
+              />
+              <YupDiv>{errors.apw?.message}</YupDiv>
+            </InputYupDiv>
+            <InputYupDiv>
+              <SignUpInput
+                type="text"
+                placeholder="이름"
+                {...register("name")}
+              />
+              <YupDiv>{errors.name?.message}</YupDiv>
+            </InputYupDiv>
+            <InputYupDiv>
+              <SignUpInput
+                type="email"
+                placeholder="이메일"
+                {...register("email")}
+              />
+              <YupDiv>{errors.email?.message}</YupDiv>
+            </InputYupDiv>
+            <InputYupDiv>
+              <SignUpInput
+                type="text"
+                placeholder="휴대전화번호"
+                maxLength={11}
+                {...register("phone")}
+                // value={formData.phone}
+                // onChange={e =>
+                //   setFormData({ ...formData, phone: e.target.value })
+                // }
+              />
+              <YupDiv>{errors.phone?.message}</YupDiv>
+            </InputYupDiv>
 
-            <YupDiv>영문, 숫자, 특수문자가 조합 8-16자리로 입력해주세요</YupDiv>
-          </InputYupDiv>
-          <InputYupDiv>
-            <Input
-              type="password"
-              placeholder="비밀번호 (8-16자)"
-              onChange={e => setFormData({ ...formData, upw: e.target.value })}
-            />
-            <YupDiv>비밀번호를 재확인해주세요</YupDiv>
-          </InputYupDiv>
-          <InputYupDiv>
-            <Input
-              type="text"
-              placeholder="이름"
-              onChange={e => setFormData({ ...formData, upw: e.target.value })}
-            />
-            <YupDiv>비밀번호를 재확인해주세요</YupDiv>
-          </InputYupDiv>
-          <InputYupDiv>
+            {/* <InputYupDiv>
             <div
               style={{
                 display: "flex",
@@ -243,30 +207,16 @@ function SignUpPage() {
               </SignBtn>
             </div>
             <YupDiv>비밀번호를 재확인해주세요</YupDiv>
-          </InputYupDiv>
-          <InputYupDiv>
-            <Input
-              type="password"
-              placeholder="휴대전화번호"
-              onChange={e => setFormData({ ...formData, upw: e.target.value })}
-            />
-            <YupDiv>비밀번호를 재확인해주세요</YupDiv>
-          </InputYupDiv>
+          </InputYupDiv> */}
 
-          <div style={{ marginLeft: 20, marginRight: 20 }}>
-            <LoginBtn
-              type="submit"
-              style={{
-                backgroundColor: hasVal ? "#6F4CDB" : "#ddd",
-              }}
-              disabled={!hasVal}
-            >
-              가입하기
-            </LoginBtn>
-          </div>
-        </form>
-      </FormDiv>
-    </LayoutDiv>
+            <div style={{ marginLeft: 20, marginRight: 20 }}>
+              <LoginBtn type="submit">가입하기</LoginBtn>
+            </div>
+          </form>
+        </FormDiv>
+      </LayoutDiv>
+      {isSubmit && <Loading />}
+    </div>
   );
 }
 

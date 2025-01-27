@@ -1,88 +1,17 @@
-import { IoMdArrowBack } from "react-icons/io";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { IoMdArrowBack } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { loginAtom } from "../../atoms/userAtom";
-import styled from "@emotion/styled";
-
-const LayoutDiv = styled.div`
-  text-align: center;
-`;
-
-const HeaderDiv = styled.div`
-  @media (max-width: 430px) {
-    width: 100%;
-    padding: 10px 15px;
-  }
-  @media (max-width: 1400px) and (min-width: 431px) {
-    width: 100%;
-    padding: 20px 30px;
-  }
-`;
-
-const CloseDiv = styled.div`
-  @media (max-width: 430px) {
-    width: 25px;
-    height: 25px;
-  }
-  @media (max-width: 1400px) and (min-width: 431px) {
-    width: 40px;
-    height: 40px;
-  }
-`;
-
-const TitleDiv = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 50px;
-  margin-bottom: 50px;
-  font-weight: 700;
-  @media (max-width: 430px) {
-    font-size: 20px;
-    width: 100%;
-    margin-top: 50px;
-    margin-bottom: 50px;
-  }
-  @media (max-width: 1400px) and (min-width: 431px) {
-    width: 100%;
-    font-size: 34px;
-  }
-`;
-
-const Input = styled.input`
-  border-bottom: 1px solid #bababa;
-  color: #bababa;
-  @media (max-width: 430px) {
-    max-width: 430px;
-    width: 100%;
-    padding: 10px 0;
-    margin-bottom: 25px;
-  }
-  @media (max-width: 1400px) and (min-width: 431px) {
-    width: 500px;
-    font-size: 24px;
-    margin-bottom: 40px;
-    padding: 15px 0;
-  }
-`;
-
-const LoginBtn = styled.button`
-  color: #fff;
-  border-radius: 5px;
-  @media (max-width: 430px) {
-    max-width: 430px;
-    width: 100%;
-    padding: 10px 0;
-    margin-bottom: 25px;
-  }
-  @media (max-width: 1400px) and (min-width: 431px) {
-    width: 500px;
-    padding: 15px 0;
-    font-size: 24px;
-    margin-bottom: 40px;
-  }
-`;
+import {
+  CloseDiv,
+  HeaderDiv,
+  Input,
+  LayoutDiv,
+  LoginBtn,
+  TitleDiv,
+} from "./loginStyle";
 
 // const SignBtn = styled.button`
 //   color: #fff;
@@ -197,6 +126,7 @@ function FindPwPage() {
             style={{
               backgroundColor: hasVal ? "#6F4CDB" : "#ddd",
             }}
+            onClick={() => navigate("/auth/editpw")}
             disabled={!hasVal}
           >
             비밀번호 변경
