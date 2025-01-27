@@ -79,7 +79,7 @@ const UserMainPage = () => {
           </SwiperSlide>
         </Swiper>
       </div>
-      <div className="pt-2">
+      <div className="pt-2 pb-24">
         <div className="w-100% flex pl-5 pt-2 justify-between">
           <div className="flex items-center gap-1">
             <LuArrowDownUp />

@@ -1,5 +1,3 @@
-import BarChartLayout from "./BarChart";
-import PieChartLayout from "./PieChart";
 import LineChartLayout from "./LineChart";
 import SalesPage from "./SalesPage";
 

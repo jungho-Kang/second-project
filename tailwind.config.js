@@ -26,6 +26,9 @@ export default {
       gray: "#eeeeee",
       red: "#D90416",
     },
+    border: {
+      1: 1,
+    },
     keyframes: {
       pulse: {
         "0%, 100%": { opacity: "1" },
