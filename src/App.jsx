@@ -15,6 +15,7 @@ import EditPwPage from "./pages/auth/EditPwPage";
 
 import StoreSales from "./pages/storeManager/salesConfirm/Sales";
 import SignUpPage from "./pages/auth/SignUpPage";
+import UserMainPage from "./pages/user/UserMainPage";
 
 function App() {
   return (
@@ -30,10 +31,11 @@ function App() {
         </Route>
 
         <Route path="/user">
-          <Route index element={<UserPage />} />
+          {/* <Route index element={<UserPage />} /> */}
+          <Route index element={<UserMainPage />} />
           <Route path="userinfo">
             <Route index element={<UserInfo />} />
-            <Route path="editinfo" element={<EditInfoPage />} />
+            <Route path="edit" element={<EditInfoPage />} />
           </Route>
           <Route path="order">
             <Route index element={<Order />} />
