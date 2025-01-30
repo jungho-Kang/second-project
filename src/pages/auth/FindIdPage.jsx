@@ -1,12 +1,15 @@
+import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { IoMdArrowBack } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
+import * as yup from "yup";
+import Loading from "../../components/Loading";
 import {
   CloseDiv,
   FormDiv,
   HeaderDiv,
-  Input,
   InputYupDiv,
   LayoutDiv,
   LoginBtn,
@@ -14,10 +17,6 @@ import {
   TitleDiv,
   YupDiv,
 } from "./loginStyle";
-import { useForm } from "react-hook-form";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import Loading from "../../components/Loading";
 
 const loginSchema = yup.object({
   name: yup
@@ -32,8 +31,6 @@ const loginSchema = yup.object({
 
 function FindIdPage() {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({ name: "", email: "" });
-  // const [hasVal, setHasVal] = useState(false);
   const [isSubmit, setIsSubmit] = useState(false);
 
   const {
@@ -42,16 +39,16 @@ function FindIdPage() {
     formState: { errors },
     watch,
   } = useForm({
-    mode: "onSubmit",
+    mode: "onChange",
     resolver: yupResolver(loginSchema),
   });
 
-  const getId = async () => {
+  const getId = async data => {
     try {
       await axios.get(
-        `/api/user/find-id?name=${formData.name}&email=${formData.email}`,
+        `/api/user/find-id?name=${data.name}&email=${data.email}`,
       );
-      alert(`${formData.email} 이메일로 아이디가 전송되었습니다.`);
+      alert(`${data.email} 이메일로 아이디가 전송되었습니다.`);
       navigate("/auth");
     } catch (error) {
       alert("이름과 이메일이 일치하지 않습니다.");
@@ -63,18 +60,12 @@ function FindIdPage() {
   const handleSubmitForm = data => {
     console.log(data);
     setIsSubmit(prev => !prev);
-    getId();
+    getId(data);
   };
 
-  useEffect(() => {
-    if (formData.name && formData.email) {
-      // setHasVal(true);
-    } else {
-      // setHasVal(false);
-    }
-  }, [formData]);
-
-  const hasVal = watch("name") && watch("email");
+  const nameVal = watch("name");
+  const emailVal = watch("email");
+  const hasVal = nameVal && emailVal;
 
   return (
     <div>

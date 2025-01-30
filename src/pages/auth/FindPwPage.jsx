@@ -1,16 +1,21 @@
+import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { IoMdArrowBack } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import { loginAtom } from "../../atoms/userAtom";
+import * as yup from "yup";
+import Loading from "../../components/Loading";
 import {
   CloseDiv,
+  FormDiv,
   HeaderDiv,
-  Input,
+  InputYupDiv,
   LayoutDiv,
   LoginBtn,
+  SignUpInput,
   TitleDiv,
+  YupDiv,
 } from "./loginStyle";
 
 // const SignBtn = styled.button`
@@ -49,38 +54,57 @@ import {
 //     padding: 15px 0;
 //   }
 // `;
+
+const findPwSchema = yup.object({
+  uid: yup
+    .string()
+    .min(6, "최소 6자 이상 작성해야 합니다.")
+    .max(12, "최대 12자까지 작성 가능합니다.")
+    .matches(
+      /^[A-Za-z][A-Za-z0-9_]{6,12}$/,
+      "아이디는 숫자, 영문으로 작성 가능합니다.",
+    ),
+  email: yup
+    .string()
+    .required("이메일은 필수입니다.")
+    .email("올바른 이메일 형식이 아닙니다."),
+});
+
 function FindPwPage() {
   const navigate = useNavigate();
-  const [isLogin, setIsLogin] = useRecoilState(loginAtom);
-  const [formData, setFormData] = useState({ uid: "", upw: "" });
-  const [hasVal, setHasVal] = useState(false);
+  const [isSubmit, setIsSubmit] = useState(false);
 
-  const postLogin = async () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+  } = useForm({
+    mode: "onChange",
+    resolver: yupResolver(findPwSchema),
+  });
+
+  // api 완성되면 작업
+  const getId = async data => {
     try {
-      await axios.post("/api/user/sign-in", formData);
-      setIsLogin(true);
-      navigate("/");
+      await axios.get();
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    postLogin();
+  const handleSubmitForm = data => {
+    setIsSubmit(prev => !prev);
+    getId(data);
   };
 
-  useEffect(() => {
-    if (formData.uid && formData.upw) {
-      setHasVal(true);
-    } else {
-      setHasVal(false);
-    }
-  }, [formData]);
+  const idVal = watch("uid");
+  const emailVal = watch("email");
+  const hasVal = idVal && emailVal;
 
   return (
-    <LayoutDiv>
-      <form onSubmit={e => handleSubmit(e)}>
+    <div>
+      <LayoutDiv style={{ position: "relative" }}>
         <HeaderDiv>
           <CloseDiv>
             <IoMdArrowBack
@@ -89,15 +113,27 @@ function FindPwPage() {
             />
           </CloseDiv>
         </HeaderDiv>
-        <TitleDiv>비밀번호 찾기</TitleDiv>
-        <div style={{ marginLeft: 20, marginRight: 20 }}>
-          <Input
-            type="text"
-            placeholder="아이디"
-            onChange={e => setFormData({ ...formData, uid: e.target.value })}
-          />
-        </div>
-        {/* <div style={{ marginLeft: 20, marginRight: 20 }}>
+        <FormDiv>
+          <form onSubmit={handleSubmit(handleSubmitForm)}>
+            <TitleDiv>비밀번호 찾기</TitleDiv>
+            <InputYupDiv>
+              <SignUpInput
+                type="text"
+                placeholder="아이디"
+                {...register("uid")}
+              />
+              <YupDiv>{errors.uid?.message}</YupDiv>
+            </InputYupDiv>
+            <InputYupDiv>
+              <SignUpInput
+                type="email"
+                placeholder="이메일"
+                {...register("email")}
+              />
+              <YupDiv>{errors.email?.message}</YupDiv>
+            </InputYupDiv>
+
+            {/* <div style={{ marginLeft: 20, marginRight: 20 }}>
           <EmailInput
             type="password"
             placeholder="이메일"
@@ -113,27 +149,23 @@ function FindPwPage() {
             인증코드
           </SignBtn>
         </div> */}
-        <div style={{ marginLeft: 20, marginRight: 20 }}>
-          <Input
-            type="password"
-            placeholder="이메일"
-            onChange={e => setFormData({ ...formData, upw: e.target.value })}
-          />
-        </div>
-        <div style={{ marginLeft: 20, marginRight: 20 }}>
-          <LoginBtn
-            type="submit"
-            style={{
-              backgroundColor: hasVal ? "#6F4CDB" : "#ddd",
-            }}
-            onClick={() => navigate("/auth/editpw")}
-            disabled={!hasVal}
-          >
-            비밀번호 변경
-          </LoginBtn>
-        </div>
-      </form>
-    </LayoutDiv>
+
+            <div style={{ marginLeft: 20, marginRight: 20 }}>
+              <LoginBtn
+                type="submit"
+                style={{
+                  backgroundColor: hasVal ? "#6F4CDB" : "#ddd",
+                }}
+                disabled={!hasVal}
+              >
+                비밀번호 변경
+              </LoginBtn>
+            </div>
+          </form>
+        </FormDiv>
+      </LayoutDiv>
+      {isSubmit && <Loading />}
+    </div>
   );
 }
 
