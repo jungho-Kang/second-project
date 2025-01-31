@@ -45,6 +45,7 @@ export const TitleDiv = styled.div`
   @media (max-width: 430px) {
     font-size: 20px;
     width: 100%;
+    height: 45px;
     margin-top: 50px;
     margin-bottom: 50px;
   }

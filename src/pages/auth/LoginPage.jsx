@@ -113,7 +113,7 @@ function LoginPage() {
           <TextSpan style={{ color: "#bababa" }}>I</TextSpan>
           <TextSpan
             style={{ marginRight: 25 }}
-            onClick={() => navigate("/auth/signup")}
+            onClick={() => navigate("/auth/policy")}
           >
             회원가입
           </TextSpan>

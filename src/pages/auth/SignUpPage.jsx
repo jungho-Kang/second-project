@@ -58,11 +58,11 @@ const loginSchema = yup.object({
   aid: yup
     .string()
     .min(6, "최소 6자 이상 작성해야 합니다.")
-    .max(12, "최대 12자까지 작성 가능합니다.")
-    .matches(
-      /^[A-Za-z][A-Za-z0-9_]{6,12}$/,
-      "아이디는 숫자, 영문으로 작성 가능합니다.",
-    ),
+    .max(12, "최대 12자까지 작성 가능합니다."),
+  // .matches(
+  //   /^[A-Za-z][A-Za-z0-9_]{6,12}$/,
+  //   "아이디는 숫자, 영문으로 작성 가능합니다.",
+  // ),
   apw: yup
     .string()
     .required("비밀번호는 필수입니다.")
@@ -157,7 +157,7 @@ function SignUpPage() {
           <CloseDiv>
             <IoMdArrowBack
               style={{ width: "100%", height: "100%", cursor: "pointer" }}
-              onClick={() => navigate("/auth")}
+              onClick={() => navigate(-1)}
             />
           </CloseDiv>
         </HeaderDiv>
