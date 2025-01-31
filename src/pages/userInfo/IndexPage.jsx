@@ -22,6 +22,7 @@ function IndexPage() {
           .replace(/(\-{1,2})$/g, "");
         const pointParse = resultData.point.toLocaleString("ko-KR");
         console.log(resultData);
+        console.log(res);
 
         setUserData({ ...resultData, phone: phoneNumber, point: pointParse });
       } catch (error) {
