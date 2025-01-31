@@ -19,7 +19,7 @@ import EmailAuthPage from "./pages/auth/EmailAuthPage";
 
 import UserMainPage from "./pages/user/UserMainPage";
 import PlaceToOrder from "./pages/order/PlaceToOrder";
-
+import PolicyPage from "./pages/auth/PolicyPage";
 
 function App() {
   return (
@@ -31,6 +31,7 @@ function App() {
           <Route path="findid" element={<FindIdPage />} />
           <Route path="findpw" element={<FindPwPage />} />
           <Route path="editpw" element={<EditPwPage />} />
+          <Route path="policy" element={<PolicyPage />} />
           <Route path="signup">
             <Route index element={<SignUpPage />} />
             <Route path="emailauth" element={<EmailAuthPage />} />
