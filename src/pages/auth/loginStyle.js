@@ -105,12 +105,13 @@ export const YupDiv = styled.div`
 export const InputYupDiv = styled.div`
   margin-left: 20px;
   margin-right: 20px;
+  height: 110px;
 
   @media (max-width: 430px) {
-    margin-bottom: 10px;
+    height: 70px;
   }
   @media (max-width: 1400px) and (min-width: 431px) {
-    margin-bottom: 20px;
+    height: 110px;
   }
 `;
 
@@ -147,11 +148,21 @@ export const TextSpan = styled.span`
 `;
 
 export const RoleDiv = styled.div`
-  font-size: 14px;
-  margin-left: 20px;
-  margin-top: 30px;
   font-weight: 700;
   color: #c4b6f0;
+  font-size: 14px;
+  margin-left: 15px;
+  margin-top: 30px;
+  @media (max-width: 430px) {
+    font-size: 10px;
+    margin-left: 5px;
+    margin-top: 30px;
+  }
+  @media (max-width: 1400px) and (min-width: 431px) {
+    font-size: 14px;
+    margin-left: 15px;
+    margin-top: 30px;
+  }
 `;
 
 export const SignUpInput = styled.input`

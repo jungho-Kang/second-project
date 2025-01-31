@@ -17,7 +17,7 @@ const MenuBar = () => {
   ];
 
   return (
-    <div className="absolute bottom-0 left-0 w-full h-20 flex bg-white border-t-2 border-gray items-center">
+    <div className="absolute bottom-0 left-0 w-full h-20 flex bg-white border-t-2 border-gray items-center z-10">
       {menuItems.map(menu => {
         const Icon = menu.icon;
         const isActive = activeMenu === menu.id;

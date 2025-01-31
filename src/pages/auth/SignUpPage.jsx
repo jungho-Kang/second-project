@@ -1,6 +1,6 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { IoMdArrowBack } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
@@ -80,7 +80,13 @@ const loginSchema = yup.object({
     .string()
     .required("이메일은 필수입니다.")
     .email("올바른 이메일 형식이 아닙니다."),
-  phone: yup.string().required("전화번호는 필수입니다."),
+  phone: yup
+    .string()
+    .required("전화번호는 필수입니다.")
+    .matches(
+      /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/,
+      "전화번호 형식이 올바르지 않습니다.",
+    ),
 });
 
 function SignUpPage() {
@@ -92,13 +98,26 @@ function SignUpPage() {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
+    setValue, // setValue를 사용하여 폼 값을 설정합니다.
   } = useForm({
     mode: "onChange",
     resolver: yupResolver(loginSchema),
+    defaultValues: {
+      phone: "",
+    },
   });
+
+  const idVal = watch("aid");
+  const pwVal = watch("apw");
+  const nameVal = watch("name");
+  const emailVal = watch("email");
+  const phoneVal = watch("phone");
+  const hasVal = idVal && pwVal && nameVal && emailVal && phoneVal;
 
   const postLogin = async data => {
     try {
+      // console.log("보낼 데이터", data);
       await axios.post("/api/admin/sign-up", data);
       navigate("/auth/signup/emailauth");
     } catch (error) {
@@ -107,10 +126,29 @@ function SignUpPage() {
   };
 
   const handleSubmitForm = async data => {
-    console.log(data);
     setIsSubmit(prev => !prev);
     postLogin(data);
   };
+
+  useEffect(() => {
+    if (phoneVal.length === 11) {
+      setValue("phone", phoneVal.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3"));
+    }
+    if (phoneVal.length === 13) {
+      setValue(
+        "phone",
+        phoneVal.replace(/-/g, "").replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3"),
+      );
+    }
+    console.log(phoneVal);
+
+    if (isSubmit) {
+      setValue(
+        "phone",
+        phoneVal.replace(/-/g, ""), // 하이픈을 모두 제거
+      );
+    }
+  }, [isSubmit, phoneVal]);
 
   return (
     <div>
@@ -167,14 +205,10 @@ function SignUpPage() {
             </InputYupDiv>
             <InputYupDiv>
               <SignUpInput
-                type="text"
+                type="tel"
                 placeholder="휴대전화번호"
-                maxLength={11}
+                maxLength={13}
                 {...register("phone")}
-                // value={formData.phone}
-                // onChange={e =>
-                //   setFormData({ ...formData, phone: e.target.value })
-                // }
               />
               <YupDiv>{errors.phone?.message}</YupDiv>
             </InputYupDiv>
@@ -210,7 +244,15 @@ function SignUpPage() {
           </InputYupDiv> */}
 
             <div style={{ marginLeft: 20, marginRight: 20 }}>
-              <LoginBtn type="submit">가입하기</LoginBtn>
+              <LoginBtn
+                type="submit"
+                style={{
+                  backgroundColor: hasVal ? "#6F4CDB" : "#ddd",
+                }}
+                disabled={!hasVal}
+              >
+                가입하기
+              </LoginBtn>
             </div>
           </form>
         </FormDiv>
