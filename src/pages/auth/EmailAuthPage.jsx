@@ -2,14 +2,14 @@ import styled from "@emotion/styled";
 import { AiFillUnlock } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { LayoutDiv } from "./loginStyle";
-const ResendBtn = styled.button`
-  margin-top: 20px;
-  background-color: #d5cbf5;
-  color: #333;
-  padding: 10px 25px;
-  border-radius: 5px;
-  font-weight: 700;
-`;
+// const ResendBtn = styled.button`
+//   margin-top: 20px;
+//   background-color: #d5cbf5;
+//   color: #333;
+//   padding: 10px 25px;
+//   border-radius: 5px;
+//   font-weight: 700;
+// `;
 
 const FlexDiv = styled.div`
   display: flex;
@@ -51,9 +51,6 @@ const NoticeTitleDiv = styled.div`
 const NoticeContentDiv = styled.div`
   margin-top: 5px;
   color: #999;
-  span {
-    font-weight: 700;
-  }
 `;
 
 function EmailAuthPage() {
@@ -74,14 +71,12 @@ function EmailAuthPage() {
         <NoticeDiv>
           <NoticeTitleDiv>유의사항</NoticeTitleDiv>
           <NoticeContentDiv>
-            1. 인증메일은 발송 시점으로부터 24시간 동안만 유효하며, 재발송 시
-            기존 인증코드는 만료 됩니다. <span>반드시</span> 마지막에 수신된
-            메일을 확인 바랍니다.
+            1. 인증메일은 발송 시점으로부터 24시간 동안만 유효합니다.
           </NoticeContentDiv>
           <NoticeContentDiv>
             2. 메일이 도착하지 않았다면 스팸함을 확인해 주시기 바랍니다.
           </NoticeContentDiv>
-          <ResendBtn>인증메일 재발송</ResendBtn>
+          {/* <ResendBtn>인증메일 재발송</ResendBtn> */}
         </NoticeDiv>
       </FlexDiv>
       <Link to={"/auth"}>
