@@ -49,7 +49,7 @@ function FindPwPage() {
   });
 
   // api 완성되면 작업
-  const getId = async data => {
+  const patchPw = async data => {
     try {
       await axios.get();
     } catch (error) {
@@ -59,7 +59,7 @@ function FindPwPage() {
 
   const handleSubmitForm = data => {
     setIsSubmit(prev => !prev);
-    getId(data);
+    patchPw(data);
   };
 
   const pwVal = watch("upw");
@@ -73,7 +73,7 @@ function FindPwPage() {
           <CloseDiv>
             <IoMdArrowBack
               style={{ width: "100%", height: "100%", cursor: "pointer" }}
-              onClick={() => navigate("/auth")}
+              onClick={() => navigate(-1)}
             />
           </CloseDiv>
         </HeaderDiv>

@@ -20,6 +20,7 @@ import PolicyPage from "./pages/auth/PolicyPage";
 import PlaceToOrder from "./pages/order/PlaceToOrder";
 import StoreInfoPage from "./pages/storeManager/storeAuth/StoreInfoPage";
 import UserMainPage from "./pages/user/UserMainPage";
+import RestaurantDetailPage from "./pages/restaurant/RestaurantDetailPage";
 
 function App() {
   return (
@@ -52,6 +53,7 @@ function App() {
           </Route>
           <Route path="restaurant">
             <Route index element={<Restaurant />} />
+            <Route path="detail" element={<RestaurantDetailPage />} />
           </Route>
         </Route>
 
