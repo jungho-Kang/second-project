@@ -115,7 +115,7 @@ function SignUpPage() {
   const phoneVal = watch("phone");
   const hasVal = idVal && pwVal && nameVal && emailVal && phoneVal;
 
-  const postLogin = async data => {
+  const postSignUp = async data => {
     try {
       // console.log("보낼 데이터", data);
       await axios.post("/api/admin/sign-up", data);
@@ -127,7 +127,7 @@ function SignUpPage() {
 
   const handleSubmitForm = async data => {
     setIsSubmit(prev => !prev);
-    postLogin(data);
+    postSignUp(data);
   };
 
   useEffect(() => {

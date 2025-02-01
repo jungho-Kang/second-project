@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
-import { Map } from "react-kakao-maps-sdk";
-import { useRecoilState } from "recoil";
-import { loginAtom } from "../../atoms/userAtom";
 import styled from "@emotion/styled";
+import { useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
+import { IoMdArrowBack } from "react-icons/io";
+import { Map } from "react-kakao-maps-sdk";
+import { useNavigate } from "react-router-dom";
+import { IoIosSearch } from "react-icons/io";
 
 const ListDiv = styled.div`
   position: absolute;
@@ -42,8 +43,35 @@ const FlexDiv = styled.div`
   margin-bottom: 5px;
 `;
 
+const SearchDiv = styled.div`
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  top: 2%;
+  width: 100%;
+  z-index: 10;
+  color: #333;
+  div {
+    display: flex;
+    gap: 10px;
+    background-color: #fff;
+    width: calc(100% - 40px);
+    padding: 5px 10px;
+    border-radius: 2px;
+    box-shadow:
+      0px 20px 25px -5px rgba(0, 0, 0, 0.1),
+      0px 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  input {
+    width: 100%;
+  }
+`;
+
 function RestaurantPage() {
   const [isMapLoaded, setIsMapLoaded] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadKakaoMap = () => {
@@ -84,6 +112,18 @@ function RestaurantPage() {
         }}
         level={3}
       ></Map>
+
+      <SearchDiv>
+        <div>
+          <IoMdArrowBack
+            style={{ width: 24, height: 24, cursor: "pointer" }}
+            onClick={() => navigate(-1)}
+          />
+
+          <input type="text" placeholder="검색어를 입력해 주세요" />
+          <IoIosSearch style={{ width: 24, height: 24, cursor: "pointer" }} />
+        </div>
+      </SearchDiv>
       <ListDiv>
         <div
           style={{

@@ -74,7 +74,7 @@ function FindIdPage() {
           <CloseDiv>
             <IoMdArrowBack
               style={{ width: "100%", height: "100%", cursor: "pointer" }}
-              onClick={() => navigate("/auth")}
+              onClick={() => navigate(-1)}
             />
           </CloseDiv>
         </HeaderDiv>
@@ -106,7 +106,7 @@ function FindIdPage() {
                 }}
                 disabled={!hasVal}
               >
-                아이디 찾기
+                확인
               </LoginBtn>
             </div>
           </form>
