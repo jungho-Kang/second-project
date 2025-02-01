@@ -31,8 +31,13 @@ const SideBar = () => {
     navigate(path); // 절대경로로 메뉴 클릭 시 라우팅
   };
 
+  const editHandler = () => {
+    setSubMenuClick(!subMenuClick);
+    navigate("/store/info");
+  };
+
   return (
-    <div className="flex flex-col w-44 h-dvh justify-between items-center bg-white border-r-2 border-r-gray shadow-xl">
+    <div className="flex flex-col w-44 h-dvh justify-between items-center bg-white border-r border-r-gray drop-shadow-md">
       <div className="w-full mt-8">
         <div className="flex mb-6 px-4 w-44 justify-center items-center">
           <img
@@ -102,7 +107,7 @@ const SideBar = () => {
         {menuClick.store && (
           <>
             <SubMenuDiv
-              onClick={() => setSubMenuClick(!subMenuClick)}
+              onClick={() => editHandler()}
               style={{
                 backgroundColor: subMenuClick ? "#6f4cd8" : "#fff",
                 color: subMenuClick ? "#fff" : "#333",
