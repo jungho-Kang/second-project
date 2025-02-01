@@ -4,8 +4,10 @@ import { ImFileEmpty } from "react-icons/im";
 import { IoIosArrowForward } from "react-icons/io";
 import MenuBar from "../../components/MenuBar";
 import { IoArrowForward } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 
 const OrderList = () => {
+  const navigate = useNavigate();
   const [isTap, setIsTap] = useState(true);
   const [orderQuntity, setOrderQuntity] = useState(0);
   const [paymentList, setPaymentList] = useState([]);
