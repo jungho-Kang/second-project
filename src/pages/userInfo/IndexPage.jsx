@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { IoMdArrowBack } from "react-icons/io";
+import { MdOutlineMail } from "react-icons/md";
 import { useRecoilState } from "recoil";
 import { userDataAtom } from "../../atoms/userAtom";
 import MenuBar from "../../components/MenuBar";
@@ -33,14 +34,14 @@ function IndexPage() {
   }, []);
 
   return (
-    <div className="h-dvh overflow-x-hidden overflow-y-scroll scrollbar-hide">
-      <div className="absolute w-full h-10% flex justify-between items-center px-3 py-5 border-b-2 border-gray border-opacity-70 bg-white ">
+    <div className="flex w-full h-dvh justify-center items-center overflow-x-hidden overflow-y-scroll scrollbar-hide">
+      <div className="absolute top-0 left-0 w-full h-10% flex justify-between items-center px-3 py-5 border-b-2 border-gray border-opacity-70 bg-white">
         <IoMdArrowBack className="text-3xl" onClick={() => navigate(-1)} />
         <span className="text-xl font-semibold">내 정보</span>
         <div>&emsp;</div>
         <Notification />
       </div>
-      <div className="flex flex-col h-dvh justify-around mt-24 gap-10">
+      <div className="flex flex-col h-dvh justify-around mt-48 gap-10">
         <div className="w-full flex flex-col items-center gap-4">
           {userData.pic !== null ? (
             <img
@@ -60,7 +61,8 @@ function IndexPage() {
             <span className="pr-3">사용가능 포인트</span>
             <span className="font-bold text-2xl">{userData.point}</span>
           </div>
-          <span className="px-4 py-1 border-2 border-gray rounded-xl">
+          <span className="flex items-center gap-2 px-3 py-1 border-2 border-gray rounded-xl">
+            <MdOutlineMail className="text-xl" />
             {userData.email}
           </span>
         </div>

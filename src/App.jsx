@@ -1,25 +1,24 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import IndexPage from "./pages/IndexPage";
+import EditPwPage from "./pages/auth/EditPwPage";
+import FindIdPage from "./pages/auth/FindIdPage";
+import FindPwPage from "./pages/auth/FindPwPage";
 import LoginPage from "./pages/auth/LoginPage";
-import UserInfo from "./pages/userInfo/IndexPage";
-import EditInfoPage from "./pages/userInfo/EditInfoPage";
+import SignUpPage from "./pages/auth/SignUpPage";
 import Order from "./pages/order/PaymentList";
 import Restaurant from "./pages/restaurant/RestaurantPage";
-import FindPwPage from "./pages/auth/FindPwPage";
 import Store from "./pages/storeManager/StorePage";
-import FindIdPage from "./pages/auth/FindIdPage";
 import MenuPage from "./pages/storeManager/menu/StoreMenuPage";
-import OrderPage from "./pages/storeManager/salesConfirm/SalesPage";
-import UserPage from "./pages/user/UserPage";
-import EditPwPage from "./pages/auth/EditPwPage";
 import StoreSales from "./pages/storeManager/salesConfirm/Sales";
-import SignUpPage from "./pages/auth/SignUpPage";
+import OrderPage from "./pages/storeManager/salesConfirm/SalesPage";
+import EditInfoPage from "./pages/userInfo/EditInfoPage";
+import UserInfo from "./pages/userInfo/IndexPage";
 
 import EmailAuthPage from "./pages/auth/EmailAuthPage";
 
-import UserMainPage from "./pages/user/UserMainPage";
-import PlaceToOrder from "./pages/order/PlaceToOrder";
 import PolicyPage from "./pages/auth/PolicyPage";
+import PlaceToOrder from "./pages/order/PlaceToOrder";
+import UserMainPage from "./pages/user/UserMainPage";
 
 function App() {
   return (
@@ -39,7 +38,6 @@ function App() {
         </Route>
 
         <Route path="/user">
-          {/* <Route index element={<UserPage />} /> */}
           <Route index element={<UserMainPage />} />
           <Route path="userinfo">
             <Route index element={<UserInfo />} />

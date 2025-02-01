@@ -5,6 +5,7 @@ import { IoMdArrowBack } from "react-icons/io";
 import Swal from "sweetalert2";
 import { useRecoilState } from "recoil";
 import { userDataAtom } from "../../atoms/userAtom";
+import { MdOutlineMail } from "react-icons/md";
 
 function EditInfoPage() {
   const navigate = useNavigate();
@@ -53,7 +54,8 @@ function EditInfoPage() {
             <span className="pr-3">사용가능 포인트</span>
             <span className="font-bold text-2xl">{userData.point}</span>
           </div>
-          <span className="px-4 py-1 border-2 border-gray rounded-xl">
+          <span className="flex items-center gap-2 px-3 py-1 border-2 border-gray rounded-xl">
+            <MdOutlineMail className="text-xl" />
             {userData.email}
           </span>
         </div>

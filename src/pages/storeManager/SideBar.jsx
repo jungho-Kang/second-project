@@ -34,8 +34,11 @@ const SideBar = () => {
   return (
     <div className="flex flex-col w-44 h-dvh justify-between items-center bg-white border-r-2 border-r-gray shadow-xl">
       <div className="w-full mt-8">
-        <div className="mb-6 px-4 w-44">
-          <img src={"/atta pparune.png"} />
+        <div className="flex mb-6 px-4 w-44 justify-center items-center">
+          <img
+            src={"/logo.png"}
+            className="flex w-full h-full rounded-full pb-6"
+          />
         </div>
         <div className="flex flex-col justify-between">
           {/* 테이블 메뉴 */}
