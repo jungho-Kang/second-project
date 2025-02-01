@@ -18,6 +18,7 @@ import EmailAuthPage from "./pages/auth/EmailAuthPage";
 
 import PolicyPage from "./pages/auth/PolicyPage";
 import PlaceToOrder from "./pages/order/PlaceToOrder";
+import StoreInfoPage from "./pages/storeManager/storeAuth/StoreInfoPage";
 import UserMainPage from "./pages/user/UserMainPage";
 
 function App() {
@@ -59,6 +60,7 @@ function App() {
           <Route path="menu" element={<MenuPage />} />
           <Route path="order" element={<OrderPage />} />
           <Route path="sales" element={<StoreSales />} />
+          <Route path="info" element={<StoreInfoPage />} />
         </Route>
       </Routes>
     </Router>
