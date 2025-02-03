@@ -1,12 +1,10 @@
+import { IoMdArrowBack } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { BsFillTelephoneFill } from "react-icons/bs";
-import { IoMdArrowBack, IoMdClose } from "react-icons/io";
 import { LuMapPin } from "react-icons/lu";
-import { useNavigate, useParams } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import { reserveState } from "../../atoms/restaurantAtom";
+import { useEffect } from "react";
 
 const BackDiv = styled.div`
   background-color: #fff;
@@ -98,65 +96,18 @@ const FooterDiv = styled.div`
   }
 `;
 
-const CountDiv = styled.div`
-  width: 20px;
-  height: 20px;
-  background-color: #ddd;
-  color: #fff;
-  border-radius: 50%;
-  line-height: 20px;
-  text-align: center;
-  padding-right: 1px;
-`;
-
-const CenterDiv = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 10px;
-  margin-bottom: 10px;
-`;
-
-function StoreDetailPage() {
-  const [formData, setFormData] = useState({});
-  const [isModal, setIsModal] = useState(false);
-  const [isReserve, setIsReserve] = useRecoilState(reserveState);
-
+function MenuSelectPage() {
   const navigate = useNavigate();
-  const { id } = useParams();
-
-  const getDetailStore = async () => {
-    try {
-      const res = await axios.get(`/api/restaurant?restaurantId=${id}`);
-      setFormData(res.data.resultData);
-      console.log(res.data.resultData);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const isReserve = useRecoilValue(reserveState);
 
   useEffect(() => {
-    getDetailStore();
-    console.log(id);
+    console.log(isReserve);
   }, []);
-
-  const cateName = () => {
-    switch (formData.categoryId) {
-      case 1:
-        return "한식";
-      case 2:
-        return "중식";
-      case 3:
-        return "일식";
-      default:
-        return "잘못된 값";
-    }
-  };
 
   return (
     <div style={{ height: "100vh" }}>
       <img
-        // src={`http://112.222.157.156:5222/pic/restaurant/${formData.restaurantId}/${formData.restaurantPics.filePath}`}
+        src="/storemain.png"
         alt="가게 이미지"
         style={{ width: "100%", height: 260, position: "relative" }}
       />
@@ -168,21 +119,14 @@ function StoreDetailPage() {
       </BackDiv>
       <TitleDiv>
         <div>
-          {formData.restaurantAddress
-            ?.match(/대구광역시\s*중구/)[0]
-            .replace("광역시", "")}{" "}
-          <span>I</span> {cateName()}
+          대구 중구 <span>I</span> 한식
         </div>
-        <h1>{formData.restaurantName}</h1>
-        <div>{formData.restaurantDescription}</div>
+        <h1>동양백반</h1>
+        <div>동성로한식맛집 요즘 핫한 닭볶음탕</div>
 
         <h2>
           <LuMapPin />
-          {formData.restaurantAddress}
-        </h2>
-        <h2 style={{ marginTop: 10 }}>
-          <BsFillTelephoneFill />
-          매장 연락처 : {formData.restaurantNumber}
+          대구 중구 달구벌대로 2109-37
         </h2>
       </TitleDiv>
       <LineDiv />
@@ -251,71 +195,9 @@ function StoreDetailPage() {
         />
       </ContentDiv>
       <FooterDiv>
-        <button
-          onClick={() => {
-            setIsReserve(false);
-            navigate(`/user/retaurant/detail/reserve/${id}`);
-          }}
-        >
-          앉아서 주문
-        </button>
-        <button
-          onClick={() => {
-            setIsReserve(true);
-            setIsModal(true);
-          }}
-        >
-          예약하기
-        </button>
+        <button>{isReserve ? "예약하기" : "결제하기"}</button>
       </FooterDiv>
-      {isModal && (
-        <div
-          style={{
-            position: "absolute",
-            width: "100%",
-            bottom: "70px",
-            backgroundColor: "#fff",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "flex-end",
-              marginRight: 10,
-              marginTop: 10,
-            }}
-          >
-            <IoMdClose onClick={() => setIsModal(false)} />
-          </div>
-          <CenterDiv>
-            <span style={{ marginRight: 20 }}>인원수</span>
-            <div style={{ display: "flex", gap: 10 }}>
-              <CountDiv>1명</CountDiv>
-              <CountDiv>2명</CountDiv>
-              <CountDiv>3명</CountDiv>
-              <CountDiv>4명</CountDiv>
-              <CountDiv>5명</CountDiv>
-              <CountDiv>6명</CountDiv>
-              <CountDiv>7명</CountDiv>
-              <CountDiv>8명</CountDiv>
-            </div>
-          </CenterDiv>
-          <CenterDiv>
-            <span style={{ marginRight: 20 }}>인원수</span>
-            <div style={{ display: "flex", gap: 10 }}>
-              <CountDiv>1명</CountDiv>
-              <CountDiv>2명</CountDiv>
-              <CountDiv>3명</CountDiv>
-              <CountDiv>4명</CountDiv>
-              <CountDiv>5명</CountDiv>
-              <CountDiv>6명</CountDiv>
-              <CountDiv>7명</CountDiv>
-              <CountDiv>8명</CountDiv>
-            </div>
-          </CenterDiv>
-        </div>
-      )}
     </div>
   );
 }
-export default StoreDetailPage;
+export default MenuSelectPage;

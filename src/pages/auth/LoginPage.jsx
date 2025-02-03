@@ -24,25 +24,30 @@ import {
 function LoginPage() {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useRecoilState(loginAtom);
-  const [formData, setFormData] = useState({ uid: "", upw: "" });
+  const [formData, setFormData] = useState({ id: "", pw: "" });
   const [hasVal, setHasVal] = useState(false);
 
   const { handleSubmit } = useForm();
 
   const role = useRecoilValue(roleAtom);
-  // const routeHandler = () => {
-  //   navigate(`/auth`);
-  // };
+  const routeHandler = () => {
+    if (role === USER) {
+      navigate("/user");
+    } else if (role === STORE) {
+      navigate("/store");
+    }
+  };
 
   const postLogin = async () => {
     try {
-      await axios.post("/api/user/sign-in", formData);
-      setIsLogin(true);
       if (role === USER) {
-        navigate("/user");
+        await axios.post("/api/user/sign-in", formData);
       } else if (role === STORE) {
+        await axios.post("/api/admin/sign-in", formData);
         navigate("/store");
       }
+      setIsLogin(true);
+      routeHandler();
     } catch (error) {
       console.log(error);
     }
@@ -53,7 +58,7 @@ function LoginPage() {
   };
 
   useEffect(() => {
-    if (formData.uid && formData.upw) {
+    if (formData.id && formData.pw) {
       setHasVal(true);
     } else {
       setHasVal(false);
@@ -82,16 +87,16 @@ function LoginPage() {
             <SignUpInput
               type="text"
               placeholder="아이디"
-              value={formData.uid}
-              onChange={e => setFormData({ ...formData, uid: e.target.value })}
+              value={formData.id}
+              onChange={e => setFormData({ ...formData, id: e.target.value })}
             />
           </InputYupDiv>
           <InputYupDiv>
             <SignUpInput
               type="password"
-              value={formData.upw}
+              value={formData.pw}
               placeholder="비밀번호 (8-16자)"
-              onChange={e => setFormData({ ...formData, upw: e.target.value })}
+              onChange={e => setFormData({ ...formData, pw: e.target.value })}
             />
           </InputYupDiv>
           <div style={{ marginLeft: 20, marginRight: 20 }}>

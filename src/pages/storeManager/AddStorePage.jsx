@@ -18,6 +18,8 @@ import {
   TitleDiv,
   YupDiv,
 } from "../auth/loginStyle";
+import useModal from "../../components/useModal";
+import DaumPostcodeEmbed from "react-daum-postcode";
 
 const SignBtn = styled.button`
   color: #fff;
@@ -52,34 +54,31 @@ const EmailInput = styled.input`
   }
 `;
 
-const findPwSchema = yup.object({
-  uid: yup
+const storeSchema = yup.object({
+  roleId: yup.string(),
+  name: yup
     .string()
-    .min(6, "최소 6자 이상 작성해야 합니다.")
-    .max(12, "최대 12자까지 작성 가능합니다.")
-    .matches(
-      /^[A-Za-z][A-Za-z0-9_]{6,12}$/,
-      "아이디는 숫자, 영문으로 작성 가능합니다.",
-    ),
-  email: yup
-    .string()
-    .required("이메일은 필수입니다.")
-    .email("올바른 이메일 형식이 아닙니다."),
+    .required("이름은 필수입니다.")
+    .min(2, "이름은 최소 2자 이상이어야 합니다."),
+  phone: yup.string().required("전화번호는 필수입니다."),
+  storeName: yup.string().required("가게이름은 필수입니다."),
 });
 
 function AddStorePage() {
   const navigate = useNavigate();
   const [isSubmit, setIsSubmit] = useState(false);
+  const [inputAddress, setInputAddress] = useState({});
+
+  const { Modal, open, close } = useModal({ title: "주소검색" });
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     watch,
-    setValue,
   } = useForm({
     mode: "onChange",
-    resolver: yupResolver(findPwSchema),
+    resolver: yupResolver(storeSchema),
   });
 
   // api 완성되면 작업
@@ -100,32 +99,26 @@ function AddStorePage() {
   const emailVal = watch("email");
   const hasVal = idVal && emailVal;
 
-  const handleAddressSearch = () => {
-    new window.daum.Postcode({
-      oncomplete: data => {
-        // 우편번호와 기본주소 입력
-        setValue("postcode", data.zonecode);
-        setValue("address", data.address);
+  const addressHandler = data => {
+    let fullAddress = data.address;
+    let extraAddress = "";
+    const zoneCode = data.zonecode;
 
-        // 상세주소 입력 필드로 포커스 이동
-        document.querySelector('input[name="detailAddress"]').focus();
-      },
-    }).open();
+    if (data.addressType === "R") {
+      if (data.bname !== "") {
+        extraAddress += data.bname;
+      }
+      if (data.buildingName !== "") {
+        extraAddress +=
+          extraAddress !== "" ? `, ${data.buildingName}` : data.buildingName;
+      }
+      fullAddress += extraAddress !== "" ? ` (${extraAddress})` : "";
+    }
+    // setIsClick(false);
+    close();
+    setInputAddress({ fullAddress: fullAddress, zoneCode: zoneCode });
+    console.log(fullAddress);
   };
-
-  useEffect(() => {
-    // Daum 우편번호 스크립트 로드
-    const script = document.createElement("script");
-    script.src =
-      "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
-    script.async = true;
-    document.body.appendChild(script);
-
-    // 컴포넌트 언마운트 시 스크립트 제거
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
 
   return (
     <div>
@@ -166,27 +159,27 @@ function AddStorePage() {
             </InputYupDiv>
             <InputYupDiv>
               <SignUpInput
-                type="email"
+                type="text"
                 placeholder="대표자명"
-                {...register("email")}
+                {...register("name")}
               />
-              <YupDiv>{errors.email?.message}</YupDiv>
+              <YupDiv>{errors.name?.message}</YupDiv>
             </InputYupDiv>
             <InputYupDiv>
               <SignUpInput
-                type="email"
+                type="tel"
                 placeholder="대표자 휴대폰 번호"
-                {...register("email")}
+                {...register("phone")}
               />
-              <YupDiv>{errors.email?.message}</YupDiv>
+              <YupDiv>{errors.phone?.message}</YupDiv>
             </InputYupDiv>
             <InputYupDiv>
               <SignUpInput
-                type="email"
+                type="text"
                 placeholder="가게 이름"
-                {...register("email")}
+                {...register("storeName")}
               />
-              <YupDiv>{errors.email?.message}</YupDiv>
+              <YupDiv>{errors.storeName?.message}</YupDiv>
             </InputYupDiv>
             <InputYupDiv>
               <div
@@ -198,13 +191,18 @@ function AddStorePage() {
                   width: 500,
                 }}
               >
-                <EmailInput type="text" placeholder="우편번호" />
+                <EmailInput
+                  type="text"
+                  placeholder="우편번호"
+                  value={inputAddress ? inputAddress.zoneCode : ""}
+                  onClick={() => open()}
+                />
                 <SignBtn
                   type="button"
                   style={{
                     backgroundColor: hasVal ? "#6F4CDB" : "#ddd",
                   }}
-                  onClick={() => handleAddressSearch()}
+                  onClick={() => open()}
                 >
                   주소조회
                 </SignBtn>
@@ -213,9 +211,10 @@ function AddStorePage() {
             </InputYupDiv>
             <InputYupDiv>
               <SignUpInput
-                type="email"
+                type="text"
                 placeholder="가게 주소"
-                {...register("email")}
+                value={inputAddress ? inputAddress.fullAddress : ""}
+                onClick={() => open()}
               />
               <YupDiv>{errors.email?.message}</YupDiv>
             </InputYupDiv>
@@ -242,6 +241,15 @@ function AddStorePage() {
           </form>
         </FormDiv>
       </LayoutDiv>
+      {open ? (
+        <Modal>
+          {/* <div className="absolute w-[50%] border"> */}
+          <DaumPostcodeEmbed onComplete={e => addressHandler(e)} />
+          {/* </div> */}
+        </Modal>
+      ) : (
+        <></>
+      )}
       {isSubmit && <Loading />}
     </div>
   );
