@@ -5,8 +5,46 @@ import "swiper/css/pagination";
 import { LuArrowDownUp } from "react-icons/lu";
 import MenuBar from "../../components/MenuBar";
 import Notification from "../../components/Notification";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const UserMainPage = () => {
+  const [restaurantList, setRestaurantList] = useState([]);
+  const [categoryId, setCategoryId] = useState(1);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const getRestaurantList = async () => {
+      const params = {
+        categoryId: categoryId,
+        page: 1,
+        size: 30,
+      };
+      try {
+        const res = await axios.get("/api/restaurant/main", { params });
+        const result = res.data.resultData;
+
+        const detailAddress = result.map(data => {
+          return data.restaurantAddress.match(/대구광역시\s*(.+)/)[1];
+        });
+        console.log(detailAddress);
+        setRestaurantList([...result]);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getRestaurantList();
+  }, [categoryId]);
+
+  const detailNavigateHandler = e => {
+    navigate(`/user/restaurant/detail/${e.restaurantId}`, {
+      state: {
+        restaurantId: e.restaurantId,
+      },
+    });
+  };
+
   return (
     <div className="w-full h-dvh overflow-x-hidden overflow-y-scroll scrollbar-hide">
       <Notification />
@@ -83,109 +121,58 @@ const UserMainPage = () => {
         <div className="w-100% flex pl-5 pt-2 justify-between">
           <div className="flex items-center gap-1">
             <LuArrowDownUp />
-            <p className="text-sm">평점순</p>
+            <p className="text-sm">추천순</p>
           </div>
           <div className="flex gap-2 pr-5 text-sm">
-            <p className="bg-primary text-white px-2 py-0.5 rounded-lg">한식</p>
-            <p className="bg-darkGray text-white px-2 py-0.5 rounded-lg">
-              일식
+            <p
+              className={`text-white px-2 py-0.5 rounded-lg font-bold ${categoryId === 1 ? "bg-primary" : "bg-darkGray"}`}
+              onClick={() => setCategoryId(1)}
+            >
+              한식
             </p>
-            <p className="bg-darkGray text-white px-2 py-0.5 rounded-lg">
+            <p
+              className={`text-white px-2 py-0.5 rounded-lg font-bold ${categoryId === 2 ? "bg-primary" : "bg-darkGray"}`}
+              onClick={() => setCategoryId(2)}
+            >
               중식
+            </p>
+            <p
+              className={`text-white px-2 py-0.5 rounded-lg font-bold ${categoryId === 3 ? "bg-primary" : "bg-darkGray"}`}
+              onClick={() => setCategoryId(3)}
+            >
+              일식
             </p>
           </div>
         </div>
         <div className="w-full px-4 py-4 flex flex-wrap justify-between">
-          {/* 식당 카드 */}
-          <div className="w-[calc(50%_-_0.5rem)] pb-3">
-            <div className="flex w-full">
-              <img src="/menu.png" alt="메뉴사진" />
-            </div>
-            <div className="w-100% flex justify-between pt-1">
-              <div>
-                <p className="font-semibold">동양백반</p>
-                <p className="text-xs text-darkGray">반월당역 216m</p>
+          {restaurantList.map((data, index) => (
+            <div
+              className="w-[calc(50%_-_0.5rem)] pb-3"
+              key={index}
+              onClick={() => detailNavigateHandler(data)}
+            >
+              <div className="flex w-full">
+                <img
+                  src={`http://112.222.157.156:5222/pic/restaurant/${data.restaurantId}/${data.restaurantAroundPicList.filePath}`}
+                  alt="메뉴사진"
+                  className="w-full h-44"
+                />
               </div>
-              <p className="font-bold text-primary">4.8</p>
-            </div>
-          </div>
-          {/* 식당 카드 */}
-          <div className="w-[calc(50%_-_0.5rem)] pb-3">
-            <img src="/menu.png" alt="메뉴사진" className="w-100%" />
-            <div className="flex justify-between pt-1">
-              <div>
-                <p className="font-semibold">동양백반</p>
-                <p className="text-xs text-darkGray">반월당역 216m</p>
+              <div className="w-[100%] flex justify-between pt-1 gap-0.5">
+                <div className="w-[70%]">
+                  <p className="font-semibold truncate">
+                    {data.restaurantName}
+                  </p>
+                  <p className="text-xs text-darkGray text-nowrap">
+                    {data.restaurantAddress.match(/대구광역시\s*(.+)/)[1]}
+                  </p>
+                </div>
+                <p className="w-[30%] font-bold text-base text-primary text-nowrap">
+                  약 {data.avgRestaurant}분
+                </p>
               </div>
-              <p className="font-bold text-primary">4.8</p>
             </div>
-          </div>
-          {/* 식당 카드 */}
-          <div className="w-[calc(50%_-_0.5rem)] pb-3">
-            <img src="/menu.png" alt="메뉴사진" className="w-100%" />
-            <div className="flex justify-between pt-1">
-              <div>
-                <p className="font-semibold">동양백반</p>
-                <p className="text-xs text-darkGray">반월당역 216m</p>
-              </div>
-              <p className="font-bold text-primary">4.8</p>
-            </div>
-          </div>
-          {/* 식당 카드 */}
-          <div className="w-[calc(50%_-_0.5rem)] pb-3">
-            <img src="/menu.png" alt="메뉴사진" className="w-100%" />
-            <div className="flex justify-between pt-1">
-              <div>
-                <p className="font-semibold">동양백반</p>
-                <p className="text-xs text-darkGray">반월당역 216m</p>
-              </div>
-              <p className="font-bold text-primary">4.8</p>
-            </div>
-          </div>
-          {/* 식당 카드 */}
-          <div className="w-[calc(50%_-_0.5rem)] pb-3">
-            <img src="/menu.png" alt="메뉴사진" className="w-100%" />
-            <div className="flex justify-between pt-1">
-              <div>
-                <p className="font-semibold">동양백반</p>
-                <p className="text-xs text-darkGray">반월당역 216m</p>
-              </div>
-              <p className="font-bold text-primary">4.8</p>
-            </div>
-          </div>
-          {/* 식당 카드 */}
-          <div className="w-[calc(50%_-_0.5rem)] pb-3">
-            <img src="/menu.png" alt="메뉴사진" className="w-100%" />
-            <div className="flex justify-between pt-1">
-              <div>
-                <p className="font-semibold">동양백반</p>
-                <p className="text-xs text-darkGray">반월당역 216m</p>
-              </div>
-              <p className="font-bold text-primary">4.8</p>
-            </div>
-          </div>
-          {/* 식당 카드 */}
-          <div className="w-[calc(50%_-_0.5rem)] pb-3">
-            <img src="/menu.png" alt="메뉴사진" className="w-100%" />
-            <div className="flex justify-between pt-1">
-              <div>
-                <p className="font-semibold">동양백반</p>
-                <p className="text-xs text-darkGray">반월당역 216m</p>
-              </div>
-              <p className="font-bold text-primary">4.8</p>
-            </div>
-          </div>
-          {/* 식당 카드 */}
-          <div className="w-[calc(50%_-_0.5rem)] pb-3">
-            <img src="/menu.png" alt="메뉴사진" className="w-100%" />
-            <div className="flex justify-between pt-1">
-              <div>
-                <p className="font-semibold">동양백반</p>
-                <p className="text-xs text-darkGray">반월당역 216m</p>
-              </div>
-              <p className="font-bold text-primary">4.8</p>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
       <MenuBar />

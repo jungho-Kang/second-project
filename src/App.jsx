@@ -17,11 +17,13 @@ import UserInfo from "./pages/userInfo/IndexPage";
 import EmailAuthPage from "./pages/auth/EmailAuthPage";
 
 import PolicyPage from "./pages/auth/PolicyPage";
-import PlaceToOrder from "./pages/order/PlaceToOrder";
+import PlaceToOrder from "./pages/order/placetoorder/PlaceToOrder";
+import MealTicketPage from "./pages/order/placetoorder/MealTicketPage";
 import StoreInfoPage from "./pages/storeManager/storeAuth/StoreInfoPage";
 import UserMainPage from "./pages/user/UserMainPage";
 import RestaurantDetailPage from "./pages/restaurant/RestaurantDetailPage";
 import AddStorePage from "./pages/storeManager/AddStorePage";
+import Seatmate from "./pages/order/placetoorder/Seatmate";
 
 function App() {
   return (
@@ -51,6 +53,8 @@ function App() {
           </Route>
           <Route path="placetoorder">
             <Route index element={<PlaceToOrder />} />
+            <Route path="coupon" element={<MealTicketPage />} />
+            <Route path="seatmate" element={<Seatmate />} />
           </Route>
           <Route path="restaurant">
             <Route index element={<Restaurant />} />

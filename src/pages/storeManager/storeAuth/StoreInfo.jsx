@@ -11,7 +11,13 @@ import useModal from "../../../components/useModal";
 const infoEditSchema = yup.object({
   restaurantName: yup.string().required("매장명은 필수입력 항목입니다"),
   restaurantAddress: yup.string().required("매장주소는 필수입력 항목입니다"),
-  restaurantNumber: yup.string().required("전화번호는 필수입력 항목입니다"),
+  restaurantNumber: yup
+    .string()
+    .matches(
+      /^\d{2,3}?\d{3,4}?\d{4}$/,
+      "전화번호는 00(0)-000(0)-0000 형식으로 입력해주세요(- 제외)",
+    )
+    .required("전화번호는 필수입력 항목입니다"),
   filePath: yup
     .mixed()
     .test("required", "1개 이상의 파일을 업로드 해주세요", value => {
@@ -81,6 +87,7 @@ const StoreInfo = () => {
     register,
     handleSubmit,
     setValue,
+    trigger,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(infoEditSchema),
@@ -97,17 +104,14 @@ const StoreInfo = () => {
       lng: 0,
       filePath: [],
     },
+    mode: "onChange",
   });
 
   useEffect(() => {
-    setValue(
-      "restaurantNumber",
-      formData.restaurantNumber
-        .replace(/[^0-9]/g, "")
-        .replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/g, "$1-$2-$3")
-        .replace(/(\-{1,2})$/g, ""),
-    );
-  }, []);
+    trigger();
+  }, [trigger]);
+
+  useEffect(() => {}, []);
 
   const formSubmitHandler = data => {
     console.log(data);
@@ -274,11 +278,12 @@ const StoreInfo = () => {
               전화 번호
             </label>
             <input
-              type="phone"
+              type="tel"
               className="border px-2 rounded-md"
-              placeholder="000-0000-0000"
+              placeholder="00(0)-000(0)-0000"
               {...register("restaurantNumber")}
             />
+            <p className="text-red">{errors.restaurantNumber?.message}</p>
           </div>
           <div className="flex flex-col w-[45%] gap-2">
             <label htmlFor="" className="w-[15%] text-nowrap text-darkGray">
@@ -286,8 +291,9 @@ const StoreInfo = () => {
             </label>
             <input
               type="time"
-              className="border px-2 rounded-md"
-              {...register("operatingHours")}
+              className="w-[30%] border px-2 rounded-md"
+              step="1800"
+              // {...register("operatingHours")}
             />
           </div>
           <fieldset className="flex w-[45%] gap-6">
