@@ -42,6 +42,7 @@ export const TitleDiv = styled.div`
   margin-top: 50px;
   margin-bottom: 50px;
   font-weight: 700;
+  height: 60px;
   @media (max-width: 430px) {
     font-size: 20px;
     width: 100%;
@@ -52,23 +53,6 @@ export const TitleDiv = styled.div`
   @media (max-width: 1400px) and (min-width: 431px) {
     width: 100%;
     font-size: 34px;
-  }
-`;
-
-export const Input = styled.input`
-  border-bottom: 1px solid #bababa;
-  color: #bababa;
-  @media (max-width: 430px) {
-    max-width: 430px;
-    width: 100%;
-    padding: 10px 0;
-    margin-bottom: 25px;
-  }
-  @media (max-width: 1400px) and (min-width: 431px) {
-    width: 500px;
-    font-size: 24px;
-    margin-bottom: 40px;
-    padding: 15px 0;
   }
 `;
 
@@ -129,8 +113,10 @@ export const FormDiv = styled.div`
 
 export const LogoImg = styled.img`
   display: block;
+  height: 60px;
   @media (max-width: 430px) {
     width: 230px;
+    height: 45px;
   }
   @media (max-width: 1400px) and (min-width: 431px) {
     width: 300px;

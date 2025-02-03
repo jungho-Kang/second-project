@@ -117,7 +117,6 @@ const ContentDiv = styled.div`
 `;
 
 function PolicyPage() {
-  const { Modal, open, close } = useModal("이용약관");
   const [isAgree, setIsAgree] = useState({
     agree1: false,
     agree2: false,
@@ -136,6 +135,20 @@ function PolicyPage() {
 
   const isAllChecked =
     isAgree.agree1 && isAgree.agree2 && isAgree.agree3 && isAgree.agree4;
+
+  const titleChange = () => {
+    if (isClick.modal1) {
+      return "이용약관";
+    } else if (isClick.modal2) {
+      return "개인정보 처리방침";
+    } else if (isClick.modal3) {
+      return "위치 정보";
+    } else if (isClick.modal4) {
+      return "푸시 알림";
+    }
+  };
+
+  const { Modal, open, close } = useModal({ title: titleChange() });
 
   return (
     <div style={{ textAlign: "center" }}>

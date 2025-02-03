@@ -21,6 +21,7 @@ import PlaceToOrder from "./pages/order/PlaceToOrder";
 import StoreInfoPage from "./pages/storeManager/storeAuth/StoreInfoPage";
 import UserMainPage from "./pages/user/UserMainPage";
 import RestaurantDetailPage from "./pages/restaurant/RestaurantDetailPage";
+import AddStorePage from "./pages/storeManager/AddStorePage";
 
 function App() {
   return (
@@ -56,6 +57,8 @@ function App() {
             <Route path="detail" element={<RestaurantDetailPage />} />
           </Route>
         </Route>
+
+        <Route path="/storeadd" element={<AddStorePage />} />
 
         <Route path="/store">
           <Route index element={<Store />} />

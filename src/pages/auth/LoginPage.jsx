@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { IoMdClose } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -8,16 +9,17 @@ import { loginAtom } from "../../atoms/userAtom";
 import { STORE, USER } from "../../constants/Role";
 import {
   CloseDiv,
+  FormDiv,
   HeaderDiv,
-  Input,
+  InputYupDiv,
   LayoutDiv,
   LoginBtn,
   LogoImg,
   RoleDiv,
+  SignUpInput,
   TextSpan,
   TitleDiv,
 } from "./loginStyle";
-import { useForm } from "react-hook-form";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -60,49 +62,51 @@ function LoginPage() {
 
   return (
     <LayoutDiv>
-      <form onSubmit={handleSubmit(handleSubmitForm)}>
-        <HeaderDiv>
-          <CloseDiv>
-            <IoMdClose
-              style={{ width: "100%", height: "100%", cursor: "pointer" }}
-              onClick={() => navigate(-1)}
+      <HeaderDiv>
+        <CloseDiv>
+          <IoMdClose
+            style={{ width: "100%", height: "100%", cursor: "pointer" }}
+            onClick={() => navigate(-1)}
+          />
+        </CloseDiv>
+      </HeaderDiv>
+      <TitleDiv>
+        <LogoImg src="/logo.png" alt="로고" />
+        <RoleDiv>
+          {role === USER ? "사용자" : role === STORE ? "사장님" : ""}
+        </RoleDiv>
+      </TitleDiv>
+      <FormDiv>
+        <form onSubmit={handleSubmit(handleSubmitForm)}>
+          <InputYupDiv>
+            <SignUpInput
+              type="text"
+              placeholder="아이디"
+              value={formData.uid}
+              onChange={e => setFormData({ ...formData, uid: e.target.value })}
             />
-          </CloseDiv>
-        </HeaderDiv>
-        <TitleDiv>
-          <LogoImg src="/logo.png" alt="로고" />
-          <RoleDiv>
-            {role === USER ? "사용자" : role === STORE ? "사장님" : ""}
-          </RoleDiv>
-        </TitleDiv>
-        <div style={{ marginLeft: 20, marginRight: 20 }}>
-          <Input
-            type="text"
-            placeholder="아이디"
-            value={formData.uid}
-            onChange={e => setFormData({ ...formData, uid: e.target.value })}
-          />
-        </div>
-        <div style={{ marginLeft: 20, marginRight: 20 }}>
-          <Input
-            type="password"
-            value={formData.upw}
-            placeholder="비밀번호 (8-16자)"
-            onChange={e => setFormData({ ...formData, upw: e.target.value })}
-          />
-        </div>
-        <div style={{ marginLeft: 20, marginRight: 20 }}>
-          <LoginBtn
-            type="submit"
-            style={{
-              backgroundColor: hasVal ? "#6F4CDB" : "#ddd",
-            }}
-            disabled={!hasVal}
-          >
-            로그인
-          </LoginBtn>
-        </div>
-      </form>
+          </InputYupDiv>
+          <InputYupDiv>
+            <SignUpInput
+              type="password"
+              value={formData.upw}
+              placeholder="비밀번호 (8-16자)"
+              onChange={e => setFormData({ ...formData, upw: e.target.value })}
+            />
+          </InputYupDiv>
+          <div style={{ marginLeft: 20, marginRight: 20 }}>
+            <LoginBtn
+              type="submit"
+              style={{
+                backgroundColor: hasVal ? "#6F4CDB" : "#ddd",
+              }}
+              disabled={!hasVal}
+            >
+              로그인
+            </LoginBtn>
+          </div>
+        </form>
+      </FormDiv>
       <TextSpan onClick={() => navigate("/auth/findid")}>아이디 찾기</TextSpan>
       <TextSpan style={{ color: "#bababa" }}>I</TextSpan>
       <TextSpan onClick={() => navigate("/auth/findpw")}>
