@@ -78,9 +78,9 @@ function FindIdPage() {
             />
           </CloseDiv>
         </HeaderDiv>
+        <TitleDiv>아이디 찾기</TitleDiv>
         <FormDiv>
           <form onSubmit={handleSubmit(handleSubmitForm)}>
-            <TitleDiv>아이디 찾기</TitleDiv>
             <InputYupDiv>
               <SignUpInput
                 type="text"

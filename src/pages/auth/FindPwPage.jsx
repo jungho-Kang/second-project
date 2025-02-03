@@ -133,23 +133,6 @@ function FindPwPage() {
               <YupDiv>{errors.email?.message}</YupDiv>
             </InputYupDiv>
 
-            {/* <div style={{ marginLeft: 20, marginRight: 20 }}>
-          <EmailInput
-            type="password"
-            placeholder="이메일"
-            onChange={e => setFormData({ ...formData, upw: e.target.value })}
-          />
-          <SignBtn
-            type="button"
-            style={{
-              backgroundColor: hasVal ? "#6F4CDB" : "#ddd",
-            }}
-            disabled={!hasVal}
-          >
-            인증코드
-          </SignBtn>
-        </div> */}
-
             <div style={{ marginLeft: 20, marginRight: 20 }}>
               <LoginBtn
                 type="submit"
