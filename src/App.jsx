@@ -23,8 +23,12 @@ import StoreInfoPage from "./pages/storeManager/storeAuth/StoreInfoPage";
 import UserMainPage from "./pages/user/UserMainPage";
 import RestaurantDetailPage from "./pages/restaurant/RestaurantDetailPage";
 import AddStorePage from "./pages/storeManager/AddStorePage";
+
 import MemberOrderPage from "./pages/order/placetoorder/MemberOrderPage";
 import PriceOrderPage from "./pages/order/placetoorder/PriceOrderPage";
+
+import MenuSelectPage from "./pages/restaurant/MenuSelectPage";
+
 
 function App() {
   return (
@@ -60,11 +64,14 @@ function App() {
           </Route>
           <Route path="restaurant">
             <Route index element={<Restaurant />} />
-            <Route path="detail" element={<RestaurantDetailPage />} />
+            <Route path="detail">
+              <Route path=":id" element={<RestaurantDetailPage />} />
+              <Route path="reserve/:id" element={<MenuSelectPage />} />
+            </Route>
           </Route>
         </Route>
 
-        <Route path="/storeadd" element={<AddStorePage />} />
+        <Route path="/addstore" element={<AddStorePage />} />
 
         <Route path="/store">
           <Route index element={<Store />} />

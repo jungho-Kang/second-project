@@ -2,10 +2,12 @@ import styled from "@emotion/styled";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { BsFillTelephoneFill } from "react-icons/bs";
-import { IoMdArrowBack, IoMdClose } from "react-icons/io";
+import { FaAngleDown, FaAngleUp } from "react-icons/fa6";
+import { FiMinusCircle, FiPlusCircle } from "react-icons/fi";
+import { IoMdArrowBack } from "react-icons/io";
 import { LuMapPin } from "react-icons/lu";
-import { useNavigate, useParams } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useRecoilValue } from "recoil";
 import { reserveState } from "../../atoms/restaurantAtom";
 
 const BackDiv = styled.div`
@@ -44,7 +46,6 @@ const TitleDiv = styled.div`
 `;
 
 const LineDiv = styled.div`
-  width: 100%;
   height: 10px;
   background-color: #ddd;
 `;
@@ -79,19 +80,23 @@ const MenuDiv = styled.div`
   }
 `;
 
-const FooterDiv = styled.div`
+const FlexDiv = styled.div`
   display: flex;
-  gap: 35px;
   justify-content: center;
   align-items: center;
-  height: 70px;
+`;
+
+const ModalDiv = styled.div`
+  position: absolute;
   width: 100%;
   bottom: 0;
-  position: absolute;
   background-color: #fff;
+  padding: 10px 10px;
+  border-radius: 5px 5px 0 0;
   box-shadow:
     rgba(0, 0, 0, 0.16) 0px 10px 36px 0px,
     rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+  transition: height 0.3s ease-in-out;
   button {
     padding: 5px 40px;
     font-size: 14px;
@@ -101,68 +106,32 @@ const FooterDiv = styled.div`
   }
 `;
 
-const CountDiv = styled.div`
-  width: 20px;
-  height: 20px;
-  background-color: #ddd;
-  color: #fff;
-  border-radius: 50%;
-  line-height: 20px;
-  text-align: center;
-  padding-right: 1px;
-  font-size: 9px;
-`;
-
-const CenterDiv = styled.div`
+const SelectDiv = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 10px;
-  margin-bottom: 10px;
-  span {
-    width: 40px;
-    margin-right: 10px;
-  }
+  justify-content: space-between;
+  font-size: 14px;
+  margin: 0 30px;
   p {
-    padding: 2px 5px;
-    border-radius: 2px;
-    background-color: #e7e1f9;
-    color: #fff;
-    font-size: 8px;
+    font-size: 14px;
+  }
+  div {
+    font-size: 12px;
+    color: #888888;
+  }
+  span {
   }
 `;
 
-const ModalDiv = styled.div`
-  position: absolute;
-  width: 100%;
-  bottom: 0;
-  background-color: #fff;
-  padding: 10px 0;
-  border-radius: 5px 5px 0 0;
-  box-shadow:
-    rgba(0, 0, 0, 0.16) 0px 10px 36px 0px,
-    rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
-`;
-
-const ButtonDiv = styled.div`
-  display: flex;
-  justify-content: center;
-  button {
-    font-size: 10px;
-    padding: 5px 100px;
-    border-radius: 5px;
-    background-color: #6f4cdb;
-    color: #fff;
-  }
-`;
-
-function StoreDetailPage() {
-  const [formData, setFormData] = useState({});
-  const [isModal, setIsModal] = useState(false);
-  const [isReserve, setIsReserve] = useRecoilState(reserveState);
-  const [reserveInfo, setReserveInfo] = useState({});
-
+function MenuSelectPage() {
   const navigate = useNavigate();
+  const isReserve = useRecoilValue(reserveState);
+  const location = useLocation();
+  const { time, count } = location.state || {};
+
+  const [formData, setFormData] = useState({});
+  const [isClick, setIsClick] = useState(false);
+  const [postData, setPostData] = useState([]);
+
   const { id } = useParams();
 
   const getDetailStore = async () => {
@@ -184,17 +153,20 @@ function StoreDetailPage() {
       case 3:
         return "일식";
       default:
-        return "잘못된 값";
+        return "기타";
     }
   };
-
-  const userCount = [1, 2, 3, 4, 5, 6, 7, 8];
-  const reserveTime = ["11:30", "12:00", "12:30", "1:00", "1:30"];
 
   useEffect(() => {
     getDetailStore();
     console.log(id);
   }, []);
+
+  useEffect(() => {
+    console.log(isReserve);
+    // console.log("시간 : ", time, "인원 : ", count);
+  }, []);
+
   return (
     <div style={{ height: "100vh" }}>
       <img
@@ -229,7 +201,7 @@ function StoreDetailPage() {
       </TitleDiv>
       <LineDiv />
       <ContentDiv>
-        <h1>메뉴</h1>
+        <h1>메뉴 선택</h1>
         {/* map 사용하기 */}
         <MenuDiv>
           <img src="/menu.png" alt="메뉴 이미지" />
@@ -292,108 +264,62 @@ function StoreDetailPage() {
           style={{ height: 1, backgroundColor: "#eee", marginBottom: 10 }}
         />
       </ContentDiv>
-      {!isModal && (
-        <FooterDiv>
-          <button
-            onClick={() => {
-              setIsReserve(false);
-              navigate(`/user/restaurant/detail/reserve/${id}`);
-            }}
-          >
-            앉아서 주문
-          </button>
-          <button
-            onClick={() => {
-              setIsReserve(true);
-              setIsModal(true);
-            }}
-          >
-            예약하기
-          </button>
-        </FooterDiv>
-      )}
-
-      {isModal && (
-        <ModalDiv>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "flex-end",
-              marginRight: 10,
-            }}
-          >
-            <IoMdClose
-              onClick={() => {
-                setIsModal(false);
-                setReserveInfo({});
+      <ModalDiv>
+        <FlexDiv>
+          {isClick ? (
+            <FaAngleDown
+              style={{ color: "#6F6F6F" }}
+              onClick={() => setIsClick(false)}
+            />
+          ) : (
+            <FaAngleUp
+              style={{ color: "#6F6F6F" }}
+              onClick={() => setIsClick(true)}
+            />
+          )}
+        </FlexDiv>
+        {isClick && (
+          <div>
+            <SelectDiv>
+              <p>양지 쌀국수</p>
+              <div>11,000</div>
+            </SelectDiv>
+            <SelectDiv style={{ margin: "5px 30px" }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 15,
+                }}
+              >
+                <p>
+                  <FiMinusCircle />
+                </p>
+                <p>3</p>
+                <p>
+                  <FiPlusCircle />
+                </p>
+              </div>
+              <div>33,000</div>
+            </SelectDiv>
+            <LineDiv
+              style={{
+                height: 1,
+                backgroundColor: "#eee",
+                margin: "10px 0",
               }}
             />
+            <SelectDiv style={{ marginBottom: 10 }}>
+              <p>총 수량 3개</p>
+              <p>총 33,000원</p>
+            </SelectDiv>
+            <FlexDiv>
+              <button>{isReserve ? "예약하기" : "결제하기"}</button>
+            </FlexDiv>
           </div>
-          <div
-            style={{
-              textAlign: "center",
-              fontSize: 12,
-              marginBottom: 10,
-            }}
-          >
-            예약할 시간과 인원을 선택해주세요
-          </div>
-          <CenterDiv>
-            <span>인원수</span>
-            <div style={{ display: "flex", gap: 10 }}>
-              {userCount.map((item, index) => (
-                <CountDiv
-                  key={index}
-                  style={{
-                    backgroundColor: item === reserveInfo.count && "#6F4CDB",
-                  }}
-                  onClick={() =>
-                    setReserveInfo({ ...reserveInfo, count: item })
-                  }
-                >
-                  {item}명
-                </CountDiv>
-              ))}
-            </div>
-          </CenterDiv>
-          <CenterDiv>
-            <span>시간 선택</span>
-            <div style={{ display: "flex", gap: 5 }}>
-              {reserveTime.map((item, index) => (
-                <p
-                  key={index}
-                  style={{
-                    backgroundColor: item === reserveInfo.time && "#6F4CDB",
-                  }}
-                  onClick={() => setReserveInfo({ ...reserveInfo, time: item })}
-                >
-                  {item === "11:30" ? "오전" : "오후"} {item}
-                </p>
-              ))}
-            </div>
-          </CenterDiv>
-          <CenterDiv style={{ gap: 5, color: "#FF9500" }}>
-            <BsFillTelephoneFill />
-            <div>9명 이상은 가게에 직접 문의해주세요</div>
-          </CenterDiv>
-          <ButtonDiv>
-            <button
-              onClick={() => {
-                if (reserveInfo.time && reserveInfo.count) {
-                  navigate(`/user/restaurant/detail/reserve/${id}`, {
-                    state: reserveInfo,
-                  });
-                } else {
-                  alert("시간과 인원을 선택해주세요");
-                }
-              }}
-            >
-              확인
-            </button>
-          </ButtonDiv>
-        </ModalDiv>
-      )}
+        )}
+      </ModalDiv>
     </div>
   );
 }
-export default StoreDetailPage;
+export default MenuSelectPage;
