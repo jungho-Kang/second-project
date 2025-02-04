@@ -23,7 +23,8 @@ import StoreInfoPage from "./pages/storeManager/storeAuth/StoreInfoPage";
 import UserMainPage from "./pages/user/UserMainPage";
 import RestaurantDetailPage from "./pages/restaurant/RestaurantDetailPage";
 import AddStorePage from "./pages/storeManager/AddStorePage";
-import Seatmate from "./pages/order/placetoorder/Seatmate";
+import MemberOrderPage from "./pages/order/placetoorder/MemberOrderPage";
+import PriceOrderPage from "./pages/order/placetoorder/PriceOrderPage";
 
 function App() {
   return (
@@ -54,7 +55,8 @@ function App() {
           <Route path="placetoorder">
             <Route index element={<PlaceToOrder />} />
             <Route path="coupon" element={<MealTicketPage />} />
-            <Route path="seatmate" element={<Seatmate />} />
+            <Route path="member" element={<MemberOrderPage />} />
+            <Route path="price" element={<PriceOrderPage />} />
           </Route>
           <Route path="restaurant">
             <Route index element={<Restaurant />} />
