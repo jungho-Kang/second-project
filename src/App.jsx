@@ -28,7 +28,7 @@ import MemberOrderPage from "./pages/order/placetoorder/MemberOrderPage";
 import PriceOrderPage from "./pages/order/placetoorder/PriceOrderPage";
 
 import MenuSelectPage from "./pages/restaurant/MenuSelectPage";
-
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
@@ -80,6 +80,8 @@ function App() {
           <Route path="sales" element={<StoreSales />} />
           <Route path="info" element={<StoreInfoPage />} />
         </Route>
+
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );

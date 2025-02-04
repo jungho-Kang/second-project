@@ -5,31 +5,34 @@ import { FaCheckCircle } from "react-icons/fa";
 import axios from "axios";
 import { useRecoilState } from "recoil";
 import { userDataAtom } from "../../../atoms/userAtom";
+import { reserveDataAtom } from "../../../atoms/restaurantAtom";
 
 const PlaceToOrder = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [userData, setUserData] = useRecoilState(userDataAtom);
+  const [reserveData, setReserveData] = useRecoilState(reserveDataAtom);
 
   const reservationHandler = async () => {
     const payload = {
-      restaurantId: 0,
+      restaurantId: reserveData.restaurantId,
       userId: userData.userId,
-      reservationTime: "string",
-      reservationPeopleCount: 0,
+      reservationTime: reserveData.reservationTime,
+      reservationPeopleCount: reserveData.reservationPeopleCount,
       userPhone: userData.phone,
-      menuList: [
-        {
-          menuId: 0,
-          menuCount: 0,
-        },
-      ],
+      menuList: [...reserveData.menuList],
     };
     console.log(payload);
     try {
       const res = await axios.post("/api/reservation", payload);
       console.log(res);
+      if (res.data.statusCode === "200") {
+        console.log(res.data.resultData);
+      }
     } catch (error) {
       console.log(error);
+      if (error.response.status === 400) {
+        console.log(`${error.response.data.resultMsg}`);
+      }
     }
   };
   reservationHandler();
@@ -37,13 +40,14 @@ const PlaceToOrder = () => {
   return (
     <div>
       {isLoading ? (
-        <OrderLoading />
+        // <OrderLoading />
+        <></>
       ) : (
         <div className="flex flex-col w-full h-dvh justify-start items-center gap-10">
           <div className="flex flex-col w-full h-[15%] text-center py-6 gap-10">
             <div className="text-xl">예약하기</div>
             <div className="flex w-full items-center justify-center gap-2 ">
-              {isLoading ? (
+              {userData ? (
                 <>
                   <ClipLoader
                     size={40}

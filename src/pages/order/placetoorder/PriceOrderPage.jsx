@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { IoMdArrowBack } from "react-icons/io";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import _ from "lodash";
@@ -9,12 +9,14 @@ import { useNavigate } from "react-router-dom";
 
 const PriceOrderPage = () => {
   const [priceList, setPriceList] = useState({});
+  const [inputValue, setInputValue] = useState("");
+  const [isCompleted, setIsCompleted] = useState(false);
   const [userData, setUserData] = useRecoilState(userDataAtom);
   const navigate = useNavigate();
 
   useEffect(() => {
     const params = {
-      orderId: 2,
+      orderId: 1,
     };
     const getPaymentMembers = async () => {
       try {
@@ -30,12 +32,20 @@ const PriceOrderPage = () => {
     getPaymentMembers();
   }, []);
 
-  const inputPriceList = _.debounce(e => {
-    console.log(e.target.value);
-    const inputPrice = e.target.value;
-    setPriceList({ ...priceList, price: inputPrice });
-  }, 1000);
-  console.log(priceList);
+  const a = "";
+
+  const inputChangeHandler = e => {
+    setInputValue(e.target.value);
+    inputPriceList(e.target.value);
+  };
+
+  const inputPriceList = useCallback(
+    _.debounce(value => {
+      setPriceList({ price: value });
+    }, 1000),
+    [],
+  );
+  console.log(inputValue);
 
   const addMemberHandler = () => {
     navigate("/user/placetoorder/member");
@@ -54,26 +64,41 @@ const PriceOrderPage = () => {
           </span>
         </div>
       </div>
-      <div className="w-full h-full">
+      <div className="flex flex-col w-full h-full gap-6">
         <div className="flex w-full h-[6%] px-6 justify-between items-center border-b border-gray">
           <span className="flex w-[30%] text-base text-nowrap">
             {userData.name ? userData.name : "김길동(12345)"}
           </span>
-          <div className="flex w-[35%] gap-2 items-center">
-            <input
-              type="tel"
-              className="border border-darkGray px-2 flex w-full text-end rounded-md"
-              onChange={e => inputPriceList(e)}
-              value={priceList.price}
-            />
-            <span>원</span>
+          <div className="flex w-[35%] gap-2 items-center justify-end">
+            {isCompleted ? (
+              <>
+                <span className="text-end px-2">{inputValue}</span>
+                <span>원</span>
+              </>
+            ) : (
+              <>
+                <input
+                  type="tel"
+                  className="flex w-full border border-darkGray px-2 text-end rounded-md"
+                  onChange={e => inputChangeHandler(e)}
+                  value={inputValue}
+                />
+                <span>원</span>
+              </>
+            )}
           </div>
           <div className="flex w-[20%] justify-center gap-2 text-nowrap items-center">
-            <span className="bg-blue px-2 text-white font-semibold rounded-md">
+            <span
+              onClick={() => setIsCompleted(true)}
+              className="bg-blue px-2 text-white font-semibold rounded-md"
+            >
               확인
             </span>
-            <span className="bg-red px-2 text-white font-semibold rounded-md">
-              취소
+            <span
+              onClick={() => setIsCompleted(false)}
+              className="bg-red px-2 text-white font-semibold rounded-md"
+            >
+              {isCompleted ? "수정" : "취소"}
             </span>
           </div>
         </div>
@@ -82,6 +107,11 @@ const PriceOrderPage = () => {
             onClick={addMemberHandler}
             className="text-3xl"
           />
+        </div>
+        <div className="flex w-full justify-center">
+          <span className="bg-primary text-white text-lg px-2 py-1 rounded-md">
+            승인 요청
+          </span>
         </div>
       </div>
     </div>
