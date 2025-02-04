@@ -89,6 +89,9 @@ const FooterDiv = styled.div`
   bottom: 0;
   position: absolute;
   background-color: #fff;
+  box-shadow:
+    rgba(0, 0, 0, 0.16) 0px 10px 36px 0px,
+    rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
   button {
     padding: 5px 40px;
     font-size: 14px;
@@ -107,6 +110,7 @@ const CountDiv = styled.div`
   line-height: 20px;
   text-align: center;
   padding-right: 1px;
+  font-size: 9px;
 `;
 
 const CenterDiv = styled.div`
@@ -115,12 +119,48 @@ const CenterDiv = styled.div`
   align-items: center;
   font-size: 10px;
   margin-bottom: 10px;
+  span {
+    width: 40px;
+    margin-right: 10px;
+  }
+  p {
+    padding: 2px 5px;
+    border-radius: 2px;
+    background-color: #e7e1f9;
+    color: #fff;
+    font-size: 8px;
+  }
+`;
+
+const ModalDiv = styled.div`
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  background-color: #fff;
+  padding: 10px 0;
+  border-radius: 5px 5px 0 0;
+  box-shadow:
+    rgba(0, 0, 0, 0.16) 0px 10px 36px 0px,
+    rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+`;
+
+const ButtonDiv = styled.div`
+  display: flex;
+  justify-content: center;
+  button {
+    font-size: 10px;
+    padding: 5px 100px;
+    border-radius: 5px;
+    background-color: #6f4cdb;
+    color: #fff;
+  }
 `;
 
 function StoreDetailPage() {
   const [formData, setFormData] = useState({});
   const [isModal, setIsModal] = useState(false);
   const [isReserve, setIsReserve] = useRecoilState(reserveState);
+  const [reserveInfo, setReserveInfo] = useState({});
 
   const navigate = useNavigate();
   const { id } = useParams();
@@ -135,11 +175,6 @@ function StoreDetailPage() {
     }
   };
 
-  useEffect(() => {
-    getDetailStore();
-    console.log(id);
-  }, []);
-
   const cateName = () => {
     switch (formData.categoryId) {
       case 1:
@@ -153,10 +188,17 @@ function StoreDetailPage() {
     }
   };
 
+  const userCount = [1, 2, 3, 4, 5, 6, 7, 8];
+  const reserveTime = ["11:30", "12:00", "12:30", "1:00", "1:30"];
+
+  useEffect(() => {
+    getDetailStore();
+    console.log(id);
+  }, []);
   return (
     <div style={{ height: "100vh" }}>
       <img
-        // src={`http://112.222.157.156:5222/pic/restaurant/${formData.restaurantId}/${formData.restaurantPics.filePath}`}
+        src={`http://112.222.157.156:5222/pic/restaurant/${formData.restaurantId}/${formData.restaurantPics?.filePath}`}
         alt="가게 이미지"
         style={{ width: "100%", height: 260, position: "relative" }}
       />
@@ -186,9 +228,9 @@ function StoreDetailPage() {
         </h2>
       </TitleDiv>
       <LineDiv />
-      {/* map 사용하기 */}
       <ContentDiv>
         <h1>메뉴</h1>
+        {/* map 사용하기 */}
         <MenuDiv>
           <img src="/menu.png" alt="메뉴 이미지" />
           <div>
@@ -250,70 +292,106 @@ function StoreDetailPage() {
           style={{ height: 1, backgroundColor: "#eee", marginBottom: 10 }}
         />
       </ContentDiv>
-      <FooterDiv>
-        <button
-          onClick={() => {
-            setIsReserve(false);
-            navigate(`/user/retaurant/detail/reserve/${id}`);
-          }}
-        >
-          앉아서 주문
-        </button>
-        <button
-          onClick={() => {
-            setIsReserve(true);
-            setIsModal(true);
-          }}
-        >
-          예약하기
-        </button>
-      </FooterDiv>
+      {!isModal && (
+        <FooterDiv>
+          <button
+            onClick={() => {
+              setIsReserve(false);
+              navigate(`/user/restaurant/detail/reserve/${id}`);
+            }}
+          >
+            앉아서 주문
+          </button>
+          <button
+            onClick={() => {
+              setIsReserve(true);
+              setIsModal(true);
+            }}
+          >
+            예약하기
+          </button>
+        </FooterDiv>
+      )}
+
       {isModal && (
-        <div
-          style={{
-            position: "absolute",
-            width: "100%",
-            bottom: "70px",
-            backgroundColor: "#fff",
-          }}
-        >
+        <ModalDiv>
           <div
             style={{
               display: "flex",
               justifyContent: "flex-end",
               marginRight: 10,
-              marginTop: 10,
             }}
           >
-            <IoMdClose onClick={() => setIsModal(false)} />
+            <IoMdClose
+              onClick={() => {
+                setIsModal(false);
+                setReserveInfo({});
+              }}
+            />
+          </div>
+          <div
+            style={{
+              textAlign: "center",
+              fontSize: 12,
+              marginBottom: 10,
+            }}
+          >
+            예약할 시간과 인원을 선택해주세요
           </div>
           <CenterDiv>
-            <span style={{ marginRight: 20 }}>인원수</span>
+            <span>인원수</span>
             <div style={{ display: "flex", gap: 10 }}>
-              <CountDiv>1명</CountDiv>
-              <CountDiv>2명</CountDiv>
-              <CountDiv>3명</CountDiv>
-              <CountDiv>4명</CountDiv>
-              <CountDiv>5명</CountDiv>
-              <CountDiv>6명</CountDiv>
-              <CountDiv>7명</CountDiv>
-              <CountDiv>8명</CountDiv>
+              {userCount.map((item, index) => (
+                <CountDiv
+                  key={index}
+                  style={{
+                    backgroundColor: item === reserveInfo.count && "#6F4CDB",
+                  }}
+                  onClick={() =>
+                    setReserveInfo({ ...reserveInfo, count: item })
+                  }
+                >
+                  {item}명
+                </CountDiv>
+              ))}
             </div>
           </CenterDiv>
           <CenterDiv>
-            <span style={{ marginRight: 20 }}>인원수</span>
-            <div style={{ display: "flex", gap: 10 }}>
-              <CountDiv>1명</CountDiv>
-              <CountDiv>2명</CountDiv>
-              <CountDiv>3명</CountDiv>
-              <CountDiv>4명</CountDiv>
-              <CountDiv>5명</CountDiv>
-              <CountDiv>6명</CountDiv>
-              <CountDiv>7명</CountDiv>
-              <CountDiv>8명</CountDiv>
+            <span>시간 선택</span>
+            <div style={{ display: "flex", gap: 5 }}>
+              {reserveTime.map((item, index) => (
+                <p
+                  key={index}
+                  style={{
+                    backgroundColor: item === reserveInfo.time && "#6F4CDB",
+                  }}
+                  onClick={() => setReserveInfo({ ...reserveInfo, time: item })}
+                >
+                  {item === "11:30" ? "오전" : "오후"} {item}
+                </p>
+              ))}
             </div>
           </CenterDiv>
-        </div>
+          <CenterDiv style={{ gap: 5, color: "#FF9500" }}>
+            <BsFillTelephoneFill />
+            <div>9명 이상은 가게에 직접 문의해주세요</div>
+          </CenterDiv>
+          <ButtonDiv>
+            <button
+              onClick={() => {
+                if (reserveInfo.time && reserveInfo.count) {
+                  navigate(`/user/restaurant/detail/reserve/${id}`, {
+                    state: reserveInfo,
+                  });
+                } else {
+                  alert("시간과 인원을 선택해주세요");
+                }
+              }}
+            >
+              확인
+            </button>
+          </ButtonDiv>
+        </ModalDiv>
       )}
     </div>
   );

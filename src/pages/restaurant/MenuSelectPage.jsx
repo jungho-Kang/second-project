@@ -1,10 +1,14 @@
-import { IoMdArrowBack } from "react-icons/io";
-import { useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { BsFillTelephoneFill } from "react-icons/bs";
+import { FaAngleDown, FaAngleUp } from "react-icons/fa6";
+import { FiMinusCircle, FiPlusCircle } from "react-icons/fi";
+import { IoMdArrowBack } from "react-icons/io";
 import { LuMapPin } from "react-icons/lu";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { reserveState } from "../../atoms/restaurantAtom";
-import { useEffect } from "react";
 
 const BackDiv = styled.div`
   background-color: #fff;
@@ -42,7 +46,6 @@ const TitleDiv = styled.div`
 `;
 
 const LineDiv = styled.div`
-  width: 100%;
   height: 10px;
   background-color: #ddd;
 `;
@@ -77,16 +80,23 @@ const MenuDiv = styled.div`
   }
 `;
 
-const FooterDiv = styled.div`
+const FlexDiv = styled.div`
   display: flex;
-  gap: 35px;
   justify-content: center;
   align-items: center;
-  height: 70px;
+`;
+
+const ModalDiv = styled.div`
+  position: absolute;
   width: 100%;
   bottom: 0;
-  position: absolute;
   background-color: #fff;
+  padding: 10px 10px;
+  border-radius: 5px 5px 0 0;
+  box-shadow:
+    rgba(0, 0, 0, 0.16) 0px 10px 36px 0px,
+    rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+  transition: height 0.3s ease-in-out;
   button {
     padding: 5px 40px;
     font-size: 14px;
@@ -96,18 +106,71 @@ const FooterDiv = styled.div`
   }
 `;
 
+const SelectDiv = styled.div`
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  margin: 0 30px;
+  p {
+    font-size: 14px;
+  }
+  div {
+    font-size: 12px;
+    color: #888888;
+  }
+  span {
+  }
+`;
+
 function MenuSelectPage() {
   const navigate = useNavigate();
   const isReserve = useRecoilValue(reserveState);
+  const location = useLocation();
+  const { time, count } = location.state || {};
+
+  const [formData, setFormData] = useState({});
+  const [isClick, setIsClick] = useState(false);
+  const [postData, setPostData] = useState([]);
+
+  const { id } = useParams();
+
+  const getDetailStore = async () => {
+    try {
+      const res = await axios.get(`/api/restaurant?restaurantId=${id}`);
+      setFormData(res.data.resultData);
+      console.log(res.data.resultData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const cateName = () => {
+    switch (formData.categoryId) {
+      case 1:
+        return "한식";
+      case 2:
+        return "중식";
+      case 3:
+        return "일식";
+      default:
+        return "기타";
+    }
+  };
+
+  useEffect(() => {
+    getDetailStore();
+    console.log(id);
+  }, []);
 
   useEffect(() => {
     console.log(isReserve);
+    // console.log("시간 : ", time, "인원 : ", count);
   }, []);
 
   return (
     <div style={{ height: "100vh" }}>
       <img
-        src="/storemain.png"
+        src={`http://112.222.157.156:5222/pic/restaurant/${formData.restaurantId}/${formData.restaurantPics?.filePath}`}
         alt="가게 이미지"
         style={{ width: "100%", height: 260, position: "relative" }}
       />
@@ -119,20 +182,27 @@ function MenuSelectPage() {
       </BackDiv>
       <TitleDiv>
         <div>
-          대구 중구 <span>I</span> 한식
+          {formData.restaurantAddress
+            ?.match(/대구광역시\s*중구/)[0]
+            .replace("광역시", "")}{" "}
+          <span>I</span> {cateName()}
         </div>
-        <h1>동양백반</h1>
-        <div>동성로한식맛집 요즘 핫한 닭볶음탕</div>
+        <h1>{formData.restaurantName}</h1>
+        <div>{formData.restaurantDescription}</div>
 
         <h2>
           <LuMapPin />
-          대구 중구 달구벌대로 2109-37
+          {formData.restaurantAddress}
+        </h2>
+        <h2 style={{ marginTop: 10 }}>
+          <BsFillTelephoneFill />
+          매장 연락처 : {formData.restaurantNumber}
         </h2>
       </TitleDiv>
       <LineDiv />
-      {/* map 사용하기 */}
       <ContentDiv>
-        <h1>메뉴</h1>
+        <h1>메뉴 선택</h1>
+        {/* map 사용하기 */}
         <MenuDiv>
           <img src="/menu.png" alt="메뉴 이미지" />
           <div>
@@ -194,9 +264,61 @@ function MenuSelectPage() {
           style={{ height: 1, backgroundColor: "#eee", marginBottom: 10 }}
         />
       </ContentDiv>
-      <FooterDiv>
-        <button>{isReserve ? "예약하기" : "결제하기"}</button>
-      </FooterDiv>
+      <ModalDiv>
+        <FlexDiv>
+          {isClick ? (
+            <FaAngleDown
+              style={{ color: "#6F6F6F" }}
+              onClick={() => setIsClick(false)}
+            />
+          ) : (
+            <FaAngleUp
+              style={{ color: "#6F6F6F" }}
+              onClick={() => setIsClick(true)}
+            />
+          )}
+        </FlexDiv>
+        {isClick && (
+          <div>
+            <SelectDiv>
+              <p>양지 쌀국수</p>
+              <div>11,000</div>
+            </SelectDiv>
+            <SelectDiv style={{ margin: "5px 30px" }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 15,
+                }}
+              >
+                <p>
+                  <FiMinusCircle />
+                </p>
+                <p>3</p>
+                <p>
+                  <FiPlusCircle />
+                </p>
+              </div>
+              <div>33,000</div>
+            </SelectDiv>
+            <LineDiv
+              style={{
+                height: 1,
+                backgroundColor: "#eee",
+                margin: "10px 0",
+              }}
+            />
+            <SelectDiv style={{ marginBottom: 10 }}>
+              <p>총 수량 3개</p>
+              <p>총 33,000원</p>
+            </SelectDiv>
+            <FlexDiv>
+              <button>{isReserve ? "예약하기" : "결제하기"}</button>
+            </FlexDiv>
+          </div>
+        )}
+      </ModalDiv>
     </div>
   );
 }

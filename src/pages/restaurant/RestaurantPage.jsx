@@ -154,8 +154,8 @@ function RestaurantPage() {
     <div className="w-full h-dvh overflow-hidden overflow-y-scroll scrollbar-hide relative">
       <Map
         center={{
-          lat: 37.566826,
-          lng: 126.9786567,
+          lat: 35.86,
+          lng: 128.59,
         }}
         style={{
           width: "100%",
@@ -164,7 +164,7 @@ function RestaurantPage() {
         level={3}
       ></Map>
 
-      <SearchDiv onClick={() => console.log(restaurantList)}>
+      <SearchDiv>
         <div>
           <IoMdArrowBack
             style={{ width: 24, height: 24, cursor: "pointer" }}
@@ -200,24 +200,6 @@ function RestaurantPage() {
             overflowX: "hidden",
           }}
         >
-          <FlexDiv>
-            <span>동양백반</span>
-            <span style={{ fontSize: 10 }}>식사시간 : 15~20분</span>
-          </FlexDiv>
-
-          <FlexDiv>
-            <FaStar style={{ width: 10, height: 10, color: "E1FF00" }} />
-            <span style={{ fontWeight: 700, fontSize: 8 }}>4.8</span>
-            <span style={{ fontSize: 8, color: "#BABABA" }}>
-              대구 중구 · 한식
-            </span>
-          </FlexDiv>
-
-          <FlexDiv style={{ overflowX: "scroll", marginBottom: 20 }}>
-            <img src="/menu.png" style={{ width: 140, height: 140 }} />
-            <img src="/storeimg.png" style={{ width: 140, height: 140 }} />
-            <img src="/storeimg.png" style={{ width: 140, height: 140 }} />
-          </FlexDiv>
           {restaurantList.map(item => (
             <div
               key={item.restaurantId}
