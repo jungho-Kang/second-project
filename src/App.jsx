@@ -29,7 +29,6 @@ import PriceOrderPage from "./pages/order/placetoorder/PriceOrderPage";
 
 import MenuSelectPage from "./pages/restaurant/MenuSelectPage";
 
-
 function App() {
   return (
     <Router>

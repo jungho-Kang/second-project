@@ -3,7 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { IoIosSearch, IoMdArrowBack } from "react-icons/io";
-import { Map } from "react-kakao-maps-sdk";
+import { CustomOverlayMap, Map, MapMarker } from "react-kakao-maps-sdk";
 import { useNavigate } from "react-router-dom";
 
 // ListDiv styled component 수정
@@ -73,38 +73,110 @@ const SearchDiv = styled.div`
   }
 `;
 
+const OverlayContainer = styled.div`
+  position: relative;
+  background-color: #fff; /* 배경을 흰색으로 설정 */
+  padding: 10px;
+  color: #333;
+  font-size: 12px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  h3 {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  p {
+    font-size: 12px;
+    color: #999;
+  }
+`;
+
+const NowLocation = styled.div`
+  background-color: #6f4cdb;
+  color: #fff;
+  border-radius: 5px;
+  padding: 5px;
+  font-size: 10px;
+  position: absolute;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  left: 10px;
+  bottom: -10px;
+`;
+
 function RestaurantPage() {
   const [isMapLoaded, setIsMapLoaded] = useState(false);
   const [isListOpen, setIsListOpen] = useState(false);
   const [height, setHeight] = useState(250); // 초기 높이 250px
   const [restaurantList, setRestaurantList] = useState([]);
+  const [markers, setMarkers] = useState([]);
+  const [isOpen, setIsOpen] = useState({});
+  const [search, setSearch] = useState();
+  const [sort, setSort] = useState(0);
 
   const navigate = useNavigate();
 
+  const getRestaurantList = async () => {
+    try {
+      const res = await axios.get(
+        `/api/restaurant/around?orderFilter=${sort}&userLat=${35.86}&userLng=${128.59}`,
+      );
+
+      console.log(res);
+      const result = res.data.resultData;
+      setRestaurantList([...result]);
+
+      result.map(item => {
+        setMarkers(prev => [
+          ...prev,
+          {
+            title: item.restaurantName,
+            address: item.restaurantAddress,
+            position: { lat: item.lat, lng: item.lng },
+          },
+        ]);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getSearchRestaurant = async () => {
+    setMarkers([]);
+    try {
+      const res = await axios.get(
+        `/api/restaurant/around?searchFilter=${search}&userLat=${35.8682922103488}&userLng=${128.594024377585}`,
+      );
+      const result = res.data.resultData;
+      setRestaurantList(result);
+      result.map(item => {
+        setMarkers(prev => [
+          ...prev,
+          {
+            title: item.restaurantName,
+            address: item.restaurantAddress,
+            position: { lat: item.lat, lng: item.lng },
+          },
+        ]);
+      });
+      console.log(result);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
-    const getRestaurantList = async () => {
-      const params = {
-        orderFilter: 1,
-        userLat: 35.86,
-        userLng: 128.59,
-      };
-      try {
-        const res = await axios.get("/api/restaurant/around", { params });
-        console.log(res);
-        const result = res.data.resultData;
-        const detailAddress = result.map(data => {
-          return data.restaurantAddress
-            .match(/대구광역시\s*중구/)[0]
-            .replace("광역시", "");
-        });
-        console.log(detailAddress);
-        setRestaurantList([...result]);
-      } catch (error) {
-        console.log(error);
-      }
-    };
     getRestaurantList();
-  }, []);
+  }, [sort]);
 
   useEffect(() => {
     const loadKakaoMap = () => {
@@ -149,20 +221,56 @@ function RestaurantPage() {
   if (!isMapLoaded) {
     return <div>지도를 불러오는 중입니다...</div>;
   }
-
   return (
     <div className="w-full h-dvh overflow-hidden overflow-y-scroll scrollbar-hide relative">
       <Map
         center={{
-          lat: 35.86,
-          lng: 128.59,
+          lat: 35.8682922103488,
+          lng: 128.594024377585,
         }}
         style={{
           width: "100%",
           height: "100%",
         }}
         level={3}
-      ></Map>
+      >
+        <div style={{ position: "relative" }}>
+          <MapMarker
+            position={{ lat: 35.8682922103488, lng: 128.594024377585 }}
+          />
+          <CustomOverlayMap
+            position={{ lat: 35.8682922103488, lng: 128.594024377585 }}
+          >
+            <NowLocation>내 위치</NowLocation>
+          </CustomOverlayMap>
+        </div>
+        {markers.map((marker, index) => (
+          <div key={index}>
+            <MapMarker
+              position={marker.position}
+              image={{
+                src: "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png",
+                size: {
+                  width: 24,
+                  height: 35,
+                },
+              }}
+              clickable={true} // 마커를 클릭했을 때 지도의 클릭 이벤트가 발생하지 않도록 설정합니다
+              onClick={() => setIsOpen(index)}
+            />
+            {isOpen === index && (
+              <CustomOverlayMap position={marker.position}>
+                <OverlayContainer>
+                  <button onClick={() => setIsOpen(null)}>❌</button>
+
+                  <h3>{marker.title}</h3>
+                  <p>{marker.address}</p>
+                </OverlayContainer>
+              </CustomOverlayMap>
+            )}
+          </div>
+        ))}
+      </Map>
 
       <SearchDiv>
         <div>
@@ -171,8 +279,18 @@ function RestaurantPage() {
             onClick={() => navigate(-1)}
           />
 
-          <input type="text" placeholder="검색어를 입력해 주세요" />
-          <IoIosSearch style={{ width: 24, height: 24, cursor: "pointer" }} />
+          <input
+            type="text"
+            placeholder="검색어를 입력해 주세요"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+          <IoIosSearch
+            style={{ width: 24, height: 24, cursor: "pointer" }}
+            onClick={() => {
+              getSearchRestaurant();
+            }}
+          />
         </div>
       </SearchDiv>
 
@@ -188,8 +306,18 @@ function RestaurantPage() {
           <BarDiv />
         </div>
         <FlexDiv style={{ gap: 10, marginBottom: 10 }}>
-          <SortDiv style={{ backgroundColor: "#6f4cdb" }}>전체</SortDiv>
-          <SortDiv>거리순</SortDiv>
+          <SortDiv
+            style={{ backgroundColor: sort === 0 && "#6f4cdb" }}
+            onClick={() => setSort(0)}
+          >
+            전체
+          </SortDiv>
+          <SortDiv
+            style={{ backgroundColor: sort !== 0 && "#6f4cdb" }}
+            onClick={() => setSort(1)}
+          >
+            거리순
+          </SortDiv>
         </FlexDiv>
 
         <div
@@ -209,7 +337,9 @@ function RestaurantPage() {
             >
               <FlexDiv>
                 <span>{item.restaurantName}</span>
-                <span style={{ fontSize: 10 }}>식사시간 : 15~20분</span>
+                <span style={{ fontSize: 10 }}>
+                  식사시간 : {item.avgRestaurant}분
+                </span>
               </FlexDiv>
 
               <FlexDiv>
