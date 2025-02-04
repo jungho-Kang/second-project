@@ -2,7 +2,7 @@ import { QRCodeSVG } from "qrcode.react";
 
 const QRCode = () => {
   return (
-    <div className="flex w-full h-dvh justify-center">
+    <div className="flex flex-col w-full h-dvh justify-center items-center gap-10">
       <div className="w-3/4 h-3/4 border-8 border-primary rounded-t-2xl mt-24">
         <div className="flex w-full h-1/6 justify-center items-center bg-primary text-white font-bold text-3xl">
           미분당 동성로점
@@ -23,6 +23,7 @@ const QRCode = () => {
           <QRCodeSVG value={"http://192.168.0.192:5173/user"} size={180} />
         </div>
       </div>
+      <div className="text-xl underline">예약 취소는 매장으로 문의해주세요</div>
     </div>
   );
 };

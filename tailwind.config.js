@@ -24,7 +24,8 @@ export default {
       black: "#333333",
       darkGray: "#929292",
       gray: "#eeeeee",
-      red: "#D90416",
+      red: "#E44B58",
+      blue: "#79BAF2",
     },
     border: {
       1: 1,
