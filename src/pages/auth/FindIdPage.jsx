@@ -17,6 +17,9 @@ import {
   TitleDiv,
   YupDiv,
 } from "./loginStyle";
+import { useRecoilValue } from "recoil";
+import { roleAtom } from "../../atoms/roleAtom";
+import { STORE, USER } from "../../constants/Role";
 
 const loginSchema = yup.object({
   name: yup
@@ -32,6 +35,7 @@ const loginSchema = yup.object({
 function FindIdPage() {
   const navigate = useNavigate();
   const [isSubmit, setIsSubmit] = useState(false);
+  const role = useRecoilValue(roleAtom);
 
   const {
     register,
@@ -45,9 +49,15 @@ function FindIdPage() {
 
   const getId = async data => {
     try {
-      await axios.get(
-        `/api/user/find-id?name=${data.name}&email=${data.email}`,
-      );
+      if (role === USER) {
+        await axios.get(
+          `/api/user/find-id?name=${data.name}&email=${data.email}`,
+        );
+      } else if (role === STORE) {
+        await axios.get(
+          `/api/admin/find-id?name=${data.name}&email=${data.email}`,
+        );
+      }
       alert(`${data.email} 이메일로 아이디가 전송되었습니다.`);
       navigate("/auth");
     } catch (error) {
