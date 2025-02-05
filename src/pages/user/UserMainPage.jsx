@@ -33,6 +33,7 @@ const UserMainPage = () => {
   }, []);
 
   useEffect(() => {
+    setPagenation(1);
     const getRestaurantList = async () => {
       const params = {
         categoryId: categoryId,
@@ -56,9 +57,9 @@ const UserMainPage = () => {
   }, [categoryId]);
 
   useEffect(() => {
-    console.log("inView 값 변경: ", inView);
-    if (inView) {
-      setPagenation(pagenation + 1);
+    if (inView === true) {
+      console.log("inView true : ", inView);
+      setPagenation(prev => prev + 1);
       const getRestaurantList = async () => {
         const params = {
           categoryId: categoryId,
@@ -79,6 +80,8 @@ const UserMainPage = () => {
         }
       };
       getRestaurantList();
+    } else {
+      console.log("inView false : ", inView);
     }
   }, [inView]);
 
@@ -171,19 +174,28 @@ const UserMainPage = () => {
           <div className="flex gap-2 pr-5 text-sm">
             <p
               className={`text-white px-2 py-0.5 rounded-lg font-bold ${categoryId === 1 ? "bg-primary" : "bg-darkGray"}`}
-              onClick={() => setCategoryId(1)}
+              onClick={() => {
+                setCategoryId(1);
+                setPagenation(1);
+              }}
             >
               한식
             </p>
             <p
               className={`text-white px-2 py-0.5 rounded-lg font-bold ${categoryId === 2 ? "bg-primary" : "bg-darkGray"}`}
-              onClick={() => setCategoryId(2)}
+              onClick={() => {
+                setCategoryId(2);
+                setPagenation(1);
+              }}
             >
               중식
             </p>
             <p
               className={`text-white px-2 py-0.5 rounded-lg font-bold ${categoryId === 3 ? "bg-primary" : "bg-darkGray"}`}
-              onClick={() => setCategoryId(3)}
+              onClick={() => {
+                setCategoryId(3);
+                setPagenation(1);
+              }}
             >
               일식
             </p>

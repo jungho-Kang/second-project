@@ -170,6 +170,8 @@ function StoreDetailPage() {
     try {
       const res = await axios.get(`/api/restaurant?restaurantId=${id}`);
       const result = res.data.resultData;
+      console.log(result.menuCateList);
+
       setMenu(result.menuCateList);
       setFormData(result);
       console.log(result);
@@ -242,8 +244,13 @@ function StoreDetailPage() {
                     alt="메뉴 이미지"
                   />
                   <div>
-                    <div>{list?.menuName}</div>
-                    <span>{list?.price.toLocaleString("ko-KR")}원</span>
+                    <div>
+                      <div>{list?.menuName}</div>
+                      <span>{list?.price.toLocaleString("ko-KR")}원</span>
+                    </div>
+                    <span className="text-darkGray text-opacity-60">
+                      {list?.details}
+                    </span>
                   </div>
                 </MenuDiv>
                 <LineDiv
