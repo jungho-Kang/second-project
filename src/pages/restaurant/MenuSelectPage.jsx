@@ -7,8 +7,8 @@ import { FiMinusCircle, FiPlusCircle } from "react-icons/fi";
 import { IoMdArrowBack } from "react-icons/io";
 import { LuMapPin } from "react-icons/lu";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { useRecoilValue } from "recoil";
-import { reserveState } from "../../atoms/restaurantAtom";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { orderIdAtom, reserveState } from "../../atoms/restaurantAtom";
 import dayjs from "dayjs";
 import { userDataAtom } from "../../atoms/userAtom";
 
@@ -133,9 +133,18 @@ function MenuSelectPage() {
 
   const [formData, setFormData] = useState({});
   const [isClick, setIsClick] = useState(false);
+
+  // get 받아온 메뉴 리스트
   const [menu, setMenu] = useState([]);
+
+  // 화면에 띄울 메뉴 리스트 (추가된 메뉴)
   const [addMenu, setAddMenu] = useState([]);
 
+  // 보낼 메뉴 리스트
+  const [postMenuList, setPostMenuList] = useState([]);
+  const [orderId, setOrderId] = useRecoilState(orderIdAtom);
+
+  // 보낼 데이터
   const [postData, setPostData] = useState({});
   const userData = useRecoilValue(userDataAtom);
 
@@ -148,6 +157,26 @@ function MenuSelectPage() {
       setFormData(res.data.resultData);
       setMenu(result.menuCateList);
       console.log(res.data.resultData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const postReservation = async () => {
+    try {
+      if (isReserve) {
+        const res = await axios.post("/api/reservation", postData);
+        console.log(res.data.resultData);
+        setOrderId(res.data.resultData);
+        alert(`${time}에 예약이 완료 되었습니다.`);
+        navigate("/user");
+      } else {
+        const res = await axios.post("/api/order/with-detail", postData);
+        console.log(res.data.resultData);
+        setOrderId(res.data.resultData);
+        alert(`${time}에 예약이 완료 되었습니다.`);
+        navigate("/user");
+      }
     } catch (error) {
       console.log(error);
     }
@@ -167,9 +196,15 @@ function MenuSelectPage() {
   };
 
   const increaseCount = index => {
+    // 출력할 메뉴 리스트
     const updatedMenu = [...addMenu];
     updatedMenu[index].menuCount += 1;
     setAddMenu(updatedMenu);
+
+    // 보낼 메뉴 리스트
+    const updatedMenuTwo = [...postMenuList];
+    updatedMenuTwo[index].menuCount += 1;
+    setPostMenuList(updatedMenuTwo);
   };
 
   const decreaseCount = index => {
@@ -177,6 +212,12 @@ function MenuSelectPage() {
     if (updatedMenu[index].menuCount > 1) {
       updatedMenu[index].menuCount -= 1;
       setAddMenu(updatedMenu);
+    }
+
+    const updatedMenuTwo = [...postMenuList];
+    if (updatedMenuTwo[index].menuCount > 1) {
+      updatedMenuTwo[index].menuCount -= 1;
+      setPostMenuList(updatedMenuTwo);
     }
   };
 
@@ -192,23 +233,23 @@ function MenuSelectPage() {
       const today = dayjs(new Date()).format("YYYY-MM-DD");
       const reserveTime = `${today} ${time}`;
       console.log("현재 시간", reserveTime);
-      console.log(addMenu);
+      console.log(postMenuList);
       setPostData({
         userId: userData.userId,
         restaurantId: parseInt(id),
         reservationTime: reserveTime,
         reservationPeopleCount: count,
         userPhone: userData.phone,
-        menuList: [...addMenu],
+        menuList: [...postMenuList],
       });
     } else {
       setPostData({
         userId: userData.userId,
         restaurantId: parseInt(id),
-        orderDetails: [...addMenu],
+        orderDetails: [...postMenuList],
       });
     }
-  }, [addMenu]);
+  }, [postMenuList]);
 
   useEffect(() => {
     console.log("포스트 데이터", postData);
@@ -261,13 +302,14 @@ function MenuSelectPage() {
                     <span>{list.price.toLocaleString("ko-KR")}원</span>
                   </div>
                   <div style={{ position: "absolute", right: 20 }}>
-                    {addMenu.some(item => item.menuName === list.menuName) ? (
+                    {addMenu.some(item => item.menuId === list.menuId) ? (
                       <FaCheck
                         onClick={() => {
                           setAddMenu(prev =>
-                            prev.filter(
-                              item => item.menuName !== list.menuName,
-                            ),
+                            prev.filter(item => item.menuId !== list.menuId),
+                          );
+                          setPostMenuList(prev =>
+                            prev.filter(item => item.menuId !== list.menuId),
                           );
                           setIsClick(true);
                         }}
@@ -278,12 +320,20 @@ function MenuSelectPage() {
                           setAddMenu(prev => [
                             ...prev,
                             {
+                              menuId: list.menuId,
                               menuName: list.menuName,
                               price: list.price,
                               menuCount: 1,
                             },
                           ]);
-                          setPostData([...addMenu]);
+                          setPostMenuList(prev => [
+                            ...prev,
+                            {
+                              menuId: list.menuId,
+                              // price: list.price,
+                              menuCount: 1,
+                            },
+                          ]);
                           setIsClick(true);
                         }}
                       />
@@ -367,7 +417,9 @@ function MenuSelectPage() {
               </p>
             </SelectDiv>
             <FlexDiv>
-              <button>{isReserve ? "예약하기" : "결제하기"}</button>
+              <button onClick={() => postReservation()}>
+                {isReserve ? "예약하기" : "결제하기"}
+              </button>
             </FlexDiv>
           </div>
         )}

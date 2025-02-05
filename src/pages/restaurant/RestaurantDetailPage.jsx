@@ -194,7 +194,7 @@ function StoreDetailPage() {
   };
 
   const userCount = [1, 2, 3, 4, 5, 6, 7, 8];
-  const reserveTime = ["11:30", "12:00", "12:30", "1:00", "1:30"];
+  const reserveTime = ["11:30", "12:00", "12:30", "13:00", "13:30"];
 
   useEffect(() => {
     getDetailStore();
@@ -340,7 +340,8 @@ function StoreDetailPage() {
                   }}
                   onClick={() => setReserveInfo({ ...reserveInfo, time: item })}
                 >
-                  {item === "11:30" ? "오전" : "오후"} {item}
+                  {item === "11:30" ? "오전" : "오후"}{" "}
+                  {item === "13:00" ? "1:00" : item === "13:30" ? "1:30" : item}
                 </p>
               ))}
             </div>
