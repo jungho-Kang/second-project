@@ -35,6 +35,7 @@ import OrderRequestPage from "./pages/order/placetoorder/OrderRequestPage";
 
 function App() {
   runSocket();
+
   return (
     <Router>
       <Routes>
