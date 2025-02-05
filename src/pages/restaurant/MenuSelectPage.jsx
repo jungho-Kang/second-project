@@ -9,6 +9,8 @@ import { LuMapPin } from "react-icons/lu";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { reserveState } from "../../atoms/restaurantAtom";
+import dayjs from "dayjs";
+import { userDataAtom } from "../../atoms/userAtom";
 
 const BackDiv = styled.div`
   background-color: #fff;
@@ -134,7 +136,8 @@ function MenuSelectPage() {
   const [menu, setMenu] = useState([]);
   const [addMenu, setAddMenu] = useState([]);
 
-  const [postData, setPostData] = useState([]);
+  const [postData, setPostData] = useState({});
+  const userData = useRecoilValue(userDataAtom);
 
   const { id } = useParams();
 
@@ -185,8 +188,31 @@ function MenuSelectPage() {
   useEffect(() => {
     // console.log(isReserve);
     // console.log("시간 : ", time, "인원 : ", count);
-    console.log(addMenu);
+    if (isReserve) {
+      const today = dayjs(new Date()).format("YYYY-MM-DD");
+      const reserveTime = `${today} ${time}`;
+      console.log("현재 시간", reserveTime);
+      console.log(addMenu);
+      setPostData({
+        userId: userData.userId,
+        restaurantId: parseInt(id),
+        reservationTime: reserveTime,
+        reservationPeopleCount: count,
+        userPhone: userData.phone,
+        menuList: [...addMenu],
+      });
+    } else {
+      setPostData({
+        userId: userData.userId,
+        restaurantId: parseInt(id),
+        orderDetails: [...addMenu],
+      });
+    }
   }, [addMenu]);
+
+  useEffect(() => {
+    console.log("포스트 데이터", postData);
+  }, [postData]);
 
   return (
     <div style={{ height: "100vh" }}>
@@ -237,17 +263,18 @@ function MenuSelectPage() {
                   <div style={{ position: "absolute", right: 20 }}>
                     {addMenu.some(item => item.menuName === list.menuName) ? (
                       <FaCheck
-                        onClick={() =>
+                        onClick={() => {
                           setAddMenu(prev =>
                             prev.filter(
                               item => item.menuName !== list.menuName,
                             ),
-                          )
-                        }
+                          );
+                          setIsClick(true);
+                        }}
                       />
                     ) : (
                       <FaPlus
-                        onClick={() =>
+                        onClick={() => {
                           setAddMenu(prev => [
                             ...prev,
                             {
@@ -255,8 +282,10 @@ function MenuSelectPage() {
                               price: list.price,
                               menuCount: 1,
                             },
-                          ])
-                        }
+                          ]);
+                          setPostData([...addMenu]);
+                          setIsClick(true);
+                        }}
                       />
                     )}
                   </div>

@@ -44,14 +44,29 @@ function LoginPage() {
     try {
       if (role === USER) {
         const res = await axios.post("/api/user/sign-in", formData);
-        console.log(res.data.resultData);
-        const userId = res.data.resultData.userId;
-        const accessToken = res.data.resultData.accessToken;
+
+        const result = res.data.resultData;
+        setUserData({
+          companyId: result.companyId,
+          companyName: result.companyName,
+          email: result.email,
+          name: result.name,
+          phone: result.phone,
+          pic: result.pic,
+          point: result.point,
+          roleId: result.roleId,
+          uid: result.uid,
+          userId: result.userId,
+        });
+
+        console.log(result);
+        const userId = result.userId;
+        const accessToken = result.accessToken;
         window.sessionStorage.setItem("userId", userId);
         setCookie(accessToken);
+
       } else if (role === STORE) {
         await axios.post("/api/admin/sign-in", formData);
-        navigate("/store");
       }
       setIsLogin(true);
       routeHandler();
