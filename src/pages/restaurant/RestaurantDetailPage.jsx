@@ -50,9 +50,9 @@ const LineDiv = styled.div`
 `;
 
 const ContentDiv = styled.div`
-  height: calc(100% - 100px);
   overflow-y: auto;
   padding: 15px 25px;
+  padding-bottom: 100px;
   div {
     color: #707070;
   }
@@ -161,6 +161,7 @@ function StoreDetailPage() {
   const [isModal, setIsModal] = useState(false);
   const [isReserve, setIsReserve] = useRecoilState(reserveState);
   const [reserveInfo, setReserveInfo] = useState({});
+  const [menu, setMenu] = useState([]);
 
   const navigate = useNavigate();
   const { id } = useParams();
@@ -168,8 +169,10 @@ function StoreDetailPage() {
   const getDetailStore = async () => {
     try {
       const res = await axios.get(`/api/restaurant?restaurantId=${id}`);
-      setFormData(res.data.resultData);
-      console.log(res.data.resultData);
+      const result = res.data.resultData;
+      setMenu(result.menuCateList);
+      setFormData(result);
+      console.log(result);
     } catch (error) {
       console.log(error);
     }
@@ -198,7 +201,7 @@ function StoreDetailPage() {
   return (
     <div style={{ height: "100vh" }}>
       <img
-        src={`http://112.222.157.156:5222/pic/restaurant/${formData.restaurantId}/${formData.restaurantPics?.filePath}`}
+        src={`http://112.222.157.156:5222/pic/restaurant/${formData?.restaurantId}/${formData?.restaurantPics?.filePath}`}
         alt="가게 이미지"
         style={{ width: "100%", height: 260, position: "relative" }}
       />
@@ -208,89 +211,52 @@ function StoreDetailPage() {
           onClick={() => navigate(-1)}
         />
       </BackDiv>
-      <TitleDiv>
+      <TitleDiv onClick={() => console.log(menu)}>
         <div>
-          {formData.restaurantAddress
-            ?.match(/대구광역시\s*중구/)[0]
-            .replace("광역시", "")}{" "}
+          {formData?.restaurantAddress?.match(/대구광역시\s*(.+)/)[1]}{" "}
           <span>I</span> {cateName()}
         </div>
-        <h1>{formData.restaurantName}</h1>
-        <div>{formData.restaurantDescription}</div>
+        <h1>{formData?.restaurantName}</h1>
+        <div>{formData?.restaurantDescription}</div>
 
         <h2>
           <LuMapPin />
-          {formData.restaurantAddress}
+          {formData?.restaurantAddress}
         </h2>
         <h2 style={{ marginTop: 10 }}>
           <BsFillTelephoneFill />
-          매장 연락처 : {formData.restaurantNumber}
+          매장 연락처 : {formData?.restaurantNumber}
         </h2>
       </TitleDiv>
       <LineDiv />
       <ContentDiv>
         <h1>메뉴</h1>
-        {/* map 사용하기 */}
-        <MenuDiv>
-          <img src="/menu.png" alt="메뉴 이미지" />
-          <div>
-            <div>캐비어알밥</div>
-            <span>7,000원</span>
+
+        {menu.map((item, index) => (
+          <div key={index}>
+            {item.menuList.map((list, index) => (
+              <div key={index}>
+                <MenuDiv>
+                  <img
+                    src={`http://112.222.157.156:5222/pic/menu/${list?.menuId}/${list?.menuPic}`}
+                    alt="메뉴 이미지"
+                  />
+                  <div>
+                    <div>{list?.menuName}</div>
+                    <span>{list?.price.toLocaleString("ko-KR")}원</span>
+                  </div>
+                </MenuDiv>
+                <LineDiv
+                  style={{
+                    height: 1,
+                    backgroundColor: "#eee",
+                    marginBottom: 10,
+                  }}
+                />
+              </div>
+            ))}
           </div>
-        </MenuDiv>
-        <LineDiv
-          style={{ height: 1, backgroundColor: "#eee", marginBottom: 10 }}
-        />
-        <MenuDiv>
-          <img src="/menu.png" alt="메뉴 이미지" />
-          <div>
-            <div>캐비어알밥</div>
-            <span>7,000원</span>
-          </div>
-        </MenuDiv>
-        <LineDiv
-          style={{ height: 1, backgroundColor: "#eee", marginBottom: 10 }}
-        />
-        <MenuDiv>
-          <img src="/menu.png" alt="메뉴 이미지" />
-          <div>
-            <div>캐비어알밥</div>
-            <span>7,000원</span>
-          </div>
-        </MenuDiv>
-        <LineDiv
-          style={{ height: 1, backgroundColor: "#eee", marginBottom: 10 }}
-        />
-        <MenuDiv>
-          <img src="/menu.png" alt="메뉴 이미지" />
-          <div>
-            <div>캐비어알밥</div>
-            <span>7,000원</span>
-          </div>
-        </MenuDiv>
-        <LineDiv
-          style={{ height: 1, backgroundColor: "#eee", marginBottom: 10 }}
-        />
-        <MenuDiv>
-          <img src="/menu.png" alt="메뉴 이미지" />
-          <div>
-            <div>캐비어알밥</div>
-            <span>7,000원</span>
-          </div>
-        </MenuDiv>
-        <LineDiv
-          style={{ height: 1, backgroundColor: "#eee", marginBottom: 10 }}
-        />
-        <MenuDiv>
-          <img src="/menu.png" alt="메뉴 이미지" />
-          <div>
-            <div>캐비어알밥</div>
-            <span>7,000원</span>
-          </div>
-        </MenuDiv>
-        <LineDiv
-          style={{ height: 1, backgroundColor: "#eee", marginBottom: 10 }}
-        />
+        ))}
       </ContentDiv>
       {!isModal && (
         <FooterDiv>

@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { BsFillTelephoneFill } from "react-icons/bs";
-import { FaAngleDown, FaAngleUp } from "react-icons/fa6";
+import { FaAngleDown, FaAngleUp, FaCheck, FaPlus } from "react-icons/fa6";
 import { FiMinusCircle, FiPlusCircle } from "react-icons/fi";
 import { IoMdArrowBack } from "react-icons/io";
 import { LuMapPin } from "react-icons/lu";
@@ -51,9 +51,9 @@ const LineDiv = styled.div`
 `;
 
 const ContentDiv = styled.div`
-  height: calc(100% - 100px);
   overflow-y: auto;
   padding: 15px 25px;
+  padding-bottom: 100px;
   div {
     color: #707070;
   }
@@ -69,6 +69,7 @@ const ContentDiv = styled.div`
 `;
 
 const MenuDiv = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
   gap: 20px;
@@ -130,6 +131,9 @@ function MenuSelectPage() {
 
   const [formData, setFormData] = useState({});
   const [isClick, setIsClick] = useState(false);
+  const [menu, setMenu] = useState([]);
+  const [addMenu, setAddMenu] = useState([]);
+
   const [postData, setPostData] = useState([]);
 
   const { id } = useParams();
@@ -137,7 +141,9 @@ function MenuSelectPage() {
   const getDetailStore = async () => {
     try {
       const res = await axios.get(`/api/restaurant?restaurantId=${id}`);
+      const result = res.data.resultData;
       setFormData(res.data.resultData);
+      setMenu(result.menuCateList);
       console.log(res.data.resultData);
     } catch (error) {
       console.log(error);
@@ -157,15 +163,30 @@ function MenuSelectPage() {
     }
   };
 
+  const increaseCount = index => {
+    const updatedMenu = [...addMenu];
+    updatedMenu[index].menuCount += 1;
+    setAddMenu(updatedMenu);
+  };
+
+  const decreaseCount = index => {
+    const updatedMenu = [...addMenu];
+    if (updatedMenu[index].menuCount > 1) {
+      updatedMenu[index].menuCount -= 1;
+      setAddMenu(updatedMenu);
+    }
+  };
+
   useEffect(() => {
     getDetailStore();
     console.log(id);
   }, []);
 
   useEffect(() => {
-    console.log(isReserve);
+    // console.log(isReserve);
     // console.log("시간 : ", time, "인원 : ", count);
-  }, []);
+    console.log(addMenu);
+  }, [addMenu]);
 
   return (
     <div style={{ height: "100vh" }}>
@@ -182,9 +203,7 @@ function MenuSelectPage() {
       </BackDiv>
       <TitleDiv>
         <div>
-          {formData.restaurantAddress
-            ?.match(/대구광역시\s*중구/)[0]
-            .replace("광역시", "")}{" "}
+          {formData?.restaurantAddress?.match(/대구광역시\s*(.+)/)[1]}{" "}
           <span>I</span> {cateName()}
         </div>
         <h1>{formData.restaurantName}</h1>
@@ -202,67 +221,57 @@ function MenuSelectPage() {
       <LineDiv />
       <ContentDiv>
         <h1>메뉴 선택</h1>
-        {/* map 사용하기 */}
-        <MenuDiv>
-          <img src="/menu.png" alt="메뉴 이미지" />
-          <div>
-            <div>캐비어알밥</div>
-            <span>7,000원</span>
+        {menu.map((item, index) => (
+          <div key={index}>
+            {item.menuList.map(list => (
+              <div key={list.menuId}>
+                <MenuDiv>
+                  <img
+                    src={`http://112.222.157.156:5222/pic/menu/${list.menuId}/${list?.menuPic}`}
+                    alt="메뉴 이미지"
+                  />
+                  <div onClick={() => console.log()}>
+                    <div>{list.menuName}</div>
+                    <span>{list.price.toLocaleString("ko-KR")}원</span>
+                  </div>
+                  <div style={{ position: "absolute", right: 20 }}>
+                    {addMenu.some(item => item.menuName === list.menuName) ? (
+                      <FaCheck
+                        onClick={() =>
+                          setAddMenu(prev =>
+                            prev.filter(
+                              item => item.menuName !== list.menuName,
+                            ),
+                          )
+                        }
+                      />
+                    ) : (
+                      <FaPlus
+                        onClick={() =>
+                          setAddMenu(prev => [
+                            ...prev,
+                            {
+                              menuName: list.menuName,
+                              price: list.price,
+                              menuCount: 1,
+                            },
+                          ])
+                        }
+                      />
+                    )}
+                  </div>
+                </MenuDiv>
+                <LineDiv
+                  style={{
+                    height: 1,
+                    backgroundColor: "#eee",
+                    marginBottom: 10,
+                  }}
+                />
+              </div>
+            ))}
           </div>
-        </MenuDiv>
-        <LineDiv
-          style={{ height: 1, backgroundColor: "#eee", marginBottom: 10 }}
-        />
-        <MenuDiv>
-          <img src="/menu.png" alt="메뉴 이미지" />
-          <div>
-            <div>캐비어알밥</div>
-            <span>7,000원</span>
-          </div>
-        </MenuDiv>
-        <LineDiv
-          style={{ height: 1, backgroundColor: "#eee", marginBottom: 10 }}
-        />
-        <MenuDiv>
-          <img src="/menu.png" alt="메뉴 이미지" />
-          <div>
-            <div>캐비어알밥</div>
-            <span>7,000원</span>
-          </div>
-        </MenuDiv>
-        <LineDiv
-          style={{ height: 1, backgroundColor: "#eee", marginBottom: 10 }}
-        />
-        <MenuDiv>
-          <img src="/menu.png" alt="메뉴 이미지" />
-          <div>
-            <div>캐비어알밥</div>
-            <span>7,000원</span>
-          </div>
-        </MenuDiv>
-        <LineDiv
-          style={{ height: 1, backgroundColor: "#eee", marginBottom: 10 }}
-        />
-        <MenuDiv>
-          <img src="/menu.png" alt="메뉴 이미지" />
-          <div>
-            <div>캐비어알밥</div>
-            <span>7,000원</span>
-          </div>
-        </MenuDiv>
-        <LineDiv
-          style={{ height: 1, backgroundColor: "#eee", marginBottom: 10 }}
-        />
-        <MenuDiv>
-          <img src="/menu.png" alt="메뉴 이미지" />
-          <div>
-            <div>캐비어알밥</div>
-            <span>7,000원</span>
-          </div>
-        </MenuDiv>
-        <LineDiv
-          style={{ height: 1, backgroundColor: "#eee", marginBottom: 10 }}
-        />
+        ))}
       </ContentDiv>
       <ModalDiv>
         <FlexDiv>
@@ -280,28 +289,34 @@ function MenuSelectPage() {
         </FlexDiv>
         {isClick && (
           <div>
-            <SelectDiv>
-              <p>양지 쌀국수</p>
-              <div>11,000</div>
-            </SelectDiv>
-            <SelectDiv style={{ margin: "5px 30px" }}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 15,
-                }}
-              >
-                <p>
-                  <FiMinusCircle />
-                </p>
-                <p>3</p>
-                <p>
-                  <FiPlusCircle />
-                </p>
+            {addMenu.map((item, idx) => (
+              <div key={idx}>
+                <SelectDiv>
+                  <p>{item.menuName}</p>
+                  <div>{item.price.toLocaleString()}</div>
+                </SelectDiv>
+                <SelectDiv style={{ margin: "5px 30px" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 15,
+                    }}
+                  >
+                    <p onClick={() => decreaseCount(idx)}>
+                      <FiMinusCircle />
+                    </p>
+                    <p>{item.menuCount}</p>
+                    <p onClick={() => increaseCount(idx)}>
+                      <FiPlusCircle />
+                    </p>
+                  </div>
+                  <div>
+                    {(item.menuCount * item.price).toLocaleString("ko-KR")}원
+                  </div>
+                </SelectDiv>
               </div>
-              <div>33,000</div>
-            </SelectDiv>
+            ))}
             <LineDiv
               style={{
                 height: 1,
@@ -310,8 +325,17 @@ function MenuSelectPage() {
               }}
             />
             <SelectDiv style={{ marginBottom: 10 }}>
-              <p>총 수량 3개</p>
-              <p>총 33,000원</p>
+              <p>
+                총 수량 {addMenu.reduce((acc, item) => acc + item.menuCount, 0)}
+                개
+              </p>
+              <p>
+                총{" "}
+                {addMenu
+                  .reduce((acc, item) => acc + item.menuCount * item.price, 0)
+                  .toLocaleString("ko-KR")}
+                원
+              </p>
             </SelectDiv>
             <FlexDiv>
               <button>{isReserve ? "예약하기" : "결제하기"}</button>
