@@ -5,7 +5,7 @@ import { IoMdClose } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { roleAtom } from "../../atoms/roleAtom";
-import { loginAtom } from "../../atoms/userAtom";
+import { loginAtom, userDataAtom } from "../../atoms/userAtom";
 import { STORE, USER } from "../../constants/Role";
 import {
   CloseDiv,
@@ -24,6 +24,7 @@ import {
 function LoginPage() {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useRecoilState(loginAtom);
+  const [userData, setUserData] = useRecoilState(userDataAtom);
   const [formData, setFormData] = useState({ id: "", pw: "" });
   const [hasVal, setHasVal] = useState(false);
 
@@ -41,10 +42,23 @@ function LoginPage() {
   const postLogin = async () => {
     try {
       if (role === USER) {
-        await axios.post("/api/user/sign-in", formData);
+        const res = await axios.post("/api/user/sign-in", formData);
+        const result = res.data.resultData;
+        // console.log(res.data.resultData);
+        setUserData({
+          companyId: result.companyId,
+          companyName: result.companyName,
+          email: result.email,
+          name: result.name,
+          phone: result.phone,
+          pic: result.pic,
+          point: result.point,
+          roleId: result.roleId,
+          uid: result.uid,
+          userId: result.userId,
+        });
       } else if (role === STORE) {
         await axios.post("/api/admin/sign-in", formData);
-        navigate("/store");
       }
       setIsLogin(true);
       routeHandler();
