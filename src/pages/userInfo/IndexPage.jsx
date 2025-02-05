@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { IoMdArrowBack } from "react-icons/io";
@@ -8,6 +8,7 @@ import { userDataAtom } from "../../atoms/userAtom";
 import MenuBar from "../../components/MenuBar";
 import Notification from "../../components/Notification";
 import { isWhiteIcon } from "../../atoms/noticeAtom";
+import { getCookie } from "../../components/cookie";
 
 function IndexPage() {
   const navigate = useNavigate();
@@ -16,10 +17,22 @@ function IndexPage() {
   // 알림 아이콘 검정색
   setIsWhite(false);
 
+  // sessionStorage에 저장된 userId 값을 가져옴
+  const sessionUserId = window.sessionStorage.getItem("userId");
+
   useEffect(() => {
     const getUserInfo = async () => {
       try {
-        const res = await axios.get("/api/user?userId=1");
+        const params = {
+          userId: sessionUserId,
+        };
+        const accessToken = getCookie();
+        const res = await axios.get(`/api/user`, {
+          params,
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
         const resultData = res.data.resultData;
         const phoneNumber = resultData.phone
           .replace(/[^0-9]/g, "")

@@ -31,7 +31,6 @@ import MenuSelectPage from "./pages/restaurant/MenuSelectPage";
 
 import NotFound from "./pages/NotFound";
 
-
 function App() {
   return (
     <Router>
