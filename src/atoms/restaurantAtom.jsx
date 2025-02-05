@@ -36,3 +36,8 @@ export const orderDataAtom = atom({
     ],
   },
 });
+
+export const orderIdAtom = atom({
+  key: "orderIdAtom",
+  default: 0,
+});

@@ -64,7 +64,6 @@ function LoginPage() {
         const accessToken = result.accessToken;
         window.sessionStorage.setItem("userId", userId);
         setCookie(accessToken);
-
       } else if (role === STORE) {
         await axios.post("/api/admin/sign-in", formData);
       }
