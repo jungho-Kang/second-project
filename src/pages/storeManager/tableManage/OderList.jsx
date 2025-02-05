@@ -1,56 +1,140 @@
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
+import UserPage from "../../user/UserPage";
+import useModal from "../../../components/useModal";
 
 const OrderList = () => {
-  const orderData = useState({
-    orderNo: 0,
-    orderName: "홍길동",
-    orderDate: "01-03 13:47",
-    orderMenuList: [],
-    orderTotal: "27,000원",
+  const [orderDataList, setOrderDataList] = useState([]);
+  const [orderMenuList, setOrderMenuList] = useState([]);
+  const sessionStoreId = window.sessionStorage.getItem("restaurantId");
+  const { Modal, open, close } = useModal({
+    title: "주문 정보를 확인해주세요",
   });
+
+  useEffect(() => {
+    const getOrderList = async () => {
+      const params = {
+        // restaurantId: sessionStoreId,
+        restaurantId: 1,
+      };
+      try {
+        const res = await axios.get(`/api/order/restaurant/reservation`, {
+          params,
+        });
+        const result = res.data.resultData;
+        console.log(result);
+        const menuList = result.map(item => {
+          return item.orderDetails ? item.orderDetails : [];
+        });
+        console.log(menuList.flat());
+
+        setOrderDataList([...result]);
+        setOrderMenuList([...menuList.flat()]);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getOrderList();
+  }, []);
+
+  const orderDetailModal = () => {
+    Swal.fire({
+      title: "주문을 확인해주세요",
+      html: ` `,
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: "승인",
+      denyButtonText: "거부",
+      cancelButtonText: "취소",
+    }).then(result => {
+      if (result.isConfirmed) {
+        Swal.fire("주문을 승인했습니다!", "", "success");
+      } else if (result.isDenied) {
+        Swal.fire("주문을 거절했습니다.", "", "warning");
+      }
+    });
+  };
 
   return (
     <div className="flex flex-col w-2/5 h-dvh border-l-2 bg-white border-l-gray shadow-xl">
       <div className="w-100% h-dvh">
-        <div className="flex w-100% h-100% flex-col text-center pt-10 text-2xl">
-          주문 상세
+        <div>
+          <div className="flex w-100% h-100% flex-col text-center pt-10 text-2xl mb-6 font-semibold">
+            새로운 주문
+          </div>
+          <div className="flex w-full items-center justify-between px-6 py-2 border-b border-gray">
+            <span className="flex w-[30%] justify-center text-darkGray">
+              주문번호
+            </span>
+            <span className="flex w-[40%] justify-center text-darkGray">
+              메뉴
+            </span>
+            <span className="flex w-[30%] justify-center text-darkGray">
+              주문시간
+            </span>
+          </div>
         </div>
-        <ul className="flex flex-col w-100% h-100% gap-4 pt-6 pl-10 text-nowrap">
-          <li className="flex gap-6 ">
-            <span className="text-darkGray">주문번호</span>
-            <span>0001</span>
-          </li>
-          <li className="flex gap-6">
-            <span className="text-darkGray">주문자명</span>
-            <span>홍길동</span>
-          </li>
-          <li className="flex gap-6">
-            <span className="text-darkGray">주문일시</span>
-            <span className="tracking-wide">01-03 13:47</span>
-          </li>
-          <li className="flex gap-6">
-            <span className="text-darkGray">주문메뉴</span>
-            <div className="w-100% min-h-20 h-40 overflow-hidden">
-              <div className="flex gap-4 pb-1">
-                <span className="">돼지 국밥</span>
-                <span className="tracking-widest">x1</span>
+        <ul className="flex flex-col w-[100%] h-[100%] gap-4 pt-3 text-nowrap">
+          {orderDataList.map((item, index) => (
+            <li
+              onClick={open}
+              key={index}
+              className="flex w-full items-center justify-between px-6 py-2 border-b border-gray"
+            >
+              <span className="flex w-[30%] justify-center text-black">
+                {item.orderId}
+              </span>
+              <span className="flex w-[30%] justify-center text-black">
+                {item.orderDetails.map((data, index) => (
+                  <div key={index}>{data?.menuName}</div>
+                ))}
+              </span>
+              <span className="flex w-[30%] justify-center text-black">
+                {item.orderDetails.map((data, index) => (
+                  <div key={index}>
+                    {data?.createdAt.split(" ")?.[1].slice(0, 5)}
+                  </div>
+                ))}
+              </span>
+            </li>
+          ))}
+        </ul>
+        <Modal>
+          <div className="flex flex-col w-full h-full justify-between">
+            <div className="flex flex-col w-full h-[60%] gap-4 pt-10">
+              <div className="flex w-full px-10 gap-3">
+                <span className="flex w-[25%]">주문번호</span>
+                <span>12</span>
               </div>
-              <div className="pb-3 text-darkGray">내장 섞어서</div>
-              <div className="flex gap-4 pb-1">
-                <span className="">돼지 국밥</span>
-                <span className="tracking-widest">x1</span>
+              <div className="flex w-full px-10 gap-3">
+                <span className="flex w-[25%]">주문한 메뉴</span>
+                <span>asd</span>
               </div>
-              <div className="flex gap-4 pb-1">
-                <span className="">돼지 국밥</span>
-                <span className="tracking-widest">x1</span>
+              <div className="flex w-full px-10 gap-3">
+                <span className="flex w-[25%]">주문한 사람</span>
+                <span>asdd</span>
+              </div>
+              <div className="flex w-full px-10 gap-3">
+                <span className="flex w-[25%]">핸드폰 번호</span>
+                <span>123123123</span>
+              </div>
+              <div className="flex w-full h-[20%] px-10 gap-3">
+                <span className="flex w-[25%]">인원 수</span>
+                <span>1 명</span>
               </div>
             </div>
-          </li>
-          <li className="flex gap-6">
-            <span className="text-darkGray">주문총액</span>
-            <span className="whitespace-break-spaces">27,000원</span>
-          </li>
-        </ul>
+
+            <div className="flex w-full h-[] justify-center gap-10 mb-24">
+              <div className="bg-blue px-2 py-1 rounded-md text-nowrap text-white font-medium">
+                주문 승인
+              </div>
+              <div className="bg-red px-2 py-1 rounded-md text-nowrap text-white font-medium">
+                주문 취소
+              </div>
+            </div>
+          </div>
+        </Modal>
       </div>
     </div>
   );

@@ -114,7 +114,7 @@ const Table = () => {
           </div>
         </div>
       </div>
-      {isClick ? <OrderList /> : <></>}
+      {isClick ? <OrderList /> : <OrderList />}
     </>
   );
 };

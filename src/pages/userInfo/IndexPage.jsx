@@ -8,7 +8,12 @@ import { userDataAtom } from "../../atoms/userAtom";
 import MenuBar from "../../components/MenuBar";
 import Notification from "../../components/Notification";
 import { isWhiteIcon } from "../../atoms/noticeAtom";
-import { getCookie } from "../../components/cookie";
+import {
+  getCookie,
+  removeCookie,
+  removeCookieRefresh,
+} from "../../components/cookie";
+import Swal from "sweetalert2";
 
 function IndexPage() {
   const navigate = useNavigate();
@@ -23,32 +28,54 @@ function IndexPage() {
   useEffect(() => {
     const getUserInfo = async () => {
       try {
-        const params = {
-          userId: sessionUserId,
-        };
-        const accessToken = getCookie();
-        const res = await axios.get(`/api/user`, {
-          params,
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        const resultData = res.data.resultData;
-        const phoneNumber = resultData.phone
-          .replace(/[^0-9]/g, "")
-          .replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/g, "$1-$2-$3")
-          .replace(/(-{1,2})$/g, "");
-        const pointParse = resultData.point.toLocaleString("ko-KR");
-        console.log(resultData);
-        console.log(res);
+        if (sessionUserId) {
+          const params = {
+            userId: sessionUserId,
+          };
+          const accessToken = getCookie();
+          const res = await axios.get(`/api/user`, {
+            params,
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
+          const resultData = res.data.resultData;
+          const phoneNumber = resultData.phone
+            .replace(/[^0-9]/g, "")
+            .replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/g, "$1-$2-$3")
+            .replace(/(-{1,2})$/g, "");
+          const pointParse = resultData.point.toLocaleString("ko-KR");
+          console.log(resultData);
+          console.log(res);
 
-        setUserData({ ...resultData, phone: phoneNumber, point: pointParse });
+          setUserData({ ...resultData, phone: phoneNumber, point: pointParse });
+        } else {
+          Swal.fire({
+            title: "로그인 후 이용하실 수 있습니다!",
+            text: "확인을 누르시면 로그인 페이지로 이동합니다.",
+            icon: "error",
+            confirmButtonText: "확인",
+            showConfirmButton: true, // ok 버튼 노출 여부
+            allowOutsideClick: false, // 외부 영역 클릭 방지
+          }).then(result => {
+            if (result.isConfirmed) {
+              navigate("/user");
+            }
+          });
+        }
       } catch (error) {
         console.log(error);
       }
     };
     getUserInfo();
   }, []);
+
+  const logoutHandler = () => {
+    removeCookie("accessToken");
+    removeCookieRefresh("refresh-token");
+    window.sessionStorage.removeItem("userId");
+    navigate("/auth");
+  };
 
   return (
     <div className="flex w-full h-dvh justify-center items-center overflow-x-hidden overflow-y-scroll scrollbar-hide">
@@ -110,7 +137,10 @@ function IndexPage() {
             비밀번호 변경
           </div>
         </div>
-        <div className="flex justify-center text-darkGray underline font-bold mb-32">
+        <div
+          onClick={logoutHandler}
+          className="flex justify-center text-darkGray underline font-bold mb-32"
+        >
           로그아웃
         </div>
       </div>

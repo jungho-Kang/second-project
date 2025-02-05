@@ -37,22 +37,6 @@ const SalesConfirm = () => {
                 </div>
               </div>
             </div>
-            {/* <ul className="pt-10">
-              <div className="flex pt-14 justify-between gap-10">
-                <li className="w-1/2 h-1/2">
-                  <span className="flex w-full text-start px-3 pt-2 pb-3 text-darkGray">
-                    요일별 매출현황
-                  </span>
-                  <BarChartLayout />
-                </li>
-                <li className="w-1/2 h-1/2">
-                  <span className="flex w-full text-start px-3 pt-2 text-darkGray">
-                    결제 형태
-                  </span>
-                  <PieChartLayout />
-                </li>
-              </div>
-            </ul> */}
             <LineChartLayout />
             <SalesPage />
           </div>
