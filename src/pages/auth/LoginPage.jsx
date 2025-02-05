@@ -20,6 +20,7 @@ import {
   TextSpan,
   TitleDiv,
 } from "./loginStyle";
+import { getCookie, setCookie } from "../../components/cookie";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -43,8 +44,8 @@ function LoginPage() {
     try {
       if (role === USER) {
         const res = await axios.post("/api/user/sign-in", formData);
+
         const result = res.data.resultData;
-        // console.log(res.data.resultData);
         setUserData({
           companyId: result.companyId,
           companyName: result.companyName,
@@ -57,6 +58,13 @@ function LoginPage() {
           uid: result.uid,
           userId: result.userId,
         });
+
+        console.log(result);
+        const userId = result.userId;
+        const accessToken = result.accessToken;
+        window.sessionStorage.setItem("userId", userId);
+        setCookie(accessToken);
+
       } else if (role === STORE) {
         await axios.post("/api/admin/sign-in", formData);
       }
