@@ -73,7 +73,7 @@ export default {
     },
     animation: {
       pulse: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-      ping: "ping 2s cubic-bezier(0, 0, 0.2, 1) infinite",
+      ping: "ping 1s cubic-bezier(0, 0, 0.2, 1) infinite",
       bounce: "bounce 1s infinite",
       fadein: "fadein 0.5s",
       fadeout: "fadeout 1s",

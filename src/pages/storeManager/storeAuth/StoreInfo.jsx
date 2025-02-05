@@ -108,12 +108,10 @@ const StoreInfo = () => {
   });
 
   useEffect(() => {
-
     trigger();
   }, [trigger]);
 
-  useEffect(() => {}, []);
-
+  useEffect(() => {
     setValue(
       "restaurantNumber",
       formData.restaurantNumber
@@ -122,7 +120,6 @@ const StoreInfo = () => {
         .replace(/(-{1,2})$/g, ""),
     );
   }, []);
-
 
   const formSubmitHandler = data => {
     console.log(data);
