@@ -30,8 +30,11 @@ import PriceOrderPage from "./pages/order/placetoorder/PriceOrderPage";
 import MenuSelectPage from "./pages/restaurant/MenuSelectPage";
 
 import NotFound from "./pages/NotFound";
+import { runSocket } from "./components/notification/StompComponent";
+import OrderRequestPage from "./pages/order/placetoorder/OrderRequestPage";
 
 function App() {
+  runSocket();
   return (
     <Router>
       <Routes>
@@ -62,6 +65,7 @@ function App() {
             <Route path="coupon" element={<MealTicketPage />} />
             <Route path="member" element={<MemberOrderPage />} />
             <Route path="price" element={<PriceOrderPage />} />
+            <Route path="request" element={<OrderRequestPage />} />
           </Route>
           <Route path="restaurant">
             <Route index element={<Restaurant />} />

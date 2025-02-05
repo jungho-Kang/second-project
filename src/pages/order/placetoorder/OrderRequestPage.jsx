@@ -6,33 +6,49 @@ import { useRecoilState } from "recoil";
 import { userDataAtom } from "../../../atoms/userAtom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { getCookie } from "../../../components/cookie";
+import { subscribeToReservationStatus } from "../../../components/notification/StompComponent";
 
-const PriceOrderPage = () => {
+const OrderRequestPage = () => {
   const [priceList, setPriceList] = useState({});
   const [inputValue, setInputValue] = useState("");
   const [isCompleted, setIsCompleted] = useState(false);
   const [userData, setUserData] = useRecoilState(userDataAtom);
+  const [creatOrderId, setCreatOrderId] = useState(0);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const params = {
-      orderId: 1,
-    };
-    const getPaymentMembers = async () => {
-      try {
-        const res = await axios.get(
-          "/api/user/user-payment-member/getPaymentMember",
-          { params },
-        );
-        console.log(res);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getPaymentMembers();
-  }, []);
+  const postReservation = async () => {
+    const sessionUserId = window.sessionStorage.getItem("userId");
+    const accessToken = getCookie("accessToken");
 
-  const a = "";
+    const params = {
+      restaurantId: 0,
+      userId: sessionUserId,
+      reservationTime: "",
+      reservationPeopleCount: 0,
+      userPhone: "",
+      menuList: [
+        {
+          menuId: 0,
+          menuCount: 0,
+        },
+      ],
+    };
+
+    try {
+      const res = await axios.post(`/api/reservation`, {
+        params,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      console.log(res.data.resultData);
+      setCreatOrderId(res.data.resultData);
+      subscribeToReservationStatus(99);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const inputChangeHandler = e => {
     setInputValue(e.target.value);
@@ -109,12 +125,15 @@ const PriceOrderPage = () => {
           />
         </div>
         <div className="flex w-full justify-center">
-          <span className="bg-primary text-white text-lg px-2 py-1 rounded-md">
-            결제 요청
+          <span
+            onClick={() => postReservation()}
+            className="bg-primary text-white text-lg px-2 py-1 rounded-md"
+          >
+            승인 요청
           </span>
         </div>
       </div>
     </div>
   );
 };
-export default PriceOrderPage;
+export default OrderRequestPage;
