@@ -48,7 +48,7 @@ const Seatmate = () => {
         <div className="flex w-full h-[6%] items-center px-6 border-b border-gray">
           <div className="flex w-[90%] items-center gap-4">
             <input type="checkbox" className="w-5 h-5" checked disabled />
-            <label className="text-xl">김길동(12345)</label>
+            <label className="text-xl">김길동(10001234)</label>
           </div>
           <span className="w-[20%] text-darkGray">필수선택</span>
         </div>
@@ -65,7 +65,7 @@ const Seatmate = () => {
             <div className="flex flex-col w-full h-dvh">
               <div className="flex w-full h-[6%] items-center gap-4 px-6 border-b border-gray">
                 <input type="checkbox" className="w-5 h-5" />
-                <label className="text-xl">김길동(12345)</label>
+                <label className="text-xl">김길동(10001234)</label>
               </div>
             </div>
           </div>
@@ -73,15 +73,15 @@ const Seatmate = () => {
           <div className="flex flex-col w-full h-dvh">
             <div className="flex w-full h-[6%] items-center gap-4 px-6 border-b border-gray">
               <input type="checkbox" className="w-5 h-5" />
-              <label className="text-xl">김길동(12345)</label>
+              <label className="text-xl">김길동(10001234)</label>
             </div>
             <div className="flex w-full h-[6%] items-center gap-4 px-6 border-b border-gray">
               <input type="checkbox" className="w-5 h-5" />
-              <label className="text-xl">김길동(12345)</label>
+              <label className="text-xl">김길동(10001234)</label>
             </div>
             <div className="flex w-full h-[6%] items-center gap-4 px-6 border-b border-gray">
               <input type="checkbox" className="w-5 h-5" />
-              <label className="text-xl">김길동(12345)</label>
+              <label className="text-xl">김길동(10001234)</label>
             </div>
           </div>
         )}

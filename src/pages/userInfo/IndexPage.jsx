@@ -7,10 +7,14 @@ import { useRecoilState } from "recoil";
 import { userDataAtom } from "../../atoms/userAtom";
 import MenuBar from "../../components/MenuBar";
 import Notification from "../../components/Notification";
+import { isWhiteIcon } from "../../atoms/noticeAtom";
 
 function IndexPage() {
   const navigate = useNavigate();
   const [userData, setUserData] = useRecoilState(userDataAtom);
+  const [isWhite, setIsWhite] = useRecoilState(isWhiteIcon);
+  // 알림 아이콘 검정색
+  setIsWhite(false);
 
   useEffect(() => {
     const getUserInfo = async () => {

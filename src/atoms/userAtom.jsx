@@ -5,6 +5,7 @@ export const loginAtom = atom({
   default: false,
 });
 
+// 로그인한 유저의 정보
 export const userDataAtom = atom({
   key: "userDataAtom",
   default: {
