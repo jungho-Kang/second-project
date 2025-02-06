@@ -134,9 +134,9 @@ function SignUpPage() {
             {/* roleId를 보내기 위한 input */}
             <input
               type="text"
-              {...register("roleId")}
               value={role}
               style={{ display: "none" }}
+              {...register("roleId")}
             />
             <TitleDiv>회원가입</TitleDiv>
             <InputYupDiv>

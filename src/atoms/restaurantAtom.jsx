@@ -37,11 +37,11 @@ export const orderDataAtom = atom({
   },
 });
 
+// 주문 정보 Id
 export const orderIdAtom = atom({
   key: "orderIdAtom",
   default: 0,
 });
-
 
 export const memberDataAtom = atom({
   key: "memberDataAtom",
@@ -49,12 +49,10 @@ export const memberDataAtom = atom({
     orderId: 0,
     userId: [],
     point: [],
-
-export const locationAtom = atom({
-  key: "locationAtom",
-  default: {
-    latitude: 0,
-    longitude: 0,
-
   },
+});
+
+export const adminIdAtom = atom({
+  key: "adminIdAtom",
+  default: 0,
 });

@@ -5,7 +5,7 @@ import FindIdPage from "./pages/auth/FindIdPage";
 import FindPwPage from "./pages/auth/FindPwPage";
 import LoginPage from "./pages/auth/LoginPage";
 import SignUpPage from "./pages/auth/SignUpPage";
-import Order from "./pages/order/PaymentList";
+import Order from "./pages/payment/PaymentList";
 import Restaurant from "./pages/restaurant/RestaurantPage";
 import Store from "./pages/storeManager/StorePage";
 import MenuPage from "./pages/storeManager/menu/StoreMenuPage";
@@ -13,29 +13,22 @@ import StoreSales from "./pages/storeManager/salesConfirm/Sales";
 import OrderPage from "./pages/storeManager/salesConfirm/SalesPage";
 import EditInfoPage from "./pages/userInfo/EditInfoPage";
 import UserInfo from "./pages/userInfo/IndexPage";
-
 import EmailAuthPage from "./pages/auth/EmailAuthPage";
-
 import PolicyPage from "./pages/auth/PolicyPage";
 import PlaceToOrder from "./pages/order/placetoorder/PlaceToOrder";
-import MealTicketPage from "./pages/order/placetoorder/MealTicketPage";
+import MealTicketPage from "./pages/order/placetoorder/QRCode";
 import StoreInfoPage from "./pages/storeManager/storeAuth/StoreInfoPage";
 import UserMainPage from "./pages/user/UserMainPage";
 import RestaurantDetailPage from "./pages/restaurant/RestaurantDetailPage";
 import AddStorePage from "./pages/storeManager/AddStorePage";
-
-import MemberOrderPage from "./pages/order/placetoorder/MemberOrderPage";
-import PriceOrderPage from "./pages/order/placetoorder/PriceOrderPage";
-
+import OrderMemberPage from "./pages/order/placetoorder/OrderMemberPage";
+import OrderPricePage from "./pages/order/placetoorder/OrderPricePage";
 import MenuSelectPage from "./pages/restaurant/MenuSelectPage";
-
 import NotFound from "./pages/NotFound";
 import { runSocket } from "./components/notification/StompComponent";
 import OrderRequestPage from "./pages/order/placetoorder/OrderRequestPage";
-
 function App() {
   runSocket();
-
   return (
     <Router>
       <Routes>
@@ -51,7 +44,6 @@ function App() {
             <Route path="emailauth" element={<EmailAuthPage />} />
           </Route>
         </Route>
-
         <Route path="/user">
           <Route index element={<UserMainPage />} />
           <Route path="userinfo">
@@ -64,8 +56,8 @@ function App() {
           <Route path="placetoorder">
             <Route index element={<PlaceToOrder />} />
             <Route path="coupon" element={<MealTicketPage />} />
-            <Route path="member" element={<MemberOrderPage />} />
-            <Route path="price" element={<PriceOrderPage />} />
+            <Route path="member" element={<OrderMemberPage />} />
+            <Route path="price" element={<OrderPricePage />} />
             <Route path="request" element={<OrderRequestPage />} />
           </Route>
           <Route path="restaurant">
@@ -76,9 +68,7 @@ function App() {
             </Route>
           </Route>
         </Route>
-
         <Route path="/addstore" element={<AddStorePage />} />
-
         <Route path="/store">
           <Route index element={<Store />} />
           <Route path="menu" element={<MenuPage />} />
@@ -86,7 +76,6 @@ function App() {
           <Route path="sales" element={<StoreSales />} />
           <Route path="info" element={<StoreInfoPage />} />
         </Route>
-
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>

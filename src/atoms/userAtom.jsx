@@ -21,3 +21,12 @@ export const userDataAtom = atom({
     userId: 0,
   },
 });
+
+// 위치 정보
+export const locationAtom = atom({
+  key: "locationAtom",
+  default: {
+    latitude: 0,
+    longitude: 0,
+  },
+});

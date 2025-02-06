@@ -75,6 +75,9 @@ export const LoginBtn = styled.button`
 `;
 
 export const YupDiv = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
   color: #f00;
   text-align: left;
   @media (max-width: 430px) {

@@ -11,7 +11,7 @@ import {
 } from "react-kakao-maps-sdk";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { locationAtom } from "../../atoms/restaurantAtom";
+import { locationAtom } from "../../atoms/userAtom";
 
 // ListDiv styled component 수정
 const ListDiv = styled.div`
@@ -453,9 +453,7 @@ function RestaurantPage() {
                 <FaStar style={{ width: 10, height: 10, color: "E1FF00" }} />
                 <span style={{ fontWeight: 700, fontSize: 8 }}>4.8</span>
                 <span style={{ fontSize: 8, color: "#BABABA" }}>
-
                   {item.restaurantAddress.match(/대구광역시\s*(.+)/)?.[1]} ·{" "}
-
                   한식
                 </span>
               </FlexDiv>
