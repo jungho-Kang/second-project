@@ -18,43 +18,6 @@ import {
   YupDiv,
 } from "./loginStyle";
 
-// const SignBtn = styled.button`
-//   color: #fff;
-//   border-radius: 5px;
-//   @media (max-width: 430px) {
-//     font-size: 14px;
-//     max-width: 80px;
-//     width: 100%;
-//     padding: 10px 0;
-//     margin-bottom: 25px;
-//   }
-//   @media (max-width: 1400px) and (min-width: 431px) {
-//     width: 120px;
-//     padding: 15px 0;
-//     font-size: 20px;
-//     margin-bottom: 40px;
-//   }
-// `;
-
-// const EmailInput = styled.input`
-//   border-bottom: 1px solid #bababa;
-//   color: #bababa;
-//   @media (max-width: 430px) {
-//     margin-right: 20px;
-//     max-width: 220px;
-//     width: 100%;
-//     padding: 10px 0;
-//     margin-bottom: 25px;
-//   }
-//   @media (max-width: 1400px) and (min-width: 431px) {
-//     margin-right: 30px;
-//     width: 350px;
-//     font-size: 24px;
-//     margin-bottom: 40px;
-//     padding: 15px 0;
-//   }
-// `;
-
 const findPwSchema = yup.object({
   uid: yup
     .string()

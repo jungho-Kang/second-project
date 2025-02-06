@@ -157,7 +157,6 @@ function LoginPage() {
           </TextSpan>
         </>
       )}
-      {/* <button onClick={() => navigate("/auth/editpw")}>여기</button> */}
     </LayoutDiv>
   );
 }

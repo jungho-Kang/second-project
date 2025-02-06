@@ -20,42 +20,9 @@ import {
   YupDiv,
 } from "./loginStyle";
 
-// const SignBtn = styled.button`
-//   color: #fff;
-//   border-radius: 5px;
-//   @media (max-width: 430px) {
-//     font-size: 14px;
-//     max-width: 80px;
-//     width: 100%;
-//     padding: 10px 0;
-//   }
-//   @media (max-width: 1400px) and (min-width: 431px) {
-//     width: 120px;
-//     padding: 15px 0;
-//     font-size: 20px;
-//   }
-// `;
-
-// const EmailInput = styled.input`
-//   border-bottom: 1px solid #bababa;
-//   color: #bababa;
-//   @media (max-width: 430px) {
-//     margin-right: 20px;
-//     max-width: 220px;
-//     width: 100%;
-//     padding: 10px 0;
-//   }
-//   @media (max-width: 1400px) and (min-width: 431px) {
-//     margin-right: 30px;
-//     width: 350px;
-//     font-size: 24px;
-//     padding: 15px 0;
-//   }
-// `;
-
-const loginSchema = yup.object({
+const SignUpSchema = yup.object({
   roleId: yup.string(),
-  id: yup
+  aid: yup
     .string()
     .min(6, "최소 6자 이상 작성해야 합니다.")
     .max(12, "최대 12자까지 작성 가능합니다."),
@@ -63,7 +30,7 @@ const loginSchema = yup.object({
   //   /^[A-Za-z][A-Za-z0-9_]{6,12}$/,
   //   "아이디는 숫자, 영문으로 작성 가능합니다.",
   // ),
-  pw: yup
+  apw: yup
     .string()
     .required("비밀번호는 필수입니다.")
     .min(8, "최소 8자 이상 작성해야 합니다.")
@@ -102,14 +69,14 @@ function SignUpPage() {
     setValue, // setValue를 사용하여 폼 값을 설정합니다.
   } = useForm({
     mode: "onChange",
-    resolver: yupResolver(loginSchema),
+    resolver: yupResolver(SignUpSchema),
     defaultValues: {
       phone: "",
     },
   });
 
-  const idVal = watch("id");
-  const pwVal = watch("pw");
+  const idVal = watch("aid");
+  const pwVal = watch("apw");
   const nameVal = watch("name");
   const emailVal = watch("email");
   const phoneVal = watch("phone");
@@ -126,6 +93,7 @@ function SignUpPage() {
   };
 
   const handleSubmitForm = async data => {
+    console.log(data);
     setIsSubmit(prev => !prev);
     postSignUp(data);
   };
@@ -175,17 +143,17 @@ function SignUpPage() {
               <SignUpInput
                 type="text"
                 placeholder="아이디"
-                {...register("id")}
+                {...register("aid")}
               />
-              <YupDiv>{errors.id?.message}</YupDiv>
+              <YupDiv>{errors.aid?.message}</YupDiv>
             </InputYupDiv>
             <InputYupDiv>
               <SignUpInput
                 type="password"
                 placeholder="비밀번호 (8-16자)"
-                {...register("pw")}
+                {...register("apw")}
               />
-              <YupDiv>{errors.pw?.message}</YupDiv>
+              <YupDiv>{errors.apw?.message}</YupDiv>
             </InputYupDiv>
             <InputYupDiv>
               <SignUpInput
@@ -212,36 +180,6 @@ function SignUpPage() {
               />
               <YupDiv>{errors.phone?.message}</YupDiv>
             </InputYupDiv>
-
-            {/* <InputYupDiv>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginTop: 20,
-                width: 500,
-              }}
-            >
-              <EmailInput
-                type="email"
-                placeholder="이메일"
-                onChange={e =>
-                  setFormData({ ...formData, upw: e.target.value })
-                }
-              />
-              <SignBtn
-                type="button"
-                style={{
-                  backgroundColor: hasVal ? "#6F4CDB" : "#ddd",
-                }}
-                disabled={!hasVal}
-              >
-                인증코드
-              </SignBtn>
-            </div>
-            <YupDiv>비밀번호를 재확인해주세요</YupDiv>
-          </InputYupDiv> */}
 
             <div style={{ marginLeft: 20, marginRight: 20 }}>
               <LoginBtn
