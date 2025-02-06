@@ -7,6 +7,7 @@ import { LuMapPin } from "react-icons/lu";
 import { useNavigate, useParams } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { reserveState } from "../../atoms/restaurantAtom";
+import { getCookie } from "../../components/cookie";
 
 const BackDiv = styled.div`
   background-color: #fff;
@@ -193,6 +194,27 @@ function StoreDetailPage() {
     }
   };
 
+  const handleClickReserve = bool => {
+    const token = getCookie();
+    if (bool) {
+      if (token) {
+        setIsReserve(true);
+        setIsModal(true);
+      } else {
+        alert("로그인이 필요한 서비스입니다.");
+        navigate("/auth");
+      }
+    } else {
+      if (token) {
+        setIsReserve(false);
+        navigate(`/user/restaurant/detail/reserve/${id}`);
+      } else {
+        alert("로그인이 필요한 서비스입니다.");
+        navigate("/auth");
+      }
+    }
+  };
+
   const userCount = [1, 2, 3, 4, 5, 6, 7, 8];
   const reserveTime = ["11:30", "12:00", "12:30", "13:00", "13:30"];
 
@@ -267,22 +289,8 @@ function StoreDetailPage() {
       </ContentDiv>
       {!isModal && (
         <FooterDiv>
-          <button
-            onClick={() => {
-              setIsReserve(false);
-              navigate(`/user/restaurant/detail/reserve/${id}`);
-            }}
-          >
-            앉아서 주문
-          </button>
-          <button
-            onClick={() => {
-              setIsReserve(true);
-              setIsModal(true);
-            }}
-          >
-            예약하기
-          </button>
+          <button onClick={() => handleClickReserve(false)}>앉아서 주문</button>
+          <button onClick={() => handleClickReserve(true)}>예약하기</button>
         </FooterDiv>
       )}
 

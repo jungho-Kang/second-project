@@ -168,15 +168,13 @@ function MenuSelectPage() {
         const res = await axios.post("/api/reservation", postData);
         console.log(res.data.resultData);
         setOrderId(res.data.resultData);
-        alert(`${time}에 예약이 완료 되었습니다.`);
-        navigate("/user");
       } else {
         const res = await axios.post("/api/order/with-detail", postData);
         console.log(res.data.resultData);
         setOrderId(res.data.resultData);
-        alert(`${time}에 예약이 완료 되었습니다.`);
-        navigate("/user");
       }
+      alert(`${time}에 예약이 완료 되었습니다.`);
+      navigate("/user");
     } catch (error) {
       console.log(error);
     }

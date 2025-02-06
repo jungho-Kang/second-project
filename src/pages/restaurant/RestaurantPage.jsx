@@ -3,8 +3,15 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { IoIosSearch, IoMdArrowBack } from "react-icons/io";
-import { CustomOverlayMap, Map, MapMarker } from "react-kakao-maps-sdk";
+import {
+  CustomOverlayMap,
+  Map,
+  MapMarker,
+  useKakaoLoader,
+} from "react-kakao-maps-sdk";
 import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { locationAtom } from "../../atoms/restaurantAtom";
 
 // ListDiv styled component 수정
 const ListDiv = styled.div`
@@ -75,7 +82,7 @@ const SearchDiv = styled.div`
 
 const OverlayContainer = styled.div`
   position: relative;
-  background-color: #fff; /* 배경을 흰색으로 설정 */
+  background-color: #fff;
   padding: 10px;
   color: #333;
   font-size: 12px;
@@ -114,21 +121,68 @@ const NowLocation = styled.div`
 `;
 
 function RestaurantPage() {
+  // 장소 검색 및 주소 변환
+  useKakaoLoader({
+    appkey: `${import.meta.env.VITE_KKO_MAP_KEY}`,
+    libraries: ["clusterer", "drawing", "services"],
+  });
   const [isMapLoaded, setIsMapLoaded] = useState(false);
   const [isListOpen, setIsListOpen] = useState(false);
-  const [height, setHeight] = useState(250); // 초기 높이 250px
+  const [location, setLocation] = useRecoilState(locationAtom);
+
+  const [changeLocation, setChangeLocation] = useState(null);
+  // 초기 높이 250px
+  const [height, setHeight] = useState(250);
+
+  // 식당 리스트
   const [restaurantList, setRestaurantList] = useState([]);
+
+  // 찍을 마커들 위도, 경도 저장
   const [markers, setMarkers] = useState([]);
+
+  // 마커를 클릭하면 상세 정보창 출력
   const [isOpen, setIsOpen] = useState({});
+
+  // 검색어 저장
   const [search, setSearch] = useState();
+
+  // 전체, 거리순 등등 정렬
   const [sort, setSort] = useState(0);
 
   const navigate = useNavigate();
 
   const getRestaurantList = async () => {
+    setMarkers([]);
     try {
       const res = await axios.get(
-        `/api/restaurant/around?orderFilter=${sort}&userLat=${35.86}&userLng=${128.59}`,
+        `/api/restaurant/around?orderFilter=${sort}&userLat=${location.latitude}&userLng=${location.longitude}`,
+      );
+
+      console.log(res);
+      const result = res.data.resultData;
+      setRestaurantList([...result]);
+
+      result.map(item => {
+        setMarkers(prev => [
+          ...prev,
+          {
+            title: item.restaurantName,
+            address: item.restaurantAddress,
+            position: { lat: item.lat, lng: item.lng },
+          },
+        ]);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  // 움직일때 즉시 가져오기
+  const getRestaurantListMove = async (_a, _b) => {
+    setMarkers([]);
+    console.log("움직여요, ", _a, _b);
+    try {
+      const res = await axios.get(
+        `/api/restaurant/around?orderFilter=${sort}&userLat=${_a}&userLng=${_b}`,
       );
 
       console.log(res);
@@ -150,11 +204,12 @@ function RestaurantPage() {
     }
   };
 
+  // 초기 식당 데이터 가져오기
   const getSearchRestaurant = async () => {
     setMarkers([]);
     try {
       const res = await axios.get(
-        `/api/restaurant/around?searchFilter=${search}&userLat=${35.8682922103488}&userLng=${128.594024377585}`,
+        `/api/restaurant/around?searchFilter=${search}&userLat=${location.latitude}&userLng=${location.longitude}`,
       );
       const result = res.data.resultData;
       setRestaurantList(result);
@@ -174,9 +229,26 @@ function RestaurantPage() {
     }
   };
 
+  // 위치 성공
+  const successHandler = response => {
+    // coords: GeolocationCoordinates {latitude: 위도, longitude: 경도, …} timestamp: 1673446873903
+    const { latitude, longitude } = response.coords;
+    setLocation({ latitude, longitude });
+  };
+  // 위치 에러
+  const errorHandler = error => {
+    console.log(error);
+  };
+
   useEffect(() => {
+    setMarkers([]);
     getRestaurantList();
-  }, [sort]);
+  }, [sort, location]);
+
+  useEffect(() => {
+    // 성공시 successHandler, 실패시 errorHandler 함수가 실행된다.
+    navigator.geolocation.getCurrentPosition(successHandler, errorHandler);
+  }, []);
 
   useEffect(() => {
     const loadKakaoMap = () => {
@@ -222,29 +294,63 @@ function RestaurantPage() {
     return <div>지도를 불러오는 중입니다...</div>;
   }
   return (
-    <div className="w-full h-dvh overflow-hidden overflow-y-scroll scrollbar-hide relative">
+    <div
+      className="w-full h-dvh overflow-hidden overflow-y-scroll scrollbar-hide relative"
+      // onMouseOver={() => {
+      //   if (changeLocation) {
+      //     setLocation(changeLocation); // 마우스를 떼면 위치 업데이트
+      //   }
+      // }}
+    >
       <Map
-        center={{
-          lat: 35.8682922103488,
-          lng: 128.594024377585,
-        }}
+        center={{ lat: location?.latitude, lng: location?.longitude }}
         style={{
           width: "100%",
           height: "100%",
         }}
         level={3}
+        onCenterChanged={map => {
+          const latlng = map.getCenter();
+          console.log("중심이 바뀝니다.");
+          setChangeLocation({
+            latitude: latlng.getLat(),
+            longitude: latlng.getLng(),
+          });
+          // setLocation({
+          //   latitude: latlng.getLat(),
+          //   longitude: latlng.getLng(),
+          // });
+        }}
+        onTouchEnd={() => {
+          console.log("UUUU");
+          if (changeLocation) {
+            setLocation(changeLocation);
+          }
+          getRestaurantListMove(location.latitude, location.longitude);
+        }}
+        onMouseUp={() => {
+          console.log("UPUP", changeLocation);
+          // if (changeLocation) {
+          // setLocation(changeLocation); // 마우스를 떼면 위치 업데이트
+          // }
+          // 움직일때 호출
+          getRestaurantListMove(location.latitude, location.longitude);
+        }}
       >
+        {/* 현재 위치 마커 */}
         <div style={{ position: "relative" }}>
           <MapMarker
-            position={{ lat: 35.8682922103488, lng: 128.594024377585 }}
+            position={{ lat: location?.latitude, lng: location?.longitude }}
           />
           <CustomOverlayMap
-            position={{ lat: 35.8682922103488, lng: 128.594024377585 }}
+            position={{ lat: location?.latitude, lng: location?.longitude }}
           >
             <NowLocation>내 위치</NowLocation>
           </CustomOverlayMap>
         </div>
-        {markers.map((marker, index) => (
+
+        {/* 식당 마커 */}
+        {(markers ?? []).map((marker, index) => (
           <div key={index}>
             <MapMarker
               position={marker.position}
@@ -289,6 +395,7 @@ function RestaurantPage() {
             style={{ width: 24, height: 24, cursor: "pointer" }}
             onClick={() => {
               getSearchRestaurant();
+              setSearch("");
             }}
           />
         </div>
@@ -346,10 +453,8 @@ function RestaurantPage() {
                 <FaStar style={{ width: 10, height: 10, color: "E1FF00" }} />
                 <span style={{ fontWeight: 700, fontSize: 8 }}>4.8</span>
                 <span style={{ fontSize: 8, color: "#BABABA" }}>
-                  {item.restaurantAddress
-                    .match(/대구광역시\s*중구/)[0]
-                    .replace("광역시", "")}{" "}
-                  · 한식
+                  {item.restaurantAddress.match(/대구광역시\s*(.+)/)?.[1]} ·{" "}
+                  한식
                 </span>
               </FlexDiv>
 
