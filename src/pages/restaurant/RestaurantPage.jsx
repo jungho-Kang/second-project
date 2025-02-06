@@ -3,9 +3,15 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { IoIosSearch, IoMdArrowBack } from "react-icons/io";
-import { CustomOverlayMap, Map, MapMarker } from "react-kakao-maps-sdk";
+import {
+  CustomOverlayMap,
+  Map,
+  MapMarker,
+  useKakaoLoader,
+} from "react-kakao-maps-sdk";
 import { useNavigate } from "react-router-dom";
-import { useKakaoLoader } from "react-kakao-maps-sdk";
+import { useRecoilState } from "recoil";
+import { locationAtom } from "../../atoms/restaurantAtom";
 
 // ListDiv styled component 수정
 const ListDiv = styled.div`
@@ -122,7 +128,7 @@ function RestaurantPage() {
   });
   const [isMapLoaded, setIsMapLoaded] = useState(false);
   const [isListOpen, setIsListOpen] = useState(false);
-  const [location, setLocation] = useState(null);
+  const [location, setLocation] = useRecoilState(locationAtom);
 
   const [changeLocation, setChangeLocation] = useState(null);
   // 초기 높이 250px
@@ -236,22 +242,13 @@ function RestaurantPage() {
 
   useEffect(() => {
     setMarkers([]);
-    // if (location) {
     getRestaurantList();
-    // }
-    // console.log(changeLocation);
   }, [sort, location]);
 
   useEffect(() => {
     // 성공시 successHandler, 실패시 errorHandler 함수가 실행된다.
     navigator.geolocation.getCurrentPosition(successHandler, errorHandler);
   }, []);
-
-  // useEffect(() => {
-  //   if (changeLocation) {
-  //     setLocation(changeLocation);
-  //   }
-  // }, [changeLocation]);
 
   useEffect(() => {
     const loadKakaoMap = () => {
@@ -398,6 +395,7 @@ function RestaurantPage() {
             style={{ width: 24, height: 24, cursor: "pointer" }}
             onClick={() => {
               getSearchRestaurant();
+              setSearch("");
             }}
           />
         </div>

@@ -41,3 +41,11 @@ export const orderIdAtom = atom({
   key: "orderIdAtom",
   default: 0,
 });
+
+export const locationAtom = atom({
+  key: "locationAtom",
+  default: {
+    latitude: 0,
+    longitude: 0,
+  },
+});
