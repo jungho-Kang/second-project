@@ -1,50 +1,99 @@
-import { useState } from "react";
-import { IoMdArrowBack } from "react-icons/io";
-import { IoMdSearch } from "react-icons/io";
-import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import { userDataAtom } from "../../../atoms/userAtom";
-import { memberDataAtom } from "../../../atoms/restaurantAtom";
 import axios from "axios";
+import { useState } from "react";
+import { IoMdArrowBack, IoMdSearch } from "react-icons/io";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import {
+  memberDataAtom,
+  orderIdAtom,
+  paymentMemberAtom,
+} from "../../../atoms/restaurantAtom";
+import { userDataAtom } from "../../../atoms/userAtom";
+import { getCookie } from "../../../components/cookie";
 
 const Seatmate = () => {
   const [userData] = useRecoilState(userDataAtom);
-  const [paymentMember, setpaymentMember] = useRecoilState(memberDataAtom);
+  const [paymentMember, setPaymentMember] = useRecoilState(memberDataAtom);
+  const [memberData, setMemberData] = useRecoilState(paymentMemberAtom);
+  const [orderId, setOrderId] = useRecoilState(orderIdAtom);
   const [isSearch, setIsSearch] = useState(true);
   const [searchResult, setSearchResult] = useState([]);
   const [inputValue, setInputValue] = useState("");
+  const { state } = useLocation();
   const navigate = useNavigate();
+  console.log(state.orderId);
 
-  console.log(userData);
+  const selectMember = paymentMember.userId.length;
 
   const searchMember = async () => {
+    const accessToken = getCookie();
     const params = {
-      companyId: 1,
+      companyId: userData.companyId,
       page: 1,
       size: 30,
       name: inputValue,
     };
     try {
       const res = await axios.get(
-        `/api/user/user-payment-member/searchPeople`,
+        "/api/user/user-payment-member/searchPeople",
         {
           params,
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
         },
       );
       console.log(res.data.resultData);
+      const result = res.data.resultData.memberList;
+      setSearchResult([...result]);
     } catch (error) {
       console.log(error);
     }
   };
+  console.log(searchResult);
 
   const changeInputHandler = e => {
+    console.log(e);
+
     console.log(e.target.value);
     const searchTarget = e.target.value;
     setInputValue(searchTarget);
+    setMemberData();
   };
 
+  const changeCheckHandler = e => {
+    console.log(e);
+
+    setPaymentMember(prev => {
+      const isSelected = prev.userId.includes(e.userId);
+      return {
+        ...prev,
+        userId: isSelected
+          ? prev.userId.filter(id => id !== e.userId)
+          : [...prev.userId, e.userId],
+      };
+    });
+    setMemberData(prev => {
+      const isSelected = prev.userId.includes(e.userId);
+      return {
+        ...prev,
+        userId: isSelected
+          ? prev.userId.filter(id => id !== e.userId)
+          : [...prev.userId, e.userId, e.name, e.uid],
+      };
+    });
+  };
+  console.log(paymentMember);
+  console.log(searchResult);
+  console.log(memberData);
+
   const nextBtnHandler = () => {
-    navigate("/user/placetoorder/price");
+    navigate("/user/placetoorder/price", {
+      state: {
+        orderId: state.orderId,
+        userId: [paymentMember.userId],
+      },
+    });
   };
 
   return (
@@ -78,7 +127,7 @@ const Seatmate = () => {
             검색
           </span>
         </div>
-        <div>총 {}명 선택 중</div>
+        <div>총 {selectMember + 1}명 선택 중</div>
       </div>
       <div className="w-full h-dvh ">
         <div className="flex w-full h-[6%] items-center px-6 border-b border-gray">
@@ -105,26 +154,28 @@ const Seatmate = () => {
               />
             </div>
             <div className="flex flex-col w-full h-dvh">
-              <div className="flex w-full h-[6%] items-center gap-4 px-6 border-b border-gray">
-                <input type="checkbox" className="w-5 h-5" />
-                <label className="text-xl">김길동(10001234)</label>
-              </div>
+              {searchResult.map(item => (
+                <div
+                  key={item.userId}
+                  className="flex w-full h-[6%] items-center gap-4 px-6 border-b border-gray"
+                >
+                  <input
+                    type="checkbox"
+                    className="w-5 h-5"
+                    id={item.userId}
+                    value={item.userId}
+                    onChange={() => changeCheckHandler(item)}
+                  />
+                  <label className="text-xl" htmlFor={item.userId}>
+                    {item.name}({item.uid})
+                  </label>
+                </div>
+              ))}
             </div>
           </div>
         ) : (
           <div className="flex flex-col w-full h-dvh">
-            <div className="flex w-full h-[6%] items-center gap-4 px-6 border-b border-gray">
-              <input type="checkbox" className="w-5 h-5" />
-              <label className="text-xl">김길동(10001234)</label>
-            </div>
-            <div className="flex w-full h-[6%] items-center gap-4 px-6 border-b border-gray">
-              <input type="checkbox" className="w-5 h-5" />
-              <label className="text-xl">김길동(10001234)</label>
-            </div>
-            <div className="flex w-full h-[6%] items-center gap-4 px-6 border-b border-gray">
-              <input type="checkbox" className="w-5 h-5" />
-              <label className="text-xl">김길동(10001234)</label>
-            </div>
+            <span className="p-5 text-xl">최근 함께한 사용자가 없습니다</span>
           </div>
         )}
       </div>

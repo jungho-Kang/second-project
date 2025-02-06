@@ -5,7 +5,7 @@ import FindIdPage from "./pages/auth/FindIdPage";
 import FindPwPage from "./pages/auth/FindPwPage";
 import LoginPage from "./pages/auth/LoginPage";
 import SignUpPage from "./pages/auth/SignUpPage";
-import Order from "./pages/order/PaymentList";
+import Order from "./pages/payment/PaymentList";
 import Restaurant from "./pages/restaurant/RestaurantPage";
 import Store from "./pages/storeManager/StorePage";
 import MenuPage from "./pages/storeManager/menu/StoreMenuPage";
@@ -18,14 +18,14 @@ import EmailAuthPage from "./pages/auth/EmailAuthPage";
 
 import PolicyPage from "./pages/auth/PolicyPage";
 import PlaceToOrder from "./pages/order/placetoorder/PlaceToOrder";
-import MealTicketPage from "./pages/order/placetoorder/MealTicketPage";
+import MealTicketPage from "./pages/order/placetoorder/QRCode";
 import StoreInfoPage from "./pages/storeManager/storeAuth/StoreInfoPage";
 import UserMainPage from "./pages/user/UserMainPage";
 import RestaurantDetailPage from "./pages/restaurant/RestaurantDetailPage";
 import AddStorePage from "./pages/storeManager/AddStorePage";
 
-import MemberOrderPage from "./pages/order/placetoorder/MemberOrderPage";
-import PriceOrderPage from "./pages/order/placetoorder/PriceOrderPage";
+import OrderMemberPage from "./pages/order/placetoorder/OrderMemberPage";
+import OrderPricePage from "./pages/order/placetoorder/OrderPricePage";
 
 import MenuSelectPage from "./pages/restaurant/MenuSelectPage";
 
@@ -64,8 +64,8 @@ function App() {
           <Route path="placetoorder">
             <Route index element={<PlaceToOrder />} />
             <Route path="coupon" element={<MealTicketPage />} />
-            <Route path="member" element={<MemberOrderPage />} />
-            <Route path="price" element={<PriceOrderPage />} />
+            <Route path="member" element={<OrderMemberPage />} />
+            <Route path="price" element={<OrderPricePage />} />
             <Route path="request" element={<OrderRequestPage />} />
           </Route>
           <Route path="restaurant">

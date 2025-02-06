@@ -7,12 +7,11 @@ import useModal from "../../../components/useModal";
 const OrderList = () => {
   const [orderDataList, setOrderDataList] = useState([]);
   const [orderMenuList, setOrderMenuList] = useState([]);
-  const orderLength = orderDataList.length;
+  const [reloadOrders, setReloadOrders] = useState(false);
   const sessionStoreId = window.sessionStorage.getItem("restaurantId");
   const { Modal, open, close, eventData } = useModal({
     title: "주문 정보를 확인해주세요",
   });
-  console.log(orderLength);
 
   useEffect(() => {
     const getOrderList = async () => {
@@ -39,7 +38,9 @@ const OrderList = () => {
       }
     };
     getOrderList();
-  }, [orderLength]);
+  }, [reloadOrders]);
+
+  const triggerReload = () => setReloadOrders(prev => !prev);
 
   const confirmClickHandler = async () => {
     const payload = {
@@ -55,6 +56,7 @@ const OrderList = () => {
         icon: "success",
       });
       close();
+      triggerReload();
     } catch (error) {
       console.log(error);
     }
@@ -68,6 +70,7 @@ const OrderList = () => {
     try {
       const res = await axios.put(`/api/order/access`, payload);
       console.log(res);
+      triggerReload();
     } catch (error) {
       console.log(error);
     }

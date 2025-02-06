@@ -1,28 +1,66 @@
-import { useCallback, useEffect, useState } from "react";
-import { IoMdArrowBack } from "react-icons/io";
-import { IoMdAddCircleOutline } from "react-icons/io";
-import _ from "lodash";
-import { useRecoilState } from "recoil";
-import { userDataAtom } from "../../../atoms/userAtom";
 import axios from "axios";
+import _ from "lodash";
+import { useCallback, useEffect, useState } from "react";
+import { IoMdAddCircleOutline, IoMdArrowBack } from "react-icons/io";
+import { useLocation } from "react-router";
 import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { memberDataAtom } from "../../../atoms/restaurantAtom";
+import { userDataAtom } from "../../../atoms/userAtom";
+import { getCookie } from "../../../components/cookie";
 
 const PriceOrderPage = () => {
   const [priceList, setPriceList] = useState({});
   const [inputValue, setInputValue] = useState("");
   const [isCompleted, setIsCompleted] = useState(false);
+  const [isMember, setIsMember] = useState(false);
   const [userData, setUserData] = useRecoilState(userDataAtom);
+  const [memberData, setMemberData] = useRecoilState(memberDataAtom);
   const navigate = useNavigate();
+  const signedUserId = sessionStorage.getItem("userId");
+  const accessToken = getCookie();
+  const { state } = useLocation();
+  console.log(state);
+
+  useEffect(() => {
+    const params = { signedUserId: signedUserId };
+    const getOrderData = async () => {
+      try {
+        const res = await axios.get(`/api/user/order`, {
+          params,
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        console.log(res.data.resultData);
+        const result = res.data.resultData;
+        setMemberData({
+          orderId: result.orderId,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getOrderData();
+  }, [memberData.orderId]);
+  console.log(memberData);
 
   useEffect(() => {
     const params = {
-      orderId: 1,
+      orderId: state.orderId,
     };
+    console.log(params);
+
     const getPaymentMembers = async () => {
       try {
         const res = await axios.get(
           "/api/user/user-payment-member/getPaymentMember",
-          { params },
+          {
+            params,
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          },
         );
         console.log(res);
       } catch (error) {
@@ -30,9 +68,7 @@ const PriceOrderPage = () => {
       }
     };
     getPaymentMembers();
-  }, []);
-
-  const a = "";
+  }, [memberData.orderId]);
 
   const inputChangeHandler = e => {
     setInputValue(e.target.value);
@@ -102,6 +138,48 @@ const PriceOrderPage = () => {
             </span>
           </div>
         </div>
+        {memberData.userId.map((item, index) => (
+          <div
+            key={index}
+            className="flex w-full h-[6%] px-6 justify-between items-center border-b border-gray"
+          >
+            <span className="flex w-[30%] text-base text-nowrap">
+              {item.name ? item.name : "김길동(12345)"}
+            </span>
+            <div className="flex w-[35%] gap-2 items-center justify-end">
+              {isCompleted ? (
+                <>
+                  <span className="text-end px-2">{inputValue}</span>
+                  <span>원</span>
+                </>
+              ) : (
+                <>
+                  <input
+                    type="tel"
+                    className="flex w-full border border-darkGray px-2 text-end rounded-md"
+                    onChange={e => inputChangeHandler(e)}
+                    value={inputValue}
+                  />
+                  <span>원</span>
+                </>
+              )}
+            </div>
+            <div className="flex w-[20%] justify-center gap-2 text-nowrap items-center">
+              <span
+                onClick={() => setIsCompleted(true)}
+                className="bg-blue px-2 text-white font-semibold rounded-md"
+              >
+                확인
+              </span>
+              <span
+                onClick={() => setIsCompleted(false)}
+                className="bg-red px-2 text-white font-semibold rounded-md"
+              >
+                {isCompleted ? "수정" : "취소"}
+              </span>
+            </div>
+          </div>
+        ))}
         <div className="flex w-full h-[5%] justify-center items-center">
           <IoMdAddCircleOutline
             onClick={addMemberHandler}

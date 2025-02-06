@@ -50,18 +50,18 @@ function IndexPage() {
 
           setUserData({ ...resultData, phone: phoneNumber, point: pointParse });
         } else {
-          Swal.fire({
-            title: "로그인이 필요한 서비스입니다!",
-            text: "확인을 누르시면 로그인 페이지로 이동합니다.",
-            icon: "error",
-            confirmButtonText: "확인",
-            showConfirmButton: true, // ok 버튼 노출 여부
-            allowOutsideClick: false, // 외부 영역 클릭 방지
-          }).then(result => {
-            if (result.isConfirmed) {
-              navigate("/auth");
-            }
-          });
+          // Swal.fire({
+          //   title: "로그인이 필요한 서비스입니다!",
+          //   text: "확인을 누르시면 로그인 페이지로 이동합니다.",
+          //   icon: "error",
+          //   confirmButtonText: "확인",
+          //   showConfirmButton: true, // ok 버튼 노출 여부
+          //   allowOutsideClick: false, // 외부 영역 클릭 방지
+          // }).then(result => {
+          //   if (result.isConfirmed) {
+          //     navigate("/auth");
+          //   }
+          // });
         }
       } catch (error) {
         console.log(error);
@@ -78,14 +78,14 @@ function IndexPage() {
   };
 
   return (
-    <div className="flex w-full h-dvh justify-center items-center overflow-x-hidden overflow-y-scroll scrollbar-hide">
+    <div className="flex w-full h-dvh items-center overflow-x-hidden overflow-y-scroll scrollbar-hide">
+      <Notification />
       <div className="absolute top-0 left-0 w-full h-10% flex justify-between items-center px-3 py-5 border-b-2 border-gray border-opacity-70 bg-white">
         <IoMdArrowBack className="text-3xl" onClick={() => navigate(-1)} />
         <span className="text-xl font-semibold">내 정보</span>
-        <div>&emsp;</div>
-        <Notification />
+        <span>&emsp;</span>
       </div>
-      <div className="flex flex-col h-dvh justify-around mt-48 gap-10">
+      <div className="flex flex-col h-dvh justify-around mt-48 gap-10 pl-24">
         <div className="w-full flex flex-col items-center gap-4">
           {userData.pic !== null ? (
             <img
