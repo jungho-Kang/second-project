@@ -5,7 +5,7 @@ import "swiper/css/pagination";
 import { useInView } from "react-intersection-observer";
 import { LuArrowDownUp } from "react-icons/lu";
 import MenuBar from "../../components/MenuBar";
-import Notification from "../../components/Notification";
+import Notification from "../../components/notification/NotificationIcon";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";

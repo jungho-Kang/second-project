@@ -7,10 +7,12 @@ import useModal from "../../../components/useModal";
 const OrderList = () => {
   const [orderDataList, setOrderDataList] = useState([]);
   const [orderMenuList, setOrderMenuList] = useState([]);
+  const orderLength = orderDataList.length;
   const sessionStoreId = window.sessionStorage.getItem("restaurantId");
-  const { Modal, open, close } = useModal({
+  const { Modal, open, close, eventData } = useModal({
     title: "주문 정보를 확인해주세요",
   });
+  console.log(orderLength);
 
   useEffect(() => {
     const getOrderList = async () => {
@@ -23,6 +25,7 @@ const OrderList = () => {
           params,
         });
         const result = res.data.resultData;
+        console.log(res);
         console.log(result);
         const menuList = result.map(item => {
           return item.orderDetails ? item.orderDetails : [];
@@ -36,24 +39,38 @@ const OrderList = () => {
       }
     };
     getOrderList();
-  }, []);
+  }, [orderLength]);
 
-  const orderDetailModal = () => {
-    Swal.fire({
-      title: "주문을 확인해주세요",
-      html: ` `,
-      showDenyButton: true,
-      showCancelButton: true,
-      confirmButtonText: "승인",
-      denyButtonText: "거부",
-      cancelButtonText: "취소",
-    }).then(result => {
-      if (result.isConfirmed) {
-        Swal.fire("주문을 승인했습니다!", "", "success");
-      } else if (result.isDenied) {
-        Swal.fire("주문을 거절했습니다.", "", "warning");
-      }
-    });
+  const confirmClickHandler = async () => {
+    const payload = {
+      orderId: eventData,
+      reservationStatus: 1,
+    };
+    try {
+      const res = await axios.put(`/api/order/access`, payload);
+      console.log(res);
+      Swal.fire({
+        title: "주문을 승인했습니다!",
+        text: "주문을 확인해주세요.",
+        icon: "success",
+      });
+      close();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const dismissClickHandler = async () => {
+    const payload = {
+      orderId: eventData,
+      reservationStatus: 2,
+    };
+    try {
+      const res = await axios.put(`/api/order/access`, payload);
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -76,29 +93,38 @@ const OrderList = () => {
           </div>
         </div>
         <ul className="flex flex-col w-[100%] h-[100%] gap-4 pt-3 text-nowrap">
-          {orderDataList.map((item, index) => (
-            <li
-              onClick={open}
-              key={index}
-              className="flex w-full items-center justify-between px-6 py-2 border-b border-gray"
-            >
-              <span className="flex w-[30%] justify-center text-black">
-                {item.orderId}
-              </span>
-              <span className="flex w-[30%] justify-center text-black">
-                {item.orderDetails.map((data, index) => (
-                  <div key={index}>{data?.menuName}</div>
-                ))}
-              </span>
-              <span className="flex w-[30%] justify-center text-black">
-                {item.orderDetails.map((data, index) => (
-                  <div key={index}>
-                    {data?.createdAt.split(" ")?.[1].slice(0, 5)}
-                  </div>
-                ))}
-              </span>
-            </li>
-          ))}
+          {orderDataList.map((item, index) =>
+            item.length === 0 ? (
+              <li
+                key={item}
+                className="flex w-full items-center justify-between px-6 py-2"
+              >
+                <span>새로운 주문이 없습니다</span>
+              </li>
+            ) : (
+              <li
+                onClick={() => open(item.orderId)}
+                key={index}
+                className="flex w-full items-center justify-between px-6 py-2 border-b border-gray"
+              >
+                <span className="flex w-[30%] justify-center text-black">
+                  {item.orderId}
+                </span>
+                <span className="flex w-[30%] justify-center text-black">
+                  {item.orderDetails.map((data, index) => (
+                    <div key={index}>{data?.menuName}</div>
+                  ))}
+                </span>
+                <span className="flex w-[30%] justify-center text-black">
+                  {item.orderDetails.map((data, index) => (
+                    <div key={index}>
+                      {data?.createdAt.split(" ")?.[1].slice(0, 5)}
+                    </div>
+                  ))}
+                </span>
+              </li>
+            ),
+          )}
         </ul>
         <Modal>
           <div className="flex flex-col w-full h-full justify-between">
@@ -124,12 +150,17 @@ const OrderList = () => {
                 <span>1 명</span>
               </div>
             </div>
-
-            <div className="flex w-full h-[] justify-center gap-10 mb-24">
-              <div className="bg-blue px-2 py-1 rounded-md text-nowrap text-white font-medium">
+            <div className="flex w-full justify-center gap-10 mb-10">
+              <div
+                onClick={confirmClickHandler}
+                className="bg-blue px-2 py-1 rounded-md text-nowrap text-white font-medium"
+              >
                 주문 승인
               </div>
-              <div className="bg-red px-2 py-1 rounded-md text-nowrap text-white font-medium">
+              <div
+                onClick={dismissClickHandler}
+                className="bg-red px-2 py-1 rounded-md text-nowrap text-white font-medium"
+              >
                 주문 취소
               </div>
             </div>

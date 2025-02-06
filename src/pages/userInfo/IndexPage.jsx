@@ -6,7 +6,7 @@ import { MdOutlineMail } from "react-icons/md";
 import { useRecoilState } from "recoil";
 import { userDataAtom } from "../../atoms/userAtom";
 import MenuBar from "../../components/MenuBar";
-import Notification from "../../components/Notification";
+import Notification from "../../components/notification/NotificationIcon";
 import { isWhiteIcon } from "../../atoms/noticeAtom";
 import {
   getCookie,
@@ -51,7 +51,7 @@ function IndexPage() {
           setUserData({ ...resultData, phone: phoneNumber, point: pointParse });
         } else {
           Swal.fire({
-            title: "로그인 후 이용하실 수 있습니다!",
+            title: "로그인이 필요한 서비스입니다!",
             text: "확인을 누르시면 로그인 페이지로 이동합니다.",
             icon: "error",
             confirmButtonText: "확인",
@@ -59,7 +59,7 @@ function IndexPage() {
             allowOutsideClick: false, // 외부 영역 클릭 방지
           }).then(result => {
             if (result.isConfirmed) {
-              navigate("/user");
+              navigate("/auth");
             }
           });
         }

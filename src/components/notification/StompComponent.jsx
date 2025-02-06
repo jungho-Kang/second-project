@@ -24,7 +24,7 @@ export const subscribeToReservationStatus = orderId => {
     const messageObj = JSON.parse(message.body);
     let statusMessage = "";
 
-    console.log("식당으로 주문 요청 완료 : ", message);
+    console.log("식당으로 주문 요청 완료 : ", messageObj);
 
     switch (messageObj.reservationStatus) {
       case 1:
@@ -47,7 +47,6 @@ export const subscribeUserLogin = userId => {
     const messageObj = JSON.parse(message.body);
     let statusMessage = "";
 
-    console.log("유저 로그인 : ", message);
     console.log("유저 로그인 : ", messageObj);
   });
 };
@@ -59,7 +58,6 @@ export const subscribeStoreLogin = restaurantId => {
     const messageObj = JSON.parse(message.body);
     let statusMessage = "";
 
-    console.log("식당 관리자 로그인 : ", message);
     console.log("식당 관리자 로그인 : ", messageObj);
     try {
       Swal.fire({

@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const TableDiv = styled.div`
   margin: 30px 35px;
@@ -41,18 +41,29 @@ const TopTitleDiv = styled.div`
 `;
 
 function SalesPage() {
+  const [salesList, setSalesList] = useState([]);
+
   useEffect(() => {
-    const getSales = async () => {
+    const params = {
+      restaurantId: 1,
+      startDate: "",
+      endDate: "",
+    };
+    const getSalesList = async () => {
       try {
-        const res = await axios.get(`/api/order/payment-restaurant`);
-        const result = res.data.resultData.paymentList;
-        console.log(res.data.resultData);
-        console.log(result);
+        const res = await axios.get(`/api/order/payment-restaurant`, {
+          params,
+        });
+        const paymentList = res.data.resultData.paymentList;
+        console.log(res);
+        console.log(paymentList);
+
+        setSalesList([...paymentList]);
       } catch (error) {
         console.log(error);
       }
     };
-    getSales();
+    getSalesList();
   }, []);
 
   return (

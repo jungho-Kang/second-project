@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import MenuBar from "../../components/MenuBar";
-import Notification from "../../components/Notification";
+import Notification from "../../components/notification/NotificationIcon";
 import { IoMdArrowBack } from "react-icons/io";
 import Swal from "sweetalert2";
 import { useRecoilState } from "recoil";

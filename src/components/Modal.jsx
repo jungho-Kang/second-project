@@ -7,11 +7,13 @@ const Modal = ({ onClose, children, title }) => {
         onClick={e => e.stopPropagation()}
         className="absolute top-40 left-1/3 w-[400px] h-[450px] z-50 bg-white border-2 border-darkGray rounded-lg border-opacity-30 overflow-x-hidden overflow-y-scroll scrollbar-hide"
       >
-        <div className="flex w-100% h-100% justify-between items-center px-5 py-3 border-b-2 border-gray">
-          <span className="font-medium text-2xl">{title}</span>
-          <IoMdClose onClick={onClose} className="font-semibold size-6" />
+        <div className="relative flex w-full h-[15%]">
+          <div className="absolute top-0 left-0 flex w-full h-full justify-between items-center px-5 border-b-2 border-gray">
+            <span className="font-medium text-2xl">{title}</span>
+            <IoMdClose onClick={onClose} className="font-semibold size-6" />
+          </div>
         </div>
-        {children}
+        <div className="flex w-full h-[85%]">{children}</div>
       </div>
     </div>
   );

@@ -41,3 +41,12 @@ export const orderIdAtom = atom({
   key: "orderIdAtom",
   default: 0,
 });
+
+export const memberDataAtom = atom({
+  key: "memberDataAtom",
+  default: {
+    orderId: 0,
+    userId: [],
+    point: [],
+  },
+});

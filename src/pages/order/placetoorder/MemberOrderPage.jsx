@@ -2,10 +2,46 @@ import { useState } from "react";
 import { IoMdArrowBack } from "react-icons/io";
 import { IoMdSearch } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { userDataAtom } from "../../../atoms/userAtom";
+import { memberDataAtom } from "../../../atoms/restaurantAtom";
+import axios from "axios";
 
 const Seatmate = () => {
+  const [userData] = useRecoilState(userDataAtom);
+  const [paymentMember, setpaymentMember] = useRecoilState(memberDataAtom);
   const [isSearch, setIsSearch] = useState(true);
+  const [searchResult, setSearchResult] = useState([]);
+  const [inputValue, setInputValue] = useState("");
   const navigate = useNavigate();
+
+  console.log(userData);
+
+  const searchMember = async () => {
+    const params = {
+      companyId: 1,
+      page: 1,
+      size: 30,
+      name: inputValue,
+    };
+    try {
+      const res = await axios.get(
+        `/api/user/user-payment-member/searchPeople`,
+        {
+          params,
+        },
+      );
+      console.log(res.data.resultData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const changeInputHandler = e => {
+    console.log(e.target.value);
+    const searchTarget = e.target.value;
+    setInputValue(searchTarget);
+  };
 
   const nextBtnHandler = () => {
     navigate("/user/placetoorder/price");
@@ -42,13 +78,15 @@ const Seatmate = () => {
             검색
           </span>
         </div>
-        <div>총 4명 선택 중</div>
+        <div>총 {}명 선택 중</div>
       </div>
       <div className="w-full h-dvh ">
         <div className="flex w-full h-[6%] items-center px-6 border-b border-gray">
           <div className="flex w-[90%] items-center gap-4">
             <input type="checkbox" className="w-5 h-5" checked disabled />
-            <label className="text-xl">김길동(10001234)</label>
+            <label className="text-xl">
+              {userData.name}({userData.uid})
+            </label>
           </div>
           <span className="w-[20%] text-darkGray">필수선택</span>
         </div>
@@ -58,9 +96,13 @@ const Seatmate = () => {
               <input
                 type="text"
                 className="w-[90%] border border-darkGray rounded-md px-2"
-                placeholder="부서 또는 이름으로 검색해보세요"
+                placeholder="회사 내 인원을 이름으로 검색해보세요"
+                onChange={e => changeInputHandler(e)}
               />
-              <IoMdSearch className="flex w-[10%] text-2xl" />
+              <IoMdSearch
+                onClick={() => searchMember()}
+                className="flex w-[10%] text-2xl"
+              />
             </div>
             <div className="flex flex-col w-full h-dvh">
               <div className="flex w-full h-[6%] items-center gap-4 px-6 border-b border-gray">

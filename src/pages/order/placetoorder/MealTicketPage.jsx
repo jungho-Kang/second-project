@@ -1,6 +1,6 @@
 import { IoMdArrowBack } from "react-icons/io";
 import QRCode from "./QRCode";
-import Notification from "../../../components/Notification";
+import Notification from "../../../components/notification/NotificationIcon";
 import { useNavigate } from "react-router-dom";
 
 const PlaceToOrder = () => {
