@@ -14,6 +14,14 @@ export const setCookie = (value, options) => {
   return cookies.set("accessToken", value, { ...options });
 };
 
+export const setCookieRefresh = (value, options) => {
+  return cookies.set("refresh-token", value, { ...options });
+};
+
 export const removeCookie = options => {
   return cookies.remove("accessToken", { ...options });
+};
+
+export const removeCookieRefresh = options => {
+  return cookies.remove("refresh-token", { ...options });
 };

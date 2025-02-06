@@ -21,6 +21,10 @@ import {
   TitleDiv,
 } from "./loginStyle";
 import { getCookie, setCookie } from "../../components/cookie";
+import {
+  subscribeStoreLogin,
+  subscribeUserLogin,
+} from "../../components/notification/StompComponent";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -64,8 +68,12 @@ function LoginPage() {
         const accessToken = result.accessToken;
         window.sessionStorage.setItem("userId", userId);
         setCookie(accessToken);
+        subscribeUserLogin(userId);
       } else if (role === STORE) {
-        await axios.post("/api/admin/sign-in", formData);
+        const res = await axios.post("/api/admin/sign-in", formData);
+        console.log(res.data.resultData);
+
+        subscribeStoreLogin(37);
       }
       setIsLogin(true);
       routeHandler();

@@ -5,6 +5,7 @@ import { IoIosArrowForward } from "react-icons/io";
 import MenuBar from "../../components/MenuBar";
 import { IoArrowForward } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const OrderList = () => {
   const navigate = useNavigate();
@@ -12,13 +13,31 @@ const OrderList = () => {
   const [orderQuntity, setOrderQuntity] = useState(0);
   const [paymentList, setPaymentList] = useState([]);
 
+  // sessionStorage에 저장된 userId 값을 가져옴
+  const sessionUserId = window.sessionStorage.getItem("userId");
+
   useEffect(() => {
     const getPaymentList = async () => {
       try {
-        const res = await axios.get("/api/order/payment-user?userId=1");
-        const resultData = res.data.resultData.paymentList;
-        console.log(resultData);
-        setPaymentList([...resultData]);
+        if (sessionUserId) {
+          const res = await axios.get("/api/order/payment-user?userId=1");
+          const resultData = res.data.resultData.paymentList;
+          console.log(resultData);
+          setPaymentList([...resultData]);
+        } else {
+          Swal.fire({
+            title: "로그인이 필요한 서비스입니다!",
+            text: "확인을 누르시면 로그인 페이지로 이동합니다.",
+            icon: "error",
+            confirmButtonText: "확인",
+            showConfirmButton: true, // ok 버튼 노출 여부
+            allowOutsideClick: false, // 외부 영역 클릭 방지
+          }).then(result => {
+            if (result.isConfirmed) {
+              navigate("/auth");
+            }
+          });
+        }
       } catch (error) {
         console.log(error);
       }

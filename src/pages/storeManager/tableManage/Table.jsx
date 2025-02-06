@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import OrderList from "./OderList";
+import axios from "axios";
 
 const Table = () => {
-  const [isClick, setIsClick] = useState(false);
+  const [isClick, setIsClick] = useState(true);
 
   const openDescriptHandler = () => {
     setIsClick(!isClick);
@@ -88,7 +89,7 @@ const Table = () => {
             {/* 주문카드 시작 */}
             {data.map((item, index) => (
               <div
-                onClick={e => openDescriptHandler(e)}
+                // onClick={e => openDescriptHandler(e)}
                 key={index}
                 // className="w-[calc(33%_-_1rem)] min-w-40 h-48 border-2 border-darkGray bg-white"
                 className={`${isClick ? "w-[calc(33%_-_1rem)]" : "w-[calc(25%_-_1rem)]"} min-w-40 h-48 border-2 border-darkGray bg-white cursor-pointer`}
@@ -114,7 +115,7 @@ const Table = () => {
           </div>
         </div>
       </div>
-      {isClick ? <OrderList /> : <></>}
+      {isClick ? <OrderList /> : <OrderList />}
     </>
   );
 };

@@ -5,7 +5,7 @@ import "swiper/css/pagination";
 import { useInView } from "react-intersection-observer";
 import { LuArrowDownUp } from "react-icons/lu";
 import MenuBar from "../../components/MenuBar";
-import Notification from "../../components/Notification";
+import Notification from "../../components/notification/NotificationIcon";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -45,7 +45,7 @@ const UserMainPage = () => {
         const result = res.data.resultData;
 
         const detailAddress = result.map(data => {
-          return data.restaurantAddress.match(/대구광역시\s*(.+)/)[1];
+          return data.restaurantAddress.match(/대구광역시\s*(.+)/)?.[1];
         });
         console.log(detailAddress);
         setRestaurantList([...result]);
@@ -71,7 +71,7 @@ const UserMainPage = () => {
           const result = res.data.resultData;
 
           const detailAddress = result.map(data => {
-            return data.restaurantAddress.match(/대구광역시\s*(.+)/)[1];
+            return data.restaurantAddress.match(/대구광역시\s*(.+)/)?.[1];
           });
           console.log(detailAddress);
           setRestaurantList([...restaurantList, ...result]);
@@ -221,7 +221,7 @@ const UserMainPage = () => {
                     {data.restaurantName}
                   </p>
                   <p className="text-xs text-darkGray text-nowrap">
-                    {data.restaurantAddress.match(/대구광역시\s*(.+)/)[1]}
+                    {data.restaurantAddress.match(/대구광역시\s*(.+)/)?.[1]}
                   </p>
                 </div>
                 <p className="w-[30%] font-bold text-base text-primary text-nowrap">

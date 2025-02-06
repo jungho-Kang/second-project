@@ -42,10 +42,19 @@ export const orderIdAtom = atom({
   default: 0,
 });
 
+
+export const memberDataAtom = atom({
+  key: "memberDataAtom",
+  default: {
+    orderId: 0,
+    userId: [],
+    point: [],
+
 export const locationAtom = atom({
   key: "locationAtom",
   default: {
     latitude: 0,
     longitude: 0,
+
   },
 });

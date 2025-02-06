@@ -18,6 +18,7 @@ const OrderRequestPage = () => {
   const navigate = useNavigate();
 
   const postReservation = async () => {
+    subscribeToReservationStatus(99);
     const sessionUserId = window.sessionStorage.getItem("userId");
     const accessToken = getCookie("accessToken");
 
@@ -44,7 +45,7 @@ const OrderRequestPage = () => {
       });
       console.log(res.data.resultData);
       setCreatOrderId(res.data.resultData);
-      subscribeToReservationStatus(99);
+      subscribeToReservationStatus(127);
     } catch (error) {
       console.log(error);
     }

@@ -11,3 +11,9 @@ export const isWhiteIcon = atom({
   key: "isWhiteIcon",
   default: true,
 });
+
+// 알림 아이콘을 클릭했는지
+export const isClickIcon = atom({
+  key: "isClickIcon",
+  default: false,
+});
