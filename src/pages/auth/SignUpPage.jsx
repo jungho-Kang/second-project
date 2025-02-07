@@ -22,7 +22,7 @@ import {
 
 const SignUpSchema = yup.object({
   roleId: yup.string(),
-  aid: yup
+  id: yup
     .string()
     .min(6, "최소 6자 이상 작성해야 합니다.")
     .max(12, "최대 12자까지 작성 가능합니다."),
@@ -30,7 +30,7 @@ const SignUpSchema = yup.object({
   //   /^[A-Za-z][A-Za-z0-9_]{6,12}$/,
   //   "아이디는 숫자, 영문으로 작성 가능합니다.",
   // ),
-  apw: yup
+  pw: yup
     .string()
     .required("비밀번호는 필수입니다.")
     .min(8, "최소 8자 이상 작성해야 합니다.")
@@ -75,8 +75,8 @@ function SignUpPage() {
     },
   });
 
-  const idVal = watch("aid");
-  const pwVal = watch("apw");
+  const idVal = watch("id");
+  const pwVal = watch("pw");
   const nameVal = watch("name");
   const emailVal = watch("email");
   const phoneVal = watch("phone");
@@ -87,8 +87,10 @@ function SignUpPage() {
       // console.log("보낼 데이터", data);
       await axios.post("/api/admin/sign-up", data);
       alert("회원가입이 완료 되었습니다.");
+      console.log("보낸 데이터??", data);
       navigate("/auth/signup/emailauth");
     } catch (error) {
+      console.log("보낸 데이터??", data);
       console.log(error);
     }
   };
@@ -96,6 +98,7 @@ function SignUpPage() {
   const handleSubmitForm = async data => {
     console.log(data);
     setIsSubmit(prev => !prev);
+    data.phone = data.phone.replace(/-/g, "");
     postSignUp(data);
   };
 
@@ -110,14 +113,7 @@ function SignUpPage() {
       );
     }
     console.log(phoneVal);
-
-    if (isSubmit) {
-      setValue(
-        "phone",
-        phoneVal.replace(/-/g, ""), // 하이픈을 모두 제거
-      );
-    }
-  }, [isSubmit, phoneVal]);
+  }, [phoneVal]);
 
   return (
     <div>
@@ -144,17 +140,17 @@ function SignUpPage() {
               <SignUpInput
                 type="text"
                 placeholder="아이디"
-                {...register("aid")}
+                {...register("id")}
               />
-              <YupDiv>{errors.aid?.message}</YupDiv>
+              <YupDiv>{errors.id?.message}</YupDiv>
             </InputYupDiv>
             <InputYupDiv>
               <SignUpInput
                 type="password"
                 placeholder="비밀번호 (8-16자)"
-                {...register("apw")}
+                {...register("pw")}
               />
-              <YupDiv>{errors.apw?.message}</YupDiv>
+              <YupDiv>{errors.pw?.message}</YupDiv>
             </InputYupDiv>
             <InputYupDiv>
               <SignUpInput
