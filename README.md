@@ -27,8 +27,8 @@
 
 #### **3. FE 역할 분담 ✍️**
 
-- **강정호**: 로그인관련 기능 (Cookie, recoil), 식당찾기 (Kakao Map), 사용자 예약, 앉아서 주문 기능, 메뉴 추가, 수정
-- **이한샘**: 알림기능(Socket), 식당 주문내역, QR코드 생성(qrcode.react), 사용자 결제 기능, 사용자 정보
+- **강정호**: 로그인관련 기능 (Cookie, recoil), 식당찾기 (Kakao Map), 사용자 예약, 앉아서 주문 기능, 메뉴 CRUD
+- **이한샘**: 알림기능(Socket), 식당 주문내역, QR코드 생성(qrcode.react), 사용자 결제 기능, 사용자 정보, 주문 CRUD
 
 ---
 
@@ -40,11 +40,14 @@
 
 #### **5. 기술 스택 ⚙️**
 
-- React, typeScript, tailwindcss
+- React, typeScript, tailwindcss, emotion
 
 ---
 
 #### **6. 설치 및 실행 방법 🖥️**
+
+- **npm i** : 모든 라이브러리 설치
+- **npm run dev** : 프로젝트 실행
 
 ---
 
@@ -58,11 +61,115 @@
 
 #### **8. 프로젝트 구조 🗂️**
 
+┣ 📂public
+┃ ┣ 📜emailauth.png
+┃ ┣ 📜loadingImage.jpg
+┃ ┣ 📜logo.png
+┃ ┣ 📜menu.png
+┃ ┣ 📜profile.jpeg
+┃ ┣ 📜startingPage.png
+┃ ┣ 📜storeimg.png
+┃ ┗ 📜storemain.png
+┣ 📂src
+┃ ┣ 📂assets
+┃ ┃ ┗ 📜vite.svg
+┃ ┣ 📂atoms
+┃ ┃ ┣ 📜noticeAtom.jsx
+┃ ┃ ┣ 📜restaurantAtom.jsx
+┃ ┃ ┣ 📜roleAtom.jsx
+┃ ┃ ┗ 📜userAtom.jsx
+┃ ┣ 📂components
+┃ ┃ ┣ 📂notification
+┃ ┃ ┃ ┣ 📜NotificationIcon.jsx
+┃ ┃ ┃ ┣ 📜NotificationMessge.jsx
+┃ ┃ ┃ ┣ 📜NotificationPage.jsx
+┃ ┃ ┃ ┗ 📜StompComponent.jsx
+┃ ┃ ┣ 📜api.js
+┃ ┃ ┣ 📜cookie.js
+┃ ┃ ┣ 📜Loading.jsx
+┃ ┃ ┣ 📜MenuBar.jsx
+┃ ┃ ┣ 📜Modal.jsx
+┃ ┃ ┣ 📜useAuth.jsx
+┃ ┃ ┗ 📜useModal.jsx
+┃ ┣ 📂constants
+┃ ┃ ┗ 📜Role.js
+┃ ┣ 📂pages
+┃ ┃ ┣ 📂auth
+┃ ┃ ┃ ┣ 📜EditPwPage.jsx
+┃ ┃ ┃ ┣ 📜EmailAuthPage.jsx
+┃ ┃ ┃ ┣ 📜FindIdPage.jsx
+┃ ┃ ┃ ┣ 📜FindPwPage.jsx
+┃ ┃ ┃ ┣ 📜LoginPage.jsx
+┃ ┃ ┃ ┣ 📜loginStyle.js
+┃ ┃ ┃ ┣ 📜PolicyPage.jsx
+┃ ┃ ┃ ┗ 📜SignUpPage.jsx
+┃ ┃ ┣ 📂order
+┃ ┃ ┃ ┣ 📂placetoorder
+┃ ┃ ┃ ┃ ┣ 📜OrderLoading.jsx
+┃ ┃ ┃ ┃ ┣ 📜OrderMemberPage.jsx
+┃ ┃ ┃ ┃ ┣ 📜OrderPricePage.jsx
+┃ ┃ ┃ ┃ ┣ 📜OrderRequestPage.jsx
+┃ ┃ ┃ ┃ ┣ 📜PlaceToOrder.jsx
+┃ ┃ ┃ ┃ ┣ 📜QRCode.jsx
+┃ ┃ ┃ ┃ ┗ 📜QRCodeScan.tsx
+┃ ┃ ┃ ┗ 📜IndexPage.jsx
+┃ ┃ ┣ 📂payment
+┃ ┃ ┃ ┗ 📜PaymentList.jsx
+┃ ┃ ┣ 📂restaurant
+┃ ┃ ┃ ┣ 📜MenuSelectPage.jsx
+┃ ┃ ┃ ┣ 📜RestaurantDetailPage.jsx
+┃ ┃ ┃ ┗ 📜RestaurantPage.jsx
+┃ ┃ ┣ 📂storeManager
+┃ ┃ ┃ ┣ 📂menu
+┃ ┃ ┃ ┃ ┗ 📜StoreMenuPage.jsx
+┃ ┃ ┃ ┣ 📂salesConfirm
+┃ ┃ ┃ ┃ ┣ 📜LineChart.jsx
+┃ ┃ ┃ ┃ ┣ 📜Sales.jsx
+┃ ┃ ┃ ┃ ┣ 📜SalesConfirm.jsx
+┃ ┃ ┃ ┃ ┗ 📜SalesPage.jsx
+┃ ┃ ┃ ┣ 📂storeAuth
+┃ ┃ ┃ ┃ ┣ 📜StoreInfo.jsx
+┃ ┃ ┃ ┃ ┗ 📜StoreInfoPage.jsx
+┃ ┃ ┃ ┣ 📂tableManage
+┃ ┃ ┃ ┃ ┣ 📜OderList.jsx
+┃ ┃ ┃ ┃ ┗ 📜Table.jsx
+┃ ┃ ┃ ┣ 📜AddStorePage.jsx
+┃ ┃ ┃ ┣ 📜SideBar.jsx
+┃ ┃ ┃ ┣ 📜SideBarRight.jsx
+┃ ┃ ┃ ┗ 📜StorePage.jsx
+┃ ┃ ┣ 📂user
+┃ ┃ ┃ ┗ 📜UserMainPage.jsx
+┃ ┃ ┣ 📂userInfo
+┃ ┃ ┃ ┣ 📜EditInfoPage.jsx
+┃ ┃ ┃ ┗ 📜IndexPage.jsx
+┃ ┃ ┣ 📜IndexPage.jsx
+┃ ┃ ┗ 📜NotFound.jsx
+┃ ┣ 📜App.css
+┃ ┣ 📜App.jsx
+┃ ┣ 📜index.css
+┃ ┣ 📜main.tsx
+┃ ┗ 📜vite-env.d.ts
+┣ 📂tree
+┣ 📜.env
+┣ 📜.gitignore
+┣ 📜.prettierrc
+┣ 📜eslint.config.js
+┣ 📜index.html
+┣ 📜manifest.json
+┣ 📜package-lock.json
+┣ 📜package.json
+┣ 📜README.md
+┣ 📜tailwind.config.js
+┣ 📜tsconfig.app.json
+┣ 📜tsconfig.json
+┣ 📜tsconfig.node.json
+┗ 📜vite.config.ts
+
 ---
 
 #### **9. 연락처 📧**
 
-- **강정호**: rkdwjdgh08@naver.com
+- **강정호**: rkdwjdgh08@gmail.com
 - **이한샘**:
 
 ---
