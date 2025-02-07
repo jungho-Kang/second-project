@@ -17,51 +17,25 @@ const Notification = () => {
   const [orderId, setOrderId] = useRecoilState(orderIdAtom);
 
   useEffect(() => {
-    const getPaymentOrder = async () => {
-      const params = {
-        signedUserId: sessionId,
-      };
+    const params = {
+      userId: sessionId,
+    };
+    const getAlert = async () => {
       try {
-        const res = await axios.get(`/api/user/order`, {
+        const res = await axios.get(`/api/user/alert`, {
           params,
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
         });
-        console.log(res.data.resultData);
+        console.log(res);
         const result = res.data.resultData;
-        setIsNotice([...result]);
+        setIsNotice(result);
       } catch (error) {
         console.log(error);
       }
     };
-    getPaymentOrder();
-  }, []);
-
-  useEffect(() => {
-    const params = {
-      userId: sessionId,
-      orderId: orderId,
-    };
-    const getPaymentInfo = async () => {
-      try {
-        const res = await axios.get(
-          "/api/user/user-payment-member/getPaymentInfo",
-          {
-            params,
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          },
-        );
-        console.log(res.data.resultData);
-        const result = res.data.resultData;
-        setIsNotice([{ ...result }]);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getPaymentInfo();
+    getAlert();
   }, []);
   console.log(isNotice);
 

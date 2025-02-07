@@ -62,9 +62,11 @@ export const locationAtom = atom({
 // 함께 예약할 인원 임시 저장
 export const paymentMemberAtom = atom({
   key: "paymentMemberAtom",
-  default: {
-    userId: 0,
-    name: 0,
-    uid: 0,
-  },
+  default: [
+    {
+      name: "",
+      uid: "",
+      userId: 0,
+    },
+  ],
 });

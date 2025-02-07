@@ -211,7 +211,7 @@ const UserMainPage = () => {
             >
               <div className="flex w-full">
                 <img
-                  src={`http://112.222.157.156:5222/pic/restaurant/${data.restaurantId}/${data.restaurantAroundPicList.filePath}`}
+                  src={`http://112.222.157.156:5222/pic/restaurant/${data.restaurantId}/${data.restaurantAroundPicList?.filePath}`}
                   alt="메뉴사진"
                   className="w-full h-44"
                 />

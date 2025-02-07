@@ -1,32 +1,39 @@
 import axios from "axios";
-import _ from "lodash";
+import { _ } from "lodash";
 import { useCallback, useEffect, useState } from "react";
 import { IoMdAddCircleOutline, IoMdArrowBack } from "react-icons/io";
 import { useLocation } from "react-router";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import { memberDataAtom } from "../../../atoms/restaurantAtom";
+import { useRecoilState, useResetRecoilState } from "recoil";
+import {
+  memberDataAtom,
+  orderIdAtom,
+  paymentMemberAtom,
+} from "../../../atoms/restaurantAtom";
 import { userDataAtom } from "../../../atoms/userAtom";
 import { getCookie } from "../../../components/cookie";
 
 const PriceOrderPage = () => {
   const [priceList, setPriceList] = useState({});
-  const [inputValue, setInputValue] = useState("");
-  const [isCompleted, setIsCompleted] = useState(false);
-  const [isMember, setIsMember] = useState(false);
+  const [inputValues, setInputValues] = useState({});
+  const [isCompleted, setIsCompleted] = useState({});
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [newOrderId, setNewOrderId] = useRecoilState(orderIdAtom);
   const [userData, setUserData] = useRecoilState(userDataAtom);
   const [memberData, setMemberData] = useRecoilState(memberDataAtom);
+  const [paymentMemberData, setPaymentMemberData] =
+    useRecoilState(paymentMemberAtom);
   const navigate = useNavigate();
-  const signedUserId = sessionStorage.getItem("userId");
+  const userId = sessionStorage.getItem("userId");
   const accessToken = getCookie();
-  const { state } = useLocation();
-  console.log(state);
 
   useEffect(() => {
-    const params = { signedUserId: signedUserId };
-    const getOrderData = async () => {
+    const params = {
+      userId: userId,
+    };
+    const getOrderId = async () => {
       try {
-        const res = await axios.get(`/api/user/order`, {
+        const res = await axios.get(`/api/user/orderId`, {
           params,
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -34,27 +41,46 @@ const PriceOrderPage = () => {
         });
         console.log(res.data.resultData);
         const result = res.data.resultData;
-        setMemberData({
-          orderId: result.orderId,
-        });
+        setNewOrderId(result);
       } catch (error) {
         console.log(error);
       }
     };
-    getOrderData();
-  }, [memberData.orderId]);
-  console.log(memberData);
+    getOrderId();
+  }, []);
 
   useEffect(() => {
     const params = {
-      orderId: state.orderId,
+      orderId: newOrderId,
+    };
+    const getTotalPrice = async () => {
+      try {
+        const res = await axios.get(`/api/order`, {
+          params,
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        console.log(res.data.resultData.totalPrice);
+        const result = res.data.resultData.totalPrice;
+        setTotalPrice(result);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getTotalPrice();
+  }, []);
+
+  useEffect(() => {
+    const params = {
+      orderId: newOrderId,
     };
     console.log(params);
 
     const getPaymentMembers = async () => {
       try {
         const res = await axios.get(
-          "/api/user/user-payment-member/getPaymentMember",
+          "/api/user/user-payment-member/userPaymentMember",
           {
             params,
             headers: {
@@ -70,18 +96,50 @@ const PriceOrderPage = () => {
     getPaymentMembers();
   }, [memberData.orderId]);
 
-  const inputChangeHandler = e => {
-    setInputValue(e.target.value);
-    inputPriceList(e.target.value);
+  const postPaymentApproval = async () => {
+    const payload = {
+      orderId: newOrderId,
+      userId: [14, 15],
+      point: [34000, 34000],
+    };
+    try {
+      const res = await axios.post(`/api/user/user-payment-member`, payload, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      console.log(res.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const inputPriceList = useCallback(
-    _.debounce(value => {
-      setPriceList({ price: value });
-    }, 1000),
-    [],
-  );
-  console.log(inputValue);
+  const inputChangeHandler = ({ target: { value } }, userId) => {
+    console.log(value);
+
+    setInputValues(prev => ({
+      ...prev,
+      [userId]: value,
+    }));
+  };
+
+  const inputApprovalHandler = userId => {
+    setIsCompleted(prev => {
+      const updatedStatus = {
+        ...prev,
+        [userId]: !prev[userId],
+      };
+
+      // 완료 상태가 true에서 false로 변경된 경우 값 빼기
+      if (prev[userId]) {
+        setTotalPrice(prevPrice => prevPrice + Number(inputValues[userId]));
+      } else {
+        setTotalPrice(prevPrice => prevPrice - Number(inputValues[userId]));
+      }
+
+      return updatedStatus;
+    });
+  };
 
   const addMemberHandler = () => {
     navigate("/user/placetoorder/member");
@@ -101,81 +159,81 @@ const PriceOrderPage = () => {
         </div>
       </div>
       <div className="flex flex-col w-full h-full gap-6">
+        <div className="flex w-full justify-center gap-2 pt-4 text-xl">
+          <span>총 결제 금액 : </span>
+          <span
+            className={`text-end px-2 ${Math.sign(parseInt(totalPrice)) === -1 ? "text-red" : "text-black"}`}
+          >
+            {totalPrice?.toLocaleString("ko-KR")}
+          </span>
+        </div>
         <div className="flex w-full h-[6%] px-6 justify-between items-center border-b border-gray">
-          <span className="flex w-[30%] text-base text-nowrap">
-            {userData.name ? userData.name : "김길동(12345)"}
+          <span className="flex w-[40%] text-base text-nowrap">
+            {userData.name}({userData.uid})
           </span>
           <div className="flex w-[35%] gap-2 items-center justify-end">
-            {isCompleted ? (
+            {isCompleted[userId] ? (
               <>
-                <span className="text-end px-2">{inputValue}</span>
+                <span className="text-end px-2">
+                  {inputValues[userId]?.toLocaleString("ko-KR")}
+                </span>
                 <span>원</span>
               </>
             ) : (
               <>
                 <input
                   type="tel"
-                  className="flex w-full border border-darkGray px-2 text-end rounded-md"
-                  onChange={e => inputChangeHandler(e)}
-                  value={inputValue}
+                  className="flex w-[70%] border border-darkGray px-2 text-end rounded-md"
+                  onChange={e => inputChangeHandler(e, userData.userId)}
+                  value={inputValues.price}
                 />
                 <span>원</span>
               </>
             )}
           </div>
-          <div className="flex w-[20%] justify-center gap-2 text-nowrap items-center">
+          <div className="flex w-[15%] justify-center gap-2 text-nowrap items-center">
             <span
-              onClick={() => setIsCompleted(true)}
-              className="bg-blue px-2 text-white font-semibold rounded-md"
+              onClick={() => inputApprovalHandler(userId)}
+              className="bg-blue px-2 text-white font-medium rounded-md"
             >
-              확인
-            </span>
-            <span
-              onClick={() => setIsCompleted(false)}
-              className="bg-red px-2 text-white font-semibold rounded-md"
-            >
-              {isCompleted ? "수정" : "취소"}
+              {isCompleted[userId] ? "수정" : "확인"}
             </span>
           </div>
         </div>
-        {memberData.userId.map((item, index) => (
+        {paymentMemberData.slice(1).map(item => (
           <div
-            key={index}
+            key={item.userId}
             className="flex w-full h-[6%] px-6 justify-between items-center border-b border-gray"
           >
-            <span className="flex w-[30%] text-base text-nowrap">
-              {item.name ? item.name : "김길동(12345)"}
+            <span className="flex w-[40%] text-base text-nowrap">
+              {item.name}({item.uid})
             </span>
             <div className="flex w-[35%] gap-2 items-center justify-end">
-              {isCompleted ? (
+              {isCompleted[item.userId] ? (
                 <>
-                  <span className="text-end px-2">{inputValue}</span>
+                  <span className="text-end px-2">
+                    {inputValues[item.userId]?.toLocaleString("ko-KR")}
+                  </span>
                   <span>원</span>
                 </>
               ) : (
                 <>
                   <input
                     type="tel"
-                    className="flex w-full border border-darkGray px-2 text-end rounded-md"
-                    onChange={e => inputChangeHandler(e)}
-                    value={inputValue}
+                    className="flex w-[70%] border border-darkGray px-2 text-end rounded-md"
+                    onChange={e => inputChangeHandler(e, item.userId)}
+                    value={inputValues.price}
                   />
                   <span>원</span>
                 </>
               )}
             </div>
-            <div className="flex w-[20%] justify-center gap-2 text-nowrap items-center">
+            <div className="flex w-[15%] justify-center gap-2 text-nowrap items-center">
               <span
-                onClick={() => setIsCompleted(true)}
-                className="bg-blue px-2 text-white font-semibold rounded-md"
+                onClick={() => inputApprovalHandler(item.userId)}
+                className="bg-blue px-2 text-white font-medium rounded-md"
               >
-                확인
-              </span>
-              <span
-                onClick={() => setIsCompleted(false)}
-                className="bg-red px-2 text-white font-semibold rounded-md"
-              >
-                {isCompleted ? "수정" : "취소"}
+                {isCompleted[item.userId] ? "수정" : "확인"}
               </span>
             </div>
           </div>
@@ -187,8 +245,11 @@ const PriceOrderPage = () => {
           />
         </div>
         <div className="flex w-full justify-center">
-          <span className="bg-primary text-white text-lg px-2 py-1 rounded-md">
-            결제 요청
+          <span
+            onClick={() => postPaymentApproval()}
+            className="bg-primary text-white text-lg px-2 py-1 rounded-md"
+          >
+            승인 요청
           </span>
         </div>
       </div>
