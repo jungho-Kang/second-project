@@ -4,30 +4,24 @@ import { IoMdArrowBack } from "react-icons/io";
 import { MdOutlineRefresh } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { userDataAtom } from "../../../atoms/userAtom";
+import { ticketIdAtom, userDataAtom } from "../../../atoms/userAtom";
 import { getCookie } from "../../../components/cookie";
 import { orderIdAtom } from "../../../atoms/restaurantAtom";
+import Swal from "sweetalert2";
 
 const OrderRequestPage = () => {
-  const [priceList, setPriceList] = useState({});
-  const [inputValue, setInputValue] = useState("");
-  const [isCompleted, setIsCompleted] = useState(false);
+  const [priceList, setPriceList] = useState([]);
+  const [inputValues, setInputValues] = useState({});
+  const [isCompleted, setIsCompleted] = useState({});
   const [userData, setUserData] = useRecoilState(userDataAtom);
   const [newOrderId, setNewOrderId] = useRecoilState(orderIdAtom);
+  const [newTicketId, setNewTicketId] = useRecoilState(ticketIdAtom);
+
   const userId = sessionStorage.getItem("userId");
   const navigate = useNavigate();
   const accessToken = getCookie();
 
-
-  const postReservation = async () => {
-    subscribeToReservationStatus(99);
-    const sessionUserId = window.sessionStorage.getItem("userId");
-    const accessToken = getCookie();
-  }
-
-
   useEffect(() => {
-
     const params = {
       userId: userId,
     };
@@ -64,7 +58,9 @@ const OrderRequestPage = () => {
             },
           },
         );
-        console.log(res.data);
+        console.log(res.data.resultData);
+        const result = res.data.resultData;
+        setPriceList([...result]);
       } catch (error) {
         console.log(error);
       }
@@ -86,33 +82,107 @@ const OrderRequestPage = () => {
           },
         },
       );
-      console.log(res.data);
+      console.log(res.data.resultData);
+      const result = res.data.resultData;
+      setPriceList([...result.getApprovalStatus]);
     } catch (error) {
       console.log(error);
     }
   };
-
+  // 모든 유저가 결제 승인 후 서버에 최종적으로 결제 요청
   const postPayment = async () => {
+    const payload = {
+      orderId: parseInt(newOrderId),
+    };
     try {
       const res = await axios.post(
-        `/api/user/user-payment-member/postPayment?userId=${userId}?orderId=${238}`,
+        `/api/user/user-payment-member/insTicket`,
+        payload,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
         },
       );
+      console.log(res.data.resultData);
+      const result = res.data.resultData;
+      setNewTicketId(result);
+      Swal.fire({
+        title: "결제 완료!",
+        text: "식권이 생성되었습니다.",
+        timer: 2000,
+      });
+      navigate("/user/placetoorder/coupon");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  console.log(newOrderId);
+
+  const patchApproval = async userId => {
+    const payload = {
+      orderId: newOrderId,
+      userId: userId,
+      approvalStatus: 1,
+    };
+    console.log(payload);
+
+    try {
+      const res = await axios.patch(`/api/user/user-payment-member`, payload, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
       console.log(res.data);
+      const result = res.data.resultData;
     } catch (error) {
       console.log(error);
     }
   };
 
-  const addMemberHandler = () => {
-    navigate("/user/placetoorder/member");
+  const inputChangeHandler = ({ target: { value } }, userId) => {
+    console.log(value);
+    console.log(userId);
+
+    setInputValues(prev => ({
+      ...prev,
+      [userId]: value,
+    }));
   };
 
-  console.log(newOrderId);
+  const inputApprovalHandler = userId => {
+    console.log(userId);
+    const inputNumber = parseInt(inputValues[userId]);
+    console.log("입력값", inputNumber, userId);
+
+    if (isCompleted) {
+      patchApproval(userId);
+    } else {
+      setPriceList(prevPriceList => {
+        const updatedList = prevPriceList.map(item =>
+          item.userId === userId ? { ...item, point: inputNumber } : item,
+        );
+
+        const isUserInList = updatedList.some(item => item.userId === userId);
+        return isUserInList
+          ? updatedList
+          : [...updatedList, { userId, point: inputNumber }];
+      });
+
+      setIsCompleted(prev => {
+        const updatedStatus = {
+          ...prev,
+          [userId]: !prev[userId],
+        };
+        return updatedStatus;
+      });
+    }
+  };
+  console.log(priceList);
+
+  const cancleButtonClick = userId => {
+    setIsCompleted(!isCompleted);
+  };
 
   return (
     <div className="w-full h-dvh overflow-x-hidden overflow-y-scroll scrollbar-hide">
@@ -130,12 +200,12 @@ const OrderRequestPage = () => {
       <div className="flex flex-col w-full h-full gap-6">
         <div className="flex w-full h-[6%] px-6 justify-between items-center border-b border-gray">
           <span className="flex w-[30%] text-base text-nowrap">
-            {userData.name ? userData.name : "김길동(12345)"}
+            {userData.name}
           </span>
           <div className="flex w-[35%] gap-2 items-center justify-end">
-            {isCompleted ? (
+            {isCompleted[priceList.userId] ? (
               <>
-                <span className="text-end px-2">{inputValue}</span>
+                <span className="text-end px-2">{priceList[0]?.point}</span>
                 <span>원</span>
               </>
             ) : (
@@ -143,7 +213,9 @@ const OrderRequestPage = () => {
                 <input
                   type="tel"
                   className="flex w-full border border-darkGray px-2 text-end rounded-md"
-                  value={inputValue}
+                  placeholder={priceList[0]?.point}
+                  value={inputValues[userId]}
+                  onChange={e => inputChangeHandler(e, priceList[0]?.userId)}
                 />
                 <span>원</span>
               </>
@@ -151,16 +223,16 @@ const OrderRequestPage = () => {
           </div>
           <div className="flex w-[20%] justify-center gap-2 text-nowrap items-center">
             <span
-              onClick={() => setIsCompleted(true)}
+              onClick={() => inputApprovalHandler(priceList[0]?.userId)}
               className="bg-blue px-2 text-white font-semibold rounded-md cursor-pointer"
             >
-              승인
+              {isCompleted[priceList[0]?.userId] ? "승인" : "확인"}
             </span>
             <span
-              onClick={() => setIsCompleted(false)}
+              onClick={() => cancleButtonClick(priceList[0]?.userId)}
               className="bg-red px-2 text-white font-semibold rounded-md cursor-pointer"
             >
-              {isCompleted ? "수정" : "취소"}
+              {isCompleted[priceList[0]?.userId] ? "수정" : "취소"}
             </span>
           </div>
         </div>
@@ -176,43 +248,48 @@ const OrderRequestPage = () => {
             </span>
           </div>
         </div>
-
-        <div className="flex w-full h-[6%] px-6 justify-between items-center border-b border-gray">
-          <span className="flex w-[30%] text-base text-nowrap">
-            {userData.name ? userData.name : "김길동(12345)"}
-          </span>
-          <div className="flex w-[35%] gap-2 items-center justify-end">
-            {isCompleted ? (
-              <>
-                <span className="text-end px-2">{inputValue}</span>
-                <span>원</span>
-              </>
-            ) : (
-              <>
-                <input
-                  type="tel"
-                  className="flex w-full border border-darkGray px-2 text-end rounded-md"
-                  value={inputValue}
-                />
-                <span>원</span>
-              </>
-            )}
-          </div>
-          <div className="flex w-[20%] justify-center gap-2 text-nowrap items-center">
-            <span
-              onClick={() => setIsCompleted(true)}
-              className="bg-blue px-2 text-white font-semibold rounded-md cursor-pointer"
-            >
-              승인
+        {priceList.slice(1).map(item => (
+          <div
+            key={item.userId}
+            className="flex w-full h-[6%] px-6 justify-between items-center border-b border-gray"
+          >
+            <span className="flex w-[30%] text-base text-nowrap">
+              {item.name}
             </span>
-            <span
-              onClick={() => setIsCompleted(false)}
-              className="bg-red px-2 text-white font-semibold rounded-md cursor-pointer"
-            >
-              {isCompleted ? "수정" : "취소"}
-            </span>
+            <div className="flex w-[35%] gap-2 items-center justify-end">
+              {isCompleted[item.userId] ? (
+                <>
+                  <span className="text-end px-2">{item.point}</span>
+                  <span>원</span>
+                </>
+              ) : (
+                <>
+                  <input
+                    type="tel"
+                    className="flex w-full border border-darkGray px-2 text-end rounded-md"
+                    value={inputValues[item.userId]}
+                    onChange={e => inputChangeHandler(e, item.userId)}
+                  />
+                  <span>원</span>
+                </>
+              )}
+            </div>
+            <div className="flex w-[20%] justify-center gap-2 text-nowrap items-center">
+              <span
+                onClick={() => inputApprovalHandler(item.userId)}
+                className="bg-blue px-2 text-white font-semibold rounded-md cursor-pointer"
+              >
+                승인
+              </span>
+              <span
+                onClick={() => cancleButtonClick(item.userId)}
+                className="bg-red px-2 text-white font-semibold rounded-md cursor-pointer"
+              >
+                {isCompleted[item.userId] ? "수정" : "취소"}
+              </span>
+            </div>
           </div>
-        </div>
+        ))}
 
         <div className="flex w-full justify-center gap-10">
           <span

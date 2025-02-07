@@ -30,3 +30,22 @@ export const locationAtom = atom({
     longitude: 0,
   },
 });
+
+export const ticketIdAtom = atom({
+  key: "ticketIdAtom",
+  default: {
+    ticketId: 0,
+  },
+});
+
+export const ticketDataAtom = atom({
+  key: "ticketDataAtom",
+  default: {
+    restaurantName: "",
+    menuCount: 0,
+    totalAmount: 0,
+    personCount: 0,
+    reservationTime: null,
+    menuNames: "",
+  },
+});

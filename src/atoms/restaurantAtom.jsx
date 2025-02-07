@@ -49,15 +49,6 @@ export const memberDataAtom = atom({
     orderId: 0,
     userId: [],
     point: [],
-
-  },
-});
-
-export const locationAtom = atom({
-  key: "locationAtom",
-  default: {
-    latitude: 0,
-    longitude: 0,
   },
 });
 
@@ -71,5 +62,4 @@ export const paymentMemberAtom = atom({
       userId: 0,
     },
   ],
-
 });

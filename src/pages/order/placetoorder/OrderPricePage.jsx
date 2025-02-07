@@ -1,4 +1,3 @@
-
 import axios from "axios";
 import { _ } from "lodash";
 import { useCallback, useEffect, useState } from "react";
@@ -72,46 +71,53 @@ const PriceOrderPage = () => {
     getTotalPrice();
   }, []);
 
-  useEffect(() => {
-    const params = {
-      orderId: newOrderId,
-    };
-    console.log(params);
+  // useEffect(() => {
+  //   const params = {
+  //     orderId: newOrderId,
+  //   };
+  //   console.log(params);
 
-    const getPaymentMembers = async () => {
-      try {
-        const res = await axios.get(
-          "/api/user/user-payment-member/userPaymentMember",
-          {
-            params,
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          },
-
-        );
-        console.log(res);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getPaymentMembers();
-
-  }, [memberData.orderId]);
+  //   const getPaymentMembers = async () => {
+  //     try {
+  //       const res = await axios.get(
+  //         "/api/user/user-payment-member/userPaymentMember",
+  //         {
+  //           params,
+  //           headers: {
+  //             Authorization: `Bearer ${accessToken}`,
+  //           },
+  //         },
+  //       );
+  //       console.log(res);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   getPaymentMembers();
+  // }, [memberData.orderId]);
 
   const postPaymentApproval = async () => {
     const payload = {
       orderId: newOrderId,
-      userId: [14, 15],
-      point: [34000, 34000],
+      userId: memberData.userId,
+      point: memberData.point,
     };
+    console.log(payload);
+
     try {
       const res = await axios.post(`/api/user/user-payment-member`, payload, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      console.log(res.data);
+      console.log(res.data.resultData);
+      const result = res.data.resultData;
+      if (result >= 0) {
+        console.log("결제 승인 요청을 보냈습니다");
+        navigate("/user/placetoorder/request");
+      } else {
+        console.log("요청에 실패했습니다. 다시 시도해주세요");
+      }
     } catch (error) {
       console.log(error);
     }
@@ -125,6 +131,8 @@ const PriceOrderPage = () => {
       [userId]: value,
     }));
   };
+  console.log("금액 : ", inputValues);
+  console.log("사람 : ", memberData);
 
   const inputApprovalHandler = userId => {
     setIsCompleted(prev => {
@@ -139,11 +147,16 @@ const PriceOrderPage = () => {
       } else {
         setTotalPrice(prevPrice => prevPrice - Number(inputValues[userId]));
       }
-
       return updatedStatus;
     });
-  };
 
+    const inputNUmber = parseInt(inputValues[userId]);
+
+    setMemberData(prev => ({
+      ...prev,
+      point: [...prev.point, inputNUmber],
+    }));
+  };
 
   const addMemberHandler = () => {
     navigate("/user/placetoorder/member");
@@ -163,7 +176,6 @@ const PriceOrderPage = () => {
         </div>
       </div>
       <div className="flex flex-col w-full h-full gap-6">
-
         <div className="flex w-full justify-center gap-2 pt-4 text-xl">
           <span>총 결제 금액 : </span>
           <span
@@ -189,11 +201,9 @@ const PriceOrderPage = () => {
               <>
                 <input
                   type="tel"
-
                   className="flex w-[70%] border border-darkGray px-2 text-end rounded-md"
                   onChange={e => inputChangeHandler(e, userData.userId)}
                   value={inputValues.price}
-
                 />
                 <span>원</span>
               </>
@@ -260,7 +270,6 @@ const PriceOrderPage = () => {
             className="bg-primary text-white text-lg px-2 py-1 rounded-md"
           >
             승인 요청
-
           </span>
         </div>
       </div>

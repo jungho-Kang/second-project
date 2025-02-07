@@ -460,7 +460,7 @@ function RestaurantPage() {
 
               <FlexDiv style={{ overflowX: "scroll", marginBottom: 20 }}>
                 <img
-                  src={`http://112.222.157.156:5222/pic/restaurant/${item.restaurantId}/${item.restaurantArroundPicList[0].filePath}`}
+                  src={`http://112.222.157.156:5222/pic/restaurant/${item.restaurantId}/${item.restaurantArroundPicList[0]?.filePath}`}
                   style={{
                     minWidth: 140,
                     width: 140,
