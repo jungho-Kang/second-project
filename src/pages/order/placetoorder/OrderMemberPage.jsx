@@ -1,3 +1,4 @@
+
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { debounce } from "lodash";
@@ -93,10 +94,12 @@ const Seatmate = () => {
       );
       const result = res.data.resultData.memberList;
       setSearchResult([...result]);
+
     } catch (error) {
       console.log(error);
     }
   };
+
   console.log(searchResult);
 
   const changeInputHandler = e => {
@@ -147,6 +150,7 @@ const Seatmate = () => {
         userId: [paymentMember.userId],
       },
     });
+
   };
 
   return (
@@ -181,6 +185,7 @@ const Seatmate = () => {
           </span>
         </div>
         <div>총 {paymentMember.userId.length}명 선택 중</div>
+
       </div>
       <div className="w-full h-dvh ">
         <div className="flex w-full h-[6%] items-center px-6 border-b border-gray">
@@ -200,8 +205,10 @@ const Seatmate = () => {
                 className="w-[90%] border border-darkGray rounded-md px-2"
                 placeholder="회사 내 인원을 이름으로 검색해보세요"
                 onChange={e => changeInputHandler(e)}
+
                 onKeyDown={e => onkKeyDownHandler(e)}
                 value={inputValue}
+
               />
               <IoMdSearch
                 onClick={() => searchMember()}
@@ -209,6 +216,7 @@ const Seatmate = () => {
               />
             </div>
             <div className="flex flex-col w-full h-dvh">
+
               {searchResult.map(item => (
                 <div
                   key={item.userId}
@@ -226,11 +234,14 @@ const Seatmate = () => {
                   </label>
                 </div>
               ))}
+
             </div>
           </div>
         ) : (
           <div className="flex flex-col w-full h-dvh">
+
             <span className="p-5 text-xl">최근 함께한 사용자가 없습니다</span>
+
           </div>
         )}
       </div>

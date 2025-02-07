@@ -72,12 +72,21 @@ function LoginPage() {
       } else if (role === STORE) {
         const res = await axios.post("/api/admin/sign-in", formData);
         console.log(res.data.resultData);
+        const result = res.data.resultData;
 
-        subscribeStoreLogin(37);
+        const restaurantId = result.restaurantId;
+        const adminId = result.adminId;
+        const accessToken = result.accessToken;
+        window.sessionStorage.setItem("adminId", adminId);
+        window.sessionStorage.setItem("restaurantId", restaurantId);
+
+        setCookie(accessToken);
+        subscribeStoreLogin(restaurantId);
       }
       setIsLogin(true);
       routeHandler();
     } catch (error) {
+      alert("아이디와 비밀번호가 일치하지 않습니다.");
       console.log(error);
     }
   };

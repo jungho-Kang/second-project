@@ -37,6 +37,7 @@ export const orderDataAtom = atom({
   },
 });
 
+// 주문 정보 Id
 export const orderIdAtom = atom({
   key: "orderIdAtom",
   default: 0,
@@ -48,6 +49,7 @@ export const memberDataAtom = atom({
     orderId: 0,
     userId: [],
     point: [],
+
   },
 });
 
@@ -69,4 +71,5 @@ export const paymentMemberAtom = atom({
       userId: 0,
     },
   ],
+
 });

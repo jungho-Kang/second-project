@@ -1,3 +1,4 @@
+
 import axios from "axios";
 import { _ } from "lodash";
 import { useCallback, useEffect, useState } from "react";
@@ -87,6 +88,7 @@ const PriceOrderPage = () => {
               Authorization: `Bearer ${accessToken}`,
             },
           },
+
         );
         console.log(res);
       } catch (error) {
@@ -94,6 +96,7 @@ const PriceOrderPage = () => {
       }
     };
     getPaymentMembers();
+
   }, [memberData.orderId]);
 
   const postPaymentApproval = async () => {
@@ -141,6 +144,7 @@ const PriceOrderPage = () => {
     });
   };
 
+
   const addMemberHandler = () => {
     navigate("/user/placetoorder/member");
   };
@@ -159,6 +163,7 @@ const PriceOrderPage = () => {
         </div>
       </div>
       <div className="flex flex-col w-full h-full gap-6">
+
         <div className="flex w-full justify-center gap-2 pt-4 text-xl">
           <span>총 결제 금액 : </span>
           <span
@@ -177,20 +182,24 @@ const PriceOrderPage = () => {
                 <span className="text-end px-2">
                   {inputValues[userId]?.toLocaleString("ko-KR")}
                 </span>
+
                 <span>원</span>
               </>
             ) : (
               <>
                 <input
                   type="tel"
+
                   className="flex w-[70%] border border-darkGray px-2 text-end rounded-md"
                   onChange={e => inputChangeHandler(e, userData.userId)}
                   value={inputValues.price}
+
                 />
                 <span>원</span>
               </>
             )}
           </div>
+
           <div className="flex w-[15%] justify-center gap-2 text-nowrap items-center">
             <span
               onClick={() => inputApprovalHandler(userId)}
@@ -238,6 +247,7 @@ const PriceOrderPage = () => {
             </div>
           </div>
         ))}
+
         <div className="flex w-full h-[5%] justify-center items-center">
           <IoMdAddCircleOutline
             onClick={addMemberHandler}
@@ -250,6 +260,7 @@ const PriceOrderPage = () => {
             className="bg-primary text-white text-lg px-2 py-1 rounded-md"
           >
             승인 요청
+
           </span>
         </div>
       </div>

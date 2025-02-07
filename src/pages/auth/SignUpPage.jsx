@@ -86,6 +86,7 @@ function SignUpPage() {
     try {
       // console.log("보낼 데이터", data);
       await axios.post("/api/admin/sign-up", data);
+      alert("회원가입이 완료 되었습니다.");
       navigate("/auth/signup/emailauth");
     } catch (error) {
       console.log(error);
@@ -134,9 +135,9 @@ function SignUpPage() {
             {/* roleId를 보내기 위한 input */}
             <input
               type="text"
-              {...register("roleId")}
               value={role}
               style={{ display: "none" }}
+              {...register("roleId")}
             />
             <TitleDiv>회원가입</TitleDiv>
             <InputYupDiv>

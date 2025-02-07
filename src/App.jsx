@@ -13,9 +13,7 @@ import StoreSales from "./pages/storeManager/salesConfirm/Sales";
 import OrderPage from "./pages/storeManager/salesConfirm/SalesPage";
 import EditInfoPage from "./pages/userInfo/EditInfoPage";
 import UserInfo from "./pages/userInfo/IndexPage";
-
 import EmailAuthPage from "./pages/auth/EmailAuthPage";
-
 import PolicyPage from "./pages/auth/PolicyPage";
 import PlaceToOrder from "./pages/order/placetoorder/PlaceToOrder";
 import MealTicketPage from "./pages/order/placetoorder/QRCode";
@@ -24,18 +22,17 @@ import UserMainPage from "./pages/user/UserMainPage";
 import RestaurantDetailPage from "./pages/restaurant/RestaurantDetailPage";
 import AddStorePage from "./pages/storeManager/AddStorePage";
 
+
 import OrderMemberPage from "./pages/order/placetoorder/OrderMemberPage";
 import OrderPricePage from "./pages/order/placetoorder/OrderPricePage";
 
-import MenuSelectPage from "./pages/restaurant/MenuSelectPage";
 
+import MenuSelectPage from "./pages/restaurant/MenuSelectPage";
 import NotFound from "./pages/NotFound";
 import { runSocket } from "./components/notification/StompComponent";
 import OrderRequestPage from "./pages/order/placetoorder/OrderRequestPage";
-
 function App() {
   runSocket();
-
   return (
     <Router>
       <Routes>
@@ -51,7 +48,6 @@ function App() {
             <Route path="emailauth" element={<EmailAuthPage />} />
           </Route>
         </Route>
-
         <Route path="/user">
           <Route index element={<UserMainPage />} />
           <Route path="userinfo">
@@ -76,9 +72,7 @@ function App() {
             </Route>
           </Route>
         </Route>
-
         <Route path="/addstore" element={<AddStorePage />} />
-
         <Route path="/store">
           <Route index element={<Store />} />
           <Route path="menu" element={<MenuPage />} />
@@ -86,7 +80,6 @@ function App() {
           <Route path="sales" element={<StoreSales />} />
           <Route path="info" element={<StoreInfoPage />} />
         </Route>
-
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>

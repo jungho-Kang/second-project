@@ -6,11 +6,16 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { FaSortDown, FaSortUp } from "react-icons/fa";
 import styled from "@emotion/styled";
+import { useRecoilState } from "recoil";
+import { roleAtom } from "../../atoms/roleAtom";
+import { STORE } from "../../constants/Role";
+import { removeCookie, removeCookieRefresh } from "../../components/cookie";
 
 const SubMenuDiv = styled.div`
   padding: 5px 10px;
   margin-left: 60px;
   margin-top: 10px;
+  cursor: pointer;
 `;
 
 const SideBar = () => {
@@ -23,6 +28,7 @@ const SideBar = () => {
   });
   const [activeMenu, setActiveMenu] = useState("");
   const [subMenuClick, setSubMenuClick] = useState(false);
+  const [role, setRole] = useRecoilState(roleAtom);
 
   useEffect(() => {
     const pathToMenuMap = {
@@ -123,14 +129,29 @@ const SideBar = () => {
             >
               정보수정
             </SubMenuDiv>
-            <SubMenuDiv onClick={() => navigate("/auth/editpw")}>
+            <SubMenuDiv
+              onClick={() => {
+                navigate("/auth/editpw");
+                setRole(STORE);
+              }}
+            >
               비밀번호 변경
             </SubMenuDiv>
             <SubMenuDiv>계정삭제</SubMenuDiv>
           </>
         )}
       </div>
-      <div className="rounded-md bg-primary text-white font-bold tracking-wider px-6 py-2 mb-16 cursor-pointer hover:bg-primaryFocus">
+      <div
+        onClick={() => {
+          window.sessionStorage.removeItem("adminId");
+          window.sessionStorage.removeItem("restaurantId");
+          removeCookie("/");
+          removeCookieRefresh("/");
+          alert("로그아웃 되었습니다.");
+          navigate("/");
+        }}
+        className="rounded-md bg-primary text-white font-bold tracking-wider px-6 py-2 mb-16 cursor-pointer hover:bg-primaryFocus"
+      >
         로그아웃
       </div>
     </div>

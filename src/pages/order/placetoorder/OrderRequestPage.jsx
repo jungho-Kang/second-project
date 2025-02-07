@@ -18,7 +18,16 @@ const OrderRequestPage = () => {
   const navigate = useNavigate();
   const accessToken = getCookie();
 
+
+  const postReservation = async () => {
+    subscribeToReservationStatus(99);
+    const sessionUserId = window.sessionStorage.getItem("userId");
+    const accessToken = getCookie();
+  }
+
+
   useEffect(() => {
+
     const params = {
       userId: userId,
     };

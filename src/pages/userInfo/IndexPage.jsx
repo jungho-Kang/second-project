@@ -71,8 +71,8 @@ function IndexPage() {
   }, []);
 
   const logoutHandler = () => {
-    removeCookie("accessToken");
-    removeCookieRefresh("refresh-token");
+    removeCookie("/");
+    removeCookieRefresh("/");
     window.sessionStorage.removeItem("userId");
     navigate("/auth");
   };
@@ -129,17 +129,20 @@ function IndexPage() {
         <div className="flex justify-center gap-5 mb-2">
           <div
             onClick={() => navigate("/user/userInfo/edit")}
-            className="px-3 py-1 bg-primary rounded-lg text-white font-semibold text-center"
+            className="px-3 py-1 bg-primary rounded-lg text-white font-semibold text-center cursor-pointer"
           >
             회원정보 수정
           </div>
-          <div className="px-3 py-1 bg-primary rounded-lg text-white font-semibold text-center">
+          <div
+            onClick={() => navigate("/auth/editpw")}
+            className="px-3 py-1 bg-primary rounded-lg text-white font-semibold text-center cursor-pointer"
+          >
             비밀번호 변경
           </div>
         </div>
         <div
           onClick={logoutHandler}
-          className="flex justify-center text-darkGray underline font-bold mb-32"
+          className="flex justify-center text-darkGray underline font-bold mb-32 cursor-pointer"
         >
           로그아웃
         </div>
