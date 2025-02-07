@@ -155,7 +155,7 @@ function RestaurantPage() {
     setMarkers([]);
     try {
       const res = await axios.get(
-        `/api/restaurant/around?orderFilter=${sort}&userLat=${location.latitude}&userLng=${location.longitude}`,
+        `/api/restaurant/around?orderFilter=${sort}&userLat=${location?.latitude}&userLng=${location?.longitude}`,
       );
 
       console.log(res);
@@ -428,7 +428,7 @@ function RestaurantPage() {
         </FlexDiv>
 
         <div
-          className="scrollable-content"
+          className="scrollable-content scrollbar-hide"
           style={{
             maxHeight: height === 250 ? 180 : 680,
             overflowY: "scroll",
@@ -458,19 +458,22 @@ function RestaurantPage() {
                 </span>
               </FlexDiv>
 
-              <FlexDiv style={{ overflowX: "scroll", marginBottom: 20 }}>
-                <img
-                  src={`http://112.222.157.156:5222/pic/restaurant/${item.restaurantId}/${item.restaurantArroundPicList[0].filePath}`}
-                  style={{
-                    minWidth: 140,
-                    width: 140,
-                    height: 140,
-                    objectFit: "cover",
-                  }}
-                />
-
-                <img src="/storeimg.png" style={{ width: 140, height: 140 }} />
-                <img src="/storeimg.png" style={{ width: 140, height: 140 }} />
+              <FlexDiv
+                className="scrollbar-hide"
+                style={{ overflowX: "scroll", marginBottom: 20 }}
+              >
+                {item.restaurantArroundPicList?.map((file, index) => (
+                  <img
+                    key={index}
+                    src={`http://112.222.157.156:5222/pic/restaurant/${item.restaurantId}/${item.restaurantArroundPicList?.file}`}
+                    style={{
+                      minWidth: 140,
+                      width: 140,
+                      height: 140,
+                      objectFit: "cover",
+                    }}
+                  />
+                ))}
               </FlexDiv>
             </div>
           ))}
