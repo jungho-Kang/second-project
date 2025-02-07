@@ -12,36 +12,10 @@ const PlaceToOrder = () => {
   const [userData, setUserData] = useRecoilState(userDataAtom);
   const [reserveData, setReserveData] = useRecoilState(reserveDataAtom);
 
-  const reservationHandler = async () => {
-    const payload = {
-      restaurantId: reserveData.restaurantId,
-      userId: userData.userId,
-      reservationTime: reserveData.reservationTime,
-      reservationPeopleCount: reserveData.reservationPeopleCount,
-      userPhone: userData.phone,
-      menuList: [...reserveData.menuList],
-    };
-    console.log(payload);
-    try {
-      const res = await axios.post("/api/reservation", payload);
-      console.log(res);
-      if (res.data.statusCode === "200") {
-        console.log(res.data.resultData);
-      }
-    } catch (error) {
-      console.log(error);
-      if (error.response.status === 400) {
-        console.log(`${error.response.data.resultMsg}`);
-      }
-    }
-  };
-  reservationHandler();
-
   return (
     <div>
       {isLoading ? (
-        // <OrderLoading />
-        <></>
+        <OrderLoading />
       ) : (
         <div className="flex flex-col w-full h-dvh justify-start items-center gap-10">
           <div className="flex flex-col w-full h-[15%] text-center py-6 gap-10">

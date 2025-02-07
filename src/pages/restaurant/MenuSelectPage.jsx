@@ -12,6 +12,7 @@ import { orderIdAtom, reserveState } from "../../atoms/restaurantAtom";
 import dayjs from "dayjs";
 import { userDataAtom } from "../../atoms/userAtom";
 import { getCookie } from "../../components/cookie";
+import { subscribeToReservationStatus } from "../../components/notification/StompComponent";
 
 const BackDiv = styled.div`
   background-color: #fff;
@@ -174,6 +175,7 @@ function MenuSelectPage() {
         });
         console.log(res.data.resultData);
         setOrderId(res.data.resultData);
+        subscribeToReservationStatus(res.data.resultData);
       } else {
         const res = await axios.post("/api/order/with-detail", postData, {
           headers: {
@@ -182,6 +184,7 @@ function MenuSelectPage() {
         });
         console.log(res.data.resultData);
         setOrderId(res.data.resultData);
+        subscribeToReservationStatus(res.data.resultData);
       }
       alert(`${time}에 예약이 완료 되었습니다.`);
       navigate("/user");
