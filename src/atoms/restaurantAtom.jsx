@@ -42,19 +42,31 @@ export const orderIdAtom = atom({
   default: 0,
 });
 
-
 export const memberDataAtom = atom({
   key: "memberDataAtom",
   default: {
     orderId: 0,
     userId: [],
     point: [],
+  },
+});
 
 export const locationAtom = atom({
   key: "locationAtom",
   default: {
     latitude: 0,
     longitude: 0,
-
   },
+});
+
+// 함께 예약할 인원 임시 저장
+export const paymentMemberAtom = atom({
+  key: "paymentMemberAtom",
+  default: [
+    {
+      name: "",
+      uid: "",
+      userId: 0,
+    },
+  ],
 });

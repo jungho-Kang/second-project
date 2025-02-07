@@ -3,7 +3,7 @@ import { MdTableBar } from "react-icons/md";
 import { PiMoneyWavyFill } from "react-icons/pi";
 import { IoStorefront } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaSortDown, FaSortUp } from "react-icons/fa";
 import styled from "@emotion/styled";
 
@@ -24,11 +24,19 @@ const SideBar = () => {
   const [activeMenu, setActiveMenu] = useState("");
   const [subMenuClick, setSubMenuClick] = useState(false);
 
-  const handleMenuClick = (menu, path) => {
-    console.log(menu);
+  useEffect(() => {
+    const pathToMenuMap = {
+      "/store": "table",
+      "/store/menu": "menu",
+      "/store/sales": "sales",
+      "/store/info": "store",
+    };
+    setActiveMenu(pathToMenuMap[location.pathname] || "");
+  }, [location.pathname]);
 
-    setActiveMenu(menu); // 활성화된 메뉴 업데이트
-    navigate(path); // 절대경로로 메뉴 클릭 시 라우팅
+  const handleMenuClick = (menu, path) => {
+    setActiveMenu(menu);
+    navigate(path);
   };
 
   const editHandler = () => {

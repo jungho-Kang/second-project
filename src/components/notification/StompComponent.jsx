@@ -24,18 +24,22 @@ export const subscribeToReservationStatus = orderId => {
     const messageObj = JSON.parse(message.body);
     let statusMessage = "";
 
-    console.log("식당으로 주문 요청 완료 : ", messageObj);
+    try {
+      console.log("식당으로 주문 요청 완료 : ", messageObj);
 
-    switch (messageObj.reservationStatus) {
-      case 1:
-        statusMessage = "예약이 승인되었습니다.";
-        break;
-      case 2:
-        statusMessage = "예약이 거부되었습니다.";
-        break;
-      case 3:
-        statusMessage = "예약이 취소되었습니다.";
-        break;
+      switch (messageObj.reservationStatus) {
+        case 1:
+          statusMessage = "예약이 승인되었습니다.";
+          break;
+        case 2:
+          statusMessage = "예약이 거부되었습니다.";
+          break;
+        case 3:
+          statusMessage = "예약이 취소되었습니다.";
+          break;
+      }
+    } catch (error) {
+      console.log(error);
     }
   });
 };
@@ -47,7 +51,11 @@ export const subscribeUserLogin = userId => {
     const messageObj = JSON.parse(message.body);
     let statusMessage = "";
 
-    console.log("유저 로그인 : ", messageObj);
+    try {
+      console.log("유저 로그인 : ", messageObj);
+    } catch (error) {
+      console.log(error);
+    }
   });
 };
 
@@ -58,8 +66,8 @@ export const subscribeStoreLogin = restaurantId => {
     const messageObj = JSON.parse(message.body);
     let statusMessage = "";
 
-    console.log("식당 관리자 로그인 : ", messageObj);
     try {
+      console.log("식당 관리자 로그인 : ", messageObj);
       Swal.fire({
         title: "새로운 주문이 들어왔습니다!",
         text: "주문 목록에서 확인해주세요.",
