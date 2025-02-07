@@ -1,22 +1,23 @@
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import { Pagination, Autoplay } from "swiper/modules";
-import "swiper/css/pagination";
-import { useInView } from "react-intersection-observer";
-import { LuArrowDownUp } from "react-icons/lu";
-import MenuBar from "../../components/MenuBar";
-import Notification from "../../components/notification/NotificationIcon";
-import { useEffect, useState } from "react";
 import axios from "axios";
+import { useEffect, useState } from "react";
+import { LuArrowDownUp } from "react-icons/lu";
+import { useInView } from "react-intersection-observer";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { isWhiteIcon } from "../../atoms/noticeAtom";
+import "swiper/css";
+import "swiper/css/pagination";
+import { Autoplay, Pagination } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { isWhiteIcon, noticeState } from "../../atoms/noticeAtom";
+import MenuBar from "../../components/MenuBar";
+import Notification from "../../components/notification/NotificationIcon";
 
 const UserMainPage = () => {
   const [restaurantList, setRestaurantList] = useState([]);
   const [pagenation, setPagenation] = useState(1);
   const [categoryId, setCategoryId] = useState(1);
   const navigate = useNavigate();
+  const [isNotice, setIsNotice] = useRecoilState(noticeState);
   const [isWhite, setIsWhite] = useRecoilState(isWhiteIcon);
   // 알림 아이콘 흰색
 
@@ -210,7 +211,7 @@ const UserMainPage = () => {
             >
               <div className="flex w-full">
                 <img
-                  src={`http://112.222.157.156:5222/pic/restaurant/${data.restaurantId}/${data.restaurantAroundPicList.filePath}`}
+                  src={`http://112.222.157.156:5222/pic/restaurant/${data.restaurantId}/${data.restaurantAroundPicList?.filePath}`}
                   alt="메뉴사진"
                   className="w-full h-44"
                 />

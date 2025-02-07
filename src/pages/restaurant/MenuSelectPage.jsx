@@ -11,6 +11,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { orderIdAtom, reserveState } from "../../atoms/restaurantAtom";
 import dayjs from "dayjs";
 import { userDataAtom } from "../../atoms/userAtom";
+import { getCookie } from "../../components/cookie";
 
 const BackDiv = styled.div`
   background-color: #fff;
@@ -163,13 +164,22 @@ function MenuSelectPage() {
   };
 
   const postReservation = async () => {
+    const accessToken = getCookie();
     try {
       if (isReserve) {
-        const res = await axios.post("/api/reservation", postData);
+        const res = await axios.post("/api/reservation", postData, {
+          headers: {
+            Authorization: accessToken,
+          },
+        });
         console.log(res.data.resultData);
         setOrderId(res.data.resultData);
       } else {
-        const res = await axios.post("/api/order/with-detail", postData);
+        const res = await axios.post("/api/order/with-detail", postData, {
+          headers: {
+            Authorization: accessToken,
+          },
+        });
         console.log(res.data.resultData);
         setOrderId(res.data.resultData);
       }
@@ -227,22 +237,23 @@ function MenuSelectPage() {
   useEffect(() => {
     // console.log(isReserve);
     // console.log("시간 : ", time, "인원 : ", count);
+    const sessionUserId = window.sessionStorage.getItem("userId");
     if (isReserve) {
       const today = dayjs(new Date()).format("YYYY-MM-DD");
       const reserveTime = `${today} ${time}`;
       console.log("현재 시간", reserveTime);
       console.log(postMenuList);
       setPostData({
-        userId: userData.userId,
+        userId: parseInt(sessionUserId),
         restaurantId: parseInt(id),
         reservationTime: reserveTime,
         reservationPeopleCount: count,
-        userPhone: userData.phone,
+        userPhone: userData.phone.replace(/-/g, ""),
         menuList: [...postMenuList],
       });
     } else {
       setPostData({
-        userId: userData.userId,
+        userId: sessionUserId,
         restaurantId: parseInt(id),
         orderDetails: [...postMenuList],
       });
