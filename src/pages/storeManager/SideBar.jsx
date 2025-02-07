@@ -65,7 +65,7 @@ const SideBar = () => {
             className={`flex gap-3 pl-8 py-4 items-center ${
               activeMenu === "table"
                 ? "bg-primary text-white ml-6 rounded-l-full"
-                : "hover:bg-primary hover:text-white hover:ml-6 hover:rounded-l-full"
+                : ""
             }`}
             onClick={() => handleMenuClick("table", "/store")}
           >
@@ -77,7 +77,7 @@ const SideBar = () => {
             className={`flex gap-3 pl-8 py-4 items-center ${
               activeMenu === "menu"
                 ? "bg-primary text-white ml-6 rounded-l-full"
-                : "hover:bg-primary hover:text-white hover:ml-6 hover:rounded-l-full"
+                : ""
             }`}
             onClick={() => handleMenuClick("menu", "/store/menu")}
           >
@@ -90,7 +90,7 @@ const SideBar = () => {
             className={`flex gap-3 pl-8 py-4 items-center ${
               activeMenu === "sales"
                 ? "bg-primary text-white ml-6 rounded-l-full"
-                : "hover:bg-primary hover:text-white hover:ml-6 hover:rounded-l-full"
+                : ""
             }`}
             onClick={() => handleMenuClick("sales", "/store/sales")}
           >
@@ -102,9 +102,7 @@ const SideBar = () => {
         {/* 내 매장 메뉴 */}
         <div
           className={`flex gap-3 pl-8 items-center mt-3 ${
-            menuClick.store
-              ? "bg-primary text-white"
-              : "hover:bg-primary hover:text-white"
+            menuClick.store ? "bg-primary text-white" : ""
           }`}
           onClick={() =>
             setMenuClick({ ...menuClick, store: !menuClick.store })

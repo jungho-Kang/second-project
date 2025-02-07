@@ -30,7 +30,13 @@ const Notification = () => {
         });
         console.log(res);
         const result = res.data.resultData;
-        setIsNotice(result);
+        if (result[0]?.orderId) {
+          setIsNotice(result);
+          console.log("결제 승인 요청이 왔습니다");
+        } else if (result[1]?.orderId) {
+          setIsNotice(result);
+          console.log("주문 관련 알림이 도착했습니다");
+        }
       } catch (error) {
         console.log(error);
       }

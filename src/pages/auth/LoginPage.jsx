@@ -32,6 +32,8 @@ function LoginPage() {
   const [userData, setUserData] = useRecoilState(userDataAtom);
   const [formData, setFormData] = useState({ id: "", pw: "" });
   const [hasVal, setHasVal] = useState(false);
+  const sessionUserId = sessionStorage.getItem("userId");
+  const sessionRestaurantId = sessionStorage.getItem("restaurantId");
 
   const { handleSubmit } = useForm();
 
@@ -64,7 +66,7 @@ function LoginPage() {
         });
 
         console.log(result);
-        const userId = result.userId;
+        const userId = result.userId || sessionUserId;
         const accessToken = result.accessToken;
         window.sessionStorage.setItem("userId", userId);
         setCookie(accessToken);
@@ -74,7 +76,7 @@ function LoginPage() {
         console.log(res.data.resultData);
         const result = res.data.resultData;
 
-        const restaurantId = result.restaurantId;
+        const restaurantId = result.restaurantId || sessionRestaurantId;
         const adminId = result.adminId;
         const accessToken = result.accessToken;
         window.sessionStorage.setItem("adminId", adminId);

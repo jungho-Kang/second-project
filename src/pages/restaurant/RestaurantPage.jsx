@@ -474,6 +474,7 @@ function RestaurantPage() {
                     }}
                   />
                 ))}
+
               </FlexDiv>
             </div>
           ))}
