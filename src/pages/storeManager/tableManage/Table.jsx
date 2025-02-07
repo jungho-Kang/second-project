@@ -1,85 +1,39 @@
 import { useEffect, useState } from "react";
 import OrderList from "./OderList";
 import axios from "axios";
+import { getCookie } from "../../../components/cookie";
 
 const Table = () => {
   const [isClick, setIsClick] = useState(true);
+  const [orderList, setOrderList] = useState([]);
+  const sessionRestaurantId = sessionStorage.getItem("restaurantId");
+  const accessToken = getCookie();
+
+  useEffect(() => {
+    const params = {
+      restaurantId: sessionRestaurantId,
+    };
+    const getOrderList = () => {
+      try {
+        const res = axios.get(`/api/order/restaurant`, {
+          params,
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        console.log(res.data.resultData);
+        const result = res.data.resultData;
+        setOrderList([...result]);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getOrderList();
+  }, []);
 
   const openDescriptHandler = () => {
     setIsClick(!isClick);
   };
-  const data = [
-    {
-      orderNo: 1,
-      price: "27,000원",
-      menuTitle: "돼지국밥",
-      menuInfo: "내장섞어서",
-      menuQuntity: 1,
-    },
-    {
-      orderNo: 2,
-      price: "27,000원",
-      menuTitle: "돼지국밥",
-      menuInfo: "내장섞어서",
-      menuQuntity: 1,
-    },
-    {
-      orderNo: 3,
-      price: "27,000원",
-      menuTitle: "돼지국밥",
-      menuInfo: "내장섞어서",
-      menuQuntity: 1,
-    },
-    {
-      orderNo: 4,
-      price: "27,000원",
-      menuTitle: "돼지국밥",
-      menuInfo: "내장섞어서",
-      menuQuntity: 1,
-    },
-    {
-      orderNo: 5,
-      price: "27,000원",
-      menuTitle: "돼지국밥",
-      menuInfo: "내장섞어서",
-      menuQuntity: 1,
-    },
-    {
-      orderNo: 6,
-      price: "27,000원",
-      menuTitle: "돼지국밥",
-      menuInfo: "내장섞어서",
-      menuQuntity: 1,
-    },
-    {
-      orderNo: 7,
-      price: "27,000원",
-      menuTitle: "돼지국밥",
-      menuInfo: "내장섞어서",
-      menuQuntity: 1,
-    },
-    {
-      orderNo: 8,
-      price: "27,000원",
-      menuTitle: "돼지국밥",
-      menuInfo: "내장섞어서",
-      menuQuntity: 1,
-    },
-    {
-      orderNo: 9,
-      price: "27,000원",
-      menuTitle: "돼지국밥",
-      menuInfo: "내장섞어서",
-      menuQuntity: 1,
-    },
-    {
-      orderNo: 10,
-      price: "27,000원",
-      menuTitle: "돼지국밥",
-      menuInfo: "내장섞어서",
-      menuQuntity: 1,
-    },
-  ];
 
   return (
     <>
@@ -87,7 +41,7 @@ const Table = () => {
         <div className="w-100% h-[calc(100%_-_4rem)] mx-4 my-8 bg-white rounded-lg overflow-hidden overflow-y-scroll scrollbar-hide">
           <div className="flex flex-wrap ml-5 mt-5 gap-4 bg-white justify-start">
             {/* 주문카드 시작 */}
-            {data.map((item, index) => (
+            {orderList.map((item, index) => (
               <div
                 // onClick={e => openDescriptHandler(e)}
                 key={index}
@@ -115,7 +69,7 @@ const Table = () => {
           </div>
         </div>
       </div>
-      {isClick ? <OrderList /> : <OrderList />}
+      <OrderList />
     </>
   );
 };

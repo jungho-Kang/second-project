@@ -15,8 +15,8 @@ const OrderList = () => {
   useEffect(() => {
     const getOrderList = async () => {
       const params = {
-        // restaurantId: sessionStoreId,
-        restaurantId: 1,
+        restaurantId: sessionStoreId,
+        // restaurantId: 1,
       };
       try {
         const res = await axios.get(`/api/order/restaurant/reservation`, {
