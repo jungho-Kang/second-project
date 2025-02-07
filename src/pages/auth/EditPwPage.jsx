@@ -1,6 +1,6 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { IoMdArrowBack } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
@@ -17,9 +17,13 @@ import {
   TitleDiv,
   YupDiv,
 } from "./loginStyle";
+import { getCookie } from "../../components/cookie";
+import { useRecoilValue } from "recoil";
+import { roleAtom } from "../../atoms/roleAtom";
+import { STORE, USER } from "../../constants/Role";
 
 const editPwSchema = yup.object({
-  upw: yup
+  newUpw: yup
     .string()
     .required("비밀번호는 필수입니다.")
     .min(8, "최소 8자 이상 작성해야 합니다.")
@@ -31,12 +35,13 @@ const editPwSchema = yup.object({
   pwConfirm: yup
     .string()
     .required("비밀번호 확인을 입력해주세요.")
-    .oneOf([yup.ref("upw")], "비밀번호가 일치하지 않습니다."),
+    .oneOf([yup.ref("newUpw")], "비밀번호가 일치하지 않습니다."),
 });
 
 function FindPwPage() {
   const navigate = useNavigate();
   const [isSubmit, setIsSubmit] = useState(false);
+  const role = useRecoilValue(roleAtom);
 
   const {
     register,
@@ -49,9 +54,27 @@ function FindPwPage() {
   });
 
   // api 완성되면 작업
-  const patchPw = async data => {
+  const putPw = async data => {
     try {
-      await axios.get();
+      const accessToken = getCookie();
+      console.log(accessToken);
+      if (role === USER) {
+        await axios.put("/api/user/upw", data, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        alert("비밀번호가 변경 되었습니다.");
+        navigate("/user");
+      } else if (role === STORE) {
+        await axios.put("/api/admin/upw", data, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        alert("비밀번호가 변경 되었습니다.");
+        navigate("/store");
+      }
     } catch (error) {
       console.log(error);
     }
@@ -59,12 +82,16 @@ function FindPwPage() {
 
   const handleSubmitForm = data => {
     setIsSubmit(prev => !prev);
-    patchPw(data);
+    putPw({ newUpw: data.newUpw });
   };
 
-  const pwVal = watch("upw");
+  const pwVal = watch("newUpw");
   const pwConfirmVal = watch("pwConfirm");
   const hasVal = pwVal && pwConfirmVal;
+
+  useEffect(() => {
+    console.log(role);
+  }, []);
 
   return (
     <div>
@@ -84,9 +111,9 @@ function FindPwPage() {
               <SignUpInput
                 type="password"
                 placeholder="새 비밀번호"
-                {...register("upw")}
+                {...register("newUpw")}
               />
-              <YupDiv>{errors.upw?.message}</YupDiv>
+              <YupDiv>{errors.newUpw?.message}</YupDiv>
             </InputYupDiv>
             <InputYupDiv>
               <SignUpInput

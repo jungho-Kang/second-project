@@ -20,7 +20,7 @@ const OrderRequestPage = () => {
   const postReservation = async () => {
     subscribeToReservationStatus(99);
     const sessionUserId = window.sessionStorage.getItem("userId");
-    const accessToken = getCookie("accessToken");
+    const accessToken = getCookie();
 
     const params = {
       restaurantId: 0,

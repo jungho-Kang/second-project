@@ -57,7 +57,7 @@ const EmailInput = styled.input`
   }
 `;
 const CateDiv = styled.div`
-  padding: 10px 20px;
+  padding: 10px 30px;
   border-radius: 30px;
   background-color: #6f4cdb;
   background-color: #ddd;
@@ -69,11 +69,17 @@ const TimeDiv = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
+  font-size: 16px;
   span {
-    padding: 5px 10px;
-    border-radius: 20px;
-    background-color: #6f4cdb;
-    color: #fff;
+    padding: 10px 25px;
+    font-weight: 700;
+    color: #6f4cdb;
+  }
+  input {
+    font-size: 16px;
+    background-color: none;
+    width: 120px;
+    height: 40px;
   }
 `;
 
@@ -84,8 +90,11 @@ const storeSchema = yup.object({
     .required("가게이름은 필수입니다.")
     .min(2, "가게이름은 최소 2자 이상이어야 합니다."),
   restaurantAddress: yup.string(),
-  businessNumber: yup.string().required("사업자 번호는 필수입니다."),
-  restaurantNumber: yup.string().required("전화번호는 필수입니다."),
+  businessNumber: yup.string(),
+  restaurantNumber: yup
+    .string()
+    .required("전화번호는 필수입니다.")
+    .matches(/^\d{10,12}$/, "하이픈을 빼고 10~12자리 숫자만 입력해주세요."),
   categoryId: yup.number(),
   operatingHours: yup.string(),
   restaurantDescription: yup.string().required("상세 설명은 필수입니다."),
@@ -106,6 +115,9 @@ function AddStorePage() {
   // 사업자 진위 여부 확인되면 true
   const [isCheck, setIsCheck] = useState(false);
 
+  // 사업자 등록 번호 에러메세지 표시 안하다가 버튼 클릭되면 표시
+  const [isClick, setIsClick] = useState(false);
+
   const { Modal, open, close } = useModal({ title: "주소검색" });
 
   const {
@@ -122,16 +134,22 @@ function AddStorePage() {
   // api 완성되면 작업
   const postStore = async data => {
     try {
-      await axios.post();
+      await axios.post("/api/restaurant", data);
+      alert("가게 등록이 완료 되었습니다.");
+      navigate("/store");
     } catch (error) {
       console.log(error);
     }
   };
 
   const handleSubmitForm = data => {
-    console.log(data);
-    // setIsSubmit(prev => !prev);
-    // postStore(data);
+    if (isCheck) {
+      console.log(data);
+      setIsSubmit(prev => !prev);
+      postStore(data);
+    } else {
+      alert("사업자 진위여부를 확인해주세요.");
+    }
   };
 
   const idVal = watch("adminId");
@@ -162,9 +180,17 @@ function AddStorePage() {
 
   // 사업자 번호 진위여부 확인
   const postBno = async () => {
+    setIsClick(true);
     try {
-      await axios.post(`/api/user/company/status?bNo=${bnoVal}`);
-      setIsCheck(true);
+      const res = await axios.post(`/api/user/company/status?bNo=${bnoVal}`);
+      const result = res.data.resultData;
+      if (result.bstt === "계속사업자") {
+        setIsCheck(true);
+      } else if (result.bstt === "신규사업자") {
+        setIsCheck(true);
+      } else {
+        setIsCheck(false);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -226,6 +252,7 @@ function AddStorePage() {
 
   useEffect(() => {
     setValue("adminId", adminId);
+    setValue("categoryId", 1);
   }, []);
 
   return (
@@ -282,18 +309,26 @@ function AddStorePage() {
                     backgroundColor: bnoVal ? "#6F4CDB" : "#ddd",
                   }}
                   disabled={!bnoVal}
-                  onClick={() => postBno()}
+                  onClick={() => {
+                    postBno();
+                  }}
                 >
                   번호조회
                 </SignBtn>
               </div>
-              {isCheck ? (
-                <YupDiv style={{ color: "#888" }}>
-                  <FaCheck />
-                  입점신청 가능한 사업자번호입니다.
-                </YupDiv>
+              {isClick ? (
+                isCheck ? (
+                  <YupDiv style={{ color: "#888" }}>
+                    <FaCheck />
+                    입점신청 가능한 사업자번호입니다.
+                  </YupDiv>
+                ) : (
+                  <YupDiv style={{ color: "red" }}>
+                    사업자 번호를 확인해 주세요.
+                  </YupDiv>
+                )
               ) : (
-                <YupDiv>{errors.businessNumber?.message}</YupDiv>
+                <></>
               )}
             </InputYupDiv>
             <InputYupDiv>
@@ -307,6 +342,7 @@ function AddStorePage() {
             <InputYupDiv>
               <SignUpInput
                 type="tel"
+                maxLength={12}
                 placeholder="가게 전화번호"
                 {...register("restaurantNumber")}
               />
@@ -366,7 +402,7 @@ function AddStorePage() {
                   placeholder="0"
                   style={{ width: 300, textAlign: "right", paddingRight: 20 }}
                   {...register("maxCapacity", {
-                    setValueAs: value => (value === "" ? 0 : value), // 빈 값이면 0으로 처리
+                    setValueAs: value => (value === "" ? 0 : value),
                   })}
                 />
                 <div>명</div>
@@ -384,24 +420,26 @@ function AddStorePage() {
                 }}
               >
                 <div style={{ fontSize: 24 }}>카테고리 선택</div>
-                <CateDiv
-                  onClick={() => setValue("categoryId", 1)}
-                  style={{ backgroundColor: cateId === 1 && "#6F4CDB" }}
-                >
-                  한식
-                </CateDiv>
-                <CateDiv
-                  onClick={() => setValue("categoryId", 2)}
-                  style={{ backgroundColor: cateId === 2 && "#6F4CDB" }}
-                >
-                  중식
-                </CateDiv>
-                <CateDiv
-                  onClick={() => setValue("categoryId", 3)}
-                  style={{ backgroundColor: cateId === 3 && "#6F4CDB" }}
-                >
-                  일식
-                </CateDiv>
+                <div style={{ display: "flex", gap: 20 }}>
+                  <CateDiv
+                    onClick={() => setValue("categoryId", 1)}
+                    style={{ backgroundColor: cateId === 1 && "#6F4CDB" }}
+                  >
+                    한식
+                  </CateDiv>
+                  <CateDiv
+                    onClick={() => setValue("categoryId", 2)}
+                    style={{ backgroundColor: cateId === 2 && "#6F4CDB" }}
+                  >
+                    중식
+                  </CateDiv>
+                  <CateDiv
+                    onClick={() => setValue("categoryId", 3)}
+                    style={{ backgroundColor: cateId === 3 && "#6F4CDB" }}
+                  >
+                    일식
+                  </CateDiv>
+                </div>
               </div>
             </InputYupDiv>
             <InputYupDiv>
@@ -443,7 +481,7 @@ function AddStorePage() {
                 </TimeDiv>
               </div>
             </InputYupDiv>
-            <div style={{ marginLeft: 20, marginRight: 20 }}>
+            <div style={{ marginLeft: 20, marginRight: 20, marginTop: 40 }}>
               <LoginBtn
                 type="submit"
                 style={{

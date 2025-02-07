@@ -1,33 +1,39 @@
 import styled from "@emotion/styled";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FiEdit } from "react-icons/fi";
 import { IoMdClose } from "react-icons/io";
+import { FaPlusCircle } from "react-icons/fa";
 import SideBar from "../SideBar";
 
 import useModal from "../../../components/useModal";
+import axios from "axios";
+import { getCookie } from "../../../components/cookie";
 
 const LayoutDiv = styled.div`
   display: flex;
+  gap: 10px;
   justify-content: space-between;
   background-color: #eee;
+  max-height: 100vh;
+  height: auto;
+  overflow: hidden;
 `;
 
 const ContentDiv = styled.div`
-  margin-top: 20px;
+  flex-wrap: wrap;
+  padding: 30px 30px;
   padding-bottom: 30px;
   background-color: #fff;
   border-radius: 10px;
-  width: 800px;
-  height: 640px;
-  overflow-y: scroll;
+  width: 750px;
+  max-height: calc(100vh - 60px);
+  overflow-y: auto;
   box-shadow:
     0px 20px 25px -5px rgba(0, 0, 0, 0.1),
     0px 10px 10px -5px rgba(0, 0, 0, 0.04);
 `;
 
 const TitleDiv = styled.div`
-  margin-left: 30px;
-  margin-top: 30px;
   font-size: 24px;
   font-weight: 700;
 `;
@@ -41,9 +47,8 @@ const SideBarRightDiv = styled.div`
 `;
 
 const MenuDiv = styled.div`
-  margin-top: 40px;
-  margin-left: 30px;
-  width: 200px;
+  margin: 10px 0;
+  width: calc(33.33% - 26.66px);
   height: 260px;
 `;
 
@@ -73,83 +78,173 @@ const RightMenuDiv = styled.div`
   cursor: pointer;
 `;
 
+const MenuAddDiv = styled.div`
+  margin: 10px auto;
+  img {
+    display: block;
+    width: 200px;
+    height: 200px;
+    border-radius: 5px;
+    background-color: #eee;
+    position: relative;
+  }
+  div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+  span {
+    display: block;
+    width: 60px;
+    text-align: left;
+  }
+  input {
+    width: 120px;
+  }
+  button {
+    margin-top: 20px;
+    padding: 5px 20px;
+    color: #fff;
+    background-color: #6f4cdb;
+    border-radius: 5px;
+  }
+  p {
+    width: 25px;
+    height: 25px;
+    position: absolute;
+    right: 96px;
+    bottom: 37%;
+    color: #6f4cdb;
+    background-color: #fff;
+    border-radius: 15px;
+  }
+`;
+
 function StoreMenuPage() {
-  const { Modal, open, close } = useModal();
-  const [menuAdd, setMenuAdd] = useState(false);
   const [menuEdit, setMenuEdit] = useState(false);
+  const [isClick, setIsClick] = useState({
+    modal1: false,
+    modal2: false,
+  });
+  const [formData, setFormData] = useState({});
+  const [menuCateList, setMenuCateList] = useState([]);
+
+  // 수정할 메뉴 이미지
+  const [menuEditData, setMenuEditData] = useState({});
+
+  const titleChange = () => {
+    if (isClick.modal1) {
+      return "메뉴 추가하기";
+    } else if (isClick.modal2) {
+      return "메뉴 수정하기";
+    }
+  };
+  const { Modal, open, close } = useModal({ title: titleChange() });
+
+  const deleteMenu = async id => {
+    const accessToken = getCookie();
+    try {
+      await axios.delete(`/api/restaurant/menu?menuId=${id}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getStoreInfo = async () => {
+    try {
+      const res = await axios.get(`/api/restaurant?restaurantId=${1}`);
+      const result = res.data.resultData;
+      setFormData(result);
+      setMenuCateList(result.menuCateList);
+      console.log("가져온 데이터다!!!!", result);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getStoreInfo();
+  }, []);
 
   return (
-    <>
+    <div>
       <LayoutDiv>
         <SideBar />
-        <ContentDiv className="scrollbar-hide">
-          <TitleDiv>밥류</TitleDiv>
-          <div style={{ display: "flex", gap: 40 }}>
-            <MenuDiv>
-              <MenuImg src="/menu.png" alt="없음" />
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  marginTop: 10,
-                }}
-              >
-                <MenuNameDiv>캐비어알밥</MenuNameDiv>
-                {menuEdit ? (
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 5,
-                    }}
-                  >
-                    <FiEdit style={{ width: 20, height: 20 }} />
-                    <IoMdClose style={{ width: 25, height: 25 }} />
-                  </div>
-                ) : (
-                  <></>
-                )}
+        <div style={{ padding: "10px 10px" }}>
+          <ContentDiv className="scrollbar-hide">
+            {menuCateList.map(item => (
+              <div key={item.categoryId}>
+                <TitleDiv>{item.categoryName}</TitleDiv>
+                <div
+                  style={{
+                    display: "flex",
+                    gap: 40,
+                    flexWrap: "wrap",
+                    marginBottom: 30,
+                  }}
+                >
+                  {item.menuList.map(menu => (
+                    <MenuDiv key={menu.menuId}>
+                      <MenuImg
+                        src={`http://112.222.157.156:5222/pic/menu/${menu.menuId}/${menu?.menuPic}`}
+                        alt="없음"
+                      />
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <MenuNameDiv>{menu.menuName}</MenuNameDiv>
+                        {menuEdit ? (
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 5,
+                            }}
+                          >
+                            <FiEdit
+                              onClick={() => {
+                                setMenuEditData(prev => ({
+                                  ...prev,
+                                  img: `http://112.222.157.156:5222/pic/menu/${menu.menuId}/${menu?.menuPic}`,
+                                  categoryName: item.categoryName,
+                                  menuName: menu.menuName,
+                                  price: menu.price,
+                                }));
+                                setIsClick({ modal2: true });
+                                open();
+                              }}
+                              style={{ width: 20, height: 20 }}
+                            />
+                            <IoMdClose style={{ width: 25, height: 25 }} />
+                          </div>
+                        ) : (
+                          <></>
+                        )}
+                      </div>
+                      <MenuCostDiv>{menu.price.toLocaleString()}원</MenuCostDiv>
+                    </MenuDiv>
+                  ))}
+                </div>
               </div>
-              <MenuCostDiv>7,000 원</MenuCostDiv>
-            </MenuDiv>
-            <MenuDiv>
-              <MenuImg src="/menu.png" alt="없음" />
-              <MenuNameDiv>육회밥</MenuNameDiv>
-              <MenuCostDiv>5,500 원</MenuCostDiv>
-            </MenuDiv>
-            <MenuDiv>
-              <MenuImg src="/menu.png" alt="없음" />
-              <MenuNameDiv>명란밥</MenuNameDiv>
-              <MenuCostDiv>5,000 원</MenuCostDiv>
-            </MenuDiv>
-          </div>
-          <TitleDiv>식사류</TitleDiv>
-          <div style={{ display: "flex", gap: 40 }}>
-            <MenuDiv>
-              <MenuImg src="/menu.png" alt="없음" />
-              <MenuNameDiv>국물닭볶음탕</MenuNameDiv>
-              <MenuCostDiv>27,000 원</MenuCostDiv>
-            </MenuDiv>
-            <MenuDiv>
-              <MenuImg src="/menu.png" alt="없음" />
-              <MenuNameDiv>간장찜닭</MenuNameDiv>
-              <MenuCostDiv>25,000 원</MenuCostDiv>
-            </MenuDiv>
-            <MenuDiv>
-              <MenuImg src="/menu.png" alt="없음" />
-              <MenuNameDiv>돼지두루치기</MenuNameDiv>
-              <MenuCostDiv>25,000 원</MenuCostDiv>
-            </MenuDiv>
-          </div>
-        </ContentDiv>
+            ))}
+          </ContentDiv>
+        </div>
         <SideBarRightDiv>
           <div
             style={{ display: "flex", justifyContent: "center", marginTop: 50 }}
           >
             <MenuImg
               style={{ borderRadius: 100 }}
-              src="/storeimg.png"
+              src={`http://112.222.157.156:5222/pic/restaurant/${formData.restaurantId}/${formData.restaurantPics?.filePath}`}
               alt="없음"
             />
           </div>
@@ -164,12 +259,8 @@ function StoreMenuPage() {
             동양백반
           </TitleDiv>
           <RightMenuDiv
-            style={{
-              backgroundColor: menuAdd ? "#A28CE8" : "#fff",
-              color: menuAdd ? "#fff" : "#333",
-            }}
             onClick={() => {
-              setMenuAdd(prev => !prev);
+              setIsClick({ modal1: true });
               open();
             }}
           >
@@ -186,8 +277,70 @@ function StoreMenuPage() {
           </RightMenuDiv>
         </SideBarRightDiv>
       </LayoutDiv>
-      <Modal></Modal>
-    </>
+      {isClick.modal1 && (
+        <Modal>
+          <MenuAddDiv>
+            <img />
+            <p onClick={() => {}}>
+              <input type="file" className="hidden" />
+              <FaPlusCircle style={{ width: "100%", height: "100%" }} />
+            </p>
+
+            <div>
+              <span>카테고리</span>
+              <input type="text" placeholder="카테고리 이름" />
+            </div>
+            <div>
+              <span>메뉴명</span>
+              <input type="text" placeholder="메뉴명" />
+            </div>
+            <div>
+              <span>메뉴가격</span>
+              <input type="number" placeholder="가격" />
+            </div>
+            <button>추가</button>
+          </MenuAddDiv>
+        </Modal>
+      )}
+
+      {isClick.modal2 && (
+        <Modal>
+          <MenuAddDiv>
+            <img src={menuEditData?.img} />
+            <p onClick={() => {}}>
+              <input type="file" className="hidden" />
+              <FaPlusCircle style={{ width: "100%", height: "100%" }} />
+            </p>
+
+            <div>
+              <span>카테고리</span>
+              <input
+                type="text"
+                placeholder="카테고리 이름"
+                defaultValue={menuEditData?.categoryName}
+              />
+            </div>
+            <div>
+              <span>메뉴명</span>
+              <input
+                type="text"
+                placeholder="메뉴명"
+                defaultValue={menuEditData?.menuName}
+              />
+            </div>
+            <div>
+              <span>메뉴가격</span>
+              <input
+                type="number"
+                placeholder="가격"
+                defaultValue={menuEditData?.price}
+              />
+            </div>
+            <button>수정완료</button>
+          </MenuAddDiv>
+        </Modal>
+      )}
+    </div>
   );
 }
 export default StoreMenuPage;
