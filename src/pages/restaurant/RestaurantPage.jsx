@@ -45,6 +45,7 @@ const SortDiv = styled.div`
   display: inline-block;
   font-size: 10px;
   border-radius: 10px;
+  cursor: pointer;
 `;
 
 const FlexDiv = styled.div`
@@ -179,7 +180,7 @@ function RestaurantPage() {
   // 움직일때 즉시 가져오기
   const getRestaurantListMove = async (_a, _b) => {
     setMarkers([]);
-    console.log("움직여요, ", _a, _b);
+    // console.log("움직여요, ", _a, _b);
     try {
       const res = await axios.get(
         `/api/restaurant/around?orderFilter=${sort}&userLat=${_a}&userLng=${_b}`,
@@ -245,10 +246,11 @@ function RestaurantPage() {
     getRestaurantList();
   }, [sort, location]);
 
-  useEffect(() => {
-    // 성공시 successHandler, 실패시 errorHandler 함수가 실행된다.
-    navigator.geolocation.getCurrentPosition(successHandler, errorHandler);
-  }, []);
+  // // geolocation 현재 위치
+  // useEffect(() => {
+  //   // 성공시 successHandler, 실패시 errorHandler 함수가 실행된다.
+  //   navigator.geolocation.getCurrentPosition(successHandler, errorHandler);
+  // }, []);
 
   useEffect(() => {
     const loadKakaoMap = () => {
@@ -311,7 +313,7 @@ function RestaurantPage() {
         level={3}
         onCenterChanged={map => {
           const latlng = map.getCenter();
-          console.log("중심이 바뀝니다.");
+          // console.log("중심이 바뀝니다.");
           setChangeLocation({
             latitude: latlng.getLat(),
             longitude: latlng.getLng(),
@@ -322,17 +324,17 @@ function RestaurantPage() {
           // });
         }}
         onTouchEnd={() => {
-          console.log("UUUU");
+          // console.log("UUUU");
           if (changeLocation) {
             setLocation(changeLocation);
           }
           getRestaurantListMove(location.latitude, location.longitude);
         }}
         onMouseUp={() => {
-          console.log("UPUP", changeLocation);
-          // if (changeLocation) {
-          // setLocation(changeLocation); // 마우스를 떼면 위치 업데이트
-          // }
+          // console.log("UPUP", changeLocation);
+          if (changeLocation) {
+            setLocation(changeLocation); // 마우스를 떼면 위치 업데이트
+          }
           // 움직일때 호출
           getRestaurantListMove(location.latitude, location.longitude);
         }}
@@ -444,7 +446,10 @@ function RestaurantPage() {
             >
               <FlexDiv>
                 <span>{item.restaurantName}</span>
-                <span style={{ fontSize: 10 }}>
+                <span
+                  style={{ fontSize: 10 }}
+                  onClick={() => console.log(item.restaurantAddress)}
+                >
                   식사시간 : {item.avgRestaurant}분
                 </span>
               </FlexDiv>
@@ -453,8 +458,12 @@ function RestaurantPage() {
                 <FaStar style={{ width: 10, height: 10, color: "E1FF00" }} />
                 <span style={{ fontWeight: 700, fontSize: 8 }}>4.8</span>
                 <span style={{ fontSize: 8, color: "#BABABA" }}>
-                  {item.restaurantAddress.match(/대구광역시\s*(.+)/)?.[1]} ·{" "}
-                  한식
+                  {
+                    item?.restaurantAddress.match(
+                      /^(?:대구광역시|대구)\s*(.+)/,
+                    )[1]
+                  }{" "}
+                  · 한식
                 </span>
               </FlexDiv>
 
@@ -465,7 +474,7 @@ function RestaurantPage() {
                 {item.restaurantArroundPicList?.map((file, index) => (
                   <img
                     key={index}
-                    src={`http://112.222.157.156:5222/pic/restaurant/${item.restaurantId}/${item.restaurantArroundPicList?.file}`}
+                    src={`http://112.222.157.156:5222/pic/restaurant/${item.restaurantId}/${file?.filePath}`}
                     style={{
                       minWidth: 140,
                       width: 140,
@@ -474,7 +483,6 @@ function RestaurantPage() {
                     }}
                   />
                 ))}
-
               </FlexDiv>
             </div>
           ))}

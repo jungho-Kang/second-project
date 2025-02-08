@@ -237,7 +237,7 @@ function StoreDetailPage() {
       </BackDiv>
       <TitleDiv onClick={() => console.log(menu)}>
         <div>
-          {formData?.restaurantAddress?.match(/대구광역시\s*(.+)/)[1]}{" "}
+          {formData?.restaurantAddress?.match(/^(?:대구광역시|대구)\s*(.+)/)[1]}{" "}
           <span>I</span> {cateName()}
         </div>
         <h1>{formData?.restaurantName}</h1>

@@ -46,7 +46,9 @@ const UserMainPage = () => {
         const result = res.data.resultData;
 
         const detailAddress = result.map(data => {
-          return data.restaurantAddress.match(/대구광역시\s*(.+)/)?.[1];
+          return data.restaurantAddress.match(
+            /^(?:대구광역시|대구)\s*(.+)/,
+          )?.[1];
         });
         console.log(detailAddress);
         setRestaurantList([...result]);
@@ -72,7 +74,9 @@ const UserMainPage = () => {
           const result = res.data.resultData;
 
           const detailAddress = result.map(data => {
-            return data.restaurantAddress.match(/대구광역시\s*(.+)/)?.[1];
+            return data.restaurantAddress.match(
+              /^(?:대구광역시|대구)\s*(.+)/,
+            )?.[1];
           });
           console.log(detailAddress);
           setRestaurantList([...restaurantList, ...result]);
@@ -222,7 +226,11 @@ const UserMainPage = () => {
                     {data.restaurantName}
                   </p>
                   <p className="text-xs text-darkGray text-nowrap">
-                    {data.restaurantAddress.match(/대구광역시\s*(.+)/)?.[1]}
+                    {
+                      data.restaurantAddress.match(
+                        /^(?:대구광역시|대구)\s*(.+)/,
+                      )?.[1]
+                    }
                   </p>
                 </div>
                 <p className="w-[30%] font-bold text-base text-primary text-nowrap">
