@@ -1,4 +1,5 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import React from "react";
 import IndexPage from "./pages/IndexPage";
 import EditPwPage from "./pages/auth/EditPwPage";
 import FindIdPage from "./pages/auth/FindIdPage";
@@ -29,7 +30,7 @@ import MenuSelectPage from "./pages/restaurant/MenuSelectPage";
 import NotFound from "./pages/NotFound";
 import { runSocket } from "./components/notification/StompComponent";
 import OrderRequestPage from "./pages/order/placetoorder/OrderRequestPage";
-function App() {
+const App = () => {
   runSocket();
   return (
     <Router>
@@ -90,5 +91,5 @@ function App() {
       </Routes>
     </Router>
   );
-}
+};
 export default App;

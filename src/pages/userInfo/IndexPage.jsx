@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { IoMdArrowBack } from "react-icons/io";
 import { MdOutlineMail } from "react-icons/md";
 import { useRecoilState } from "recoil";
-import { userDataAtom } from "../../atoms/userAtom";
+import { loginAtom, userDataAtom } from "../../atoms/userAtom";
 import MenuBar from "../../components/MenuBar";
 import Notification from "../../components/notification/NotificationIcon";
 import { isWhiteIcon } from "../../atoms/noticeAtom";
@@ -19,6 +19,7 @@ function IndexPage() {
   const navigate = useNavigate();
   const [userData, setUserData] = useRecoilState(userDataAtom);
   const [isWhite, setIsWhite] = useRecoilState(isWhiteIcon);
+  const [isLogin, setIsLogin] = useRecoilState(loginAtom);
   // 알림 아이콘 검정색
   setIsWhite(false);
 
@@ -74,6 +75,7 @@ function IndexPage() {
     removeCookie("/");
     removeCookieRefresh("/");
     window.sessionStorage.removeItem("userId");
+    setIsLogin(false);
     navigate("/auth");
   };
 
