@@ -7,6 +7,7 @@ import { IoArrowForward } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { getCookie } from "../../components/cookie";
+import QRCode from "../order/placetoorder/QRCode";
 
 const OrderList = () => {
   const navigate = useNavigate();
@@ -56,6 +57,28 @@ const OrderList = () => {
     getPaymentList();
   }, []);
 
+  useEffect(() => {
+    const params = {
+      signedUserId: sessionUserId,
+    };
+    const getMyOrder = async () => {
+      try {
+        const res = await axios.get(`/api/user/order`, {
+          params,
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        console.log(res.data.resultData);
+        const result = res.data.resultData;
+        console.log(result);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getMyOrder();
+  }, []);
+
   return (
     <div className="w-full h-dvh flex flex-col justify-between overflow-hidden overflow-y-scroll scrollbar-hide mb-32">
       <div className="absolute top-0 left-0 w-full flex justify-between border-b-2 border-gray border-opacity-70 bg-white">
@@ -74,7 +97,7 @@ const OrderList = () => {
       </div>
       {isTap ? (
         orderQuntity > 0 ? (
-          <></>
+          <QRCode />
         ) : (
           <div className="flex flex-col w-full h-dvh justify-center items-center gap-3">
             <ImFileEmpty className="text-8xl text-darkGray" />

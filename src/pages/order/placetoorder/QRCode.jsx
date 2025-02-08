@@ -7,36 +7,15 @@ import { ticketDataAtom, ticketIdAtom } from "../../../atoms/userAtom";
 import { getCookie } from "../../../components/cookie";
 
 const QRCode = () => {
-  const [newTicketId, setTicketId] = useRecoilState(ticketIdAtom);
+  const [newTicketId, setNewTicketId] = useRecoilState(ticketIdAtom);
   const [newTicketData, setTicketData] = useRecoilState(ticketDataAtom);
   const accessToken = getCookie();
+  const signedUserId = sessionStorage.getItem("userId");
   const [dimensions, setDimensions] = useState({
     couponW: 0,
     visualH: 0,
     infoH: 0,
   });
-
-  useEffect(() => {
-    const params = {
-      ticketId: newTicketId,
-    };
-    const getTicketData = async () => {
-      try {
-        const res = await axios.get(`/api/order/ticket`, {
-          params,
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        console.log(res.data.resultData);
-        const ticket = res.data.resultData.ticket;
-        setTicketData({ ...ticket });
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getTicketData();
-  }, []);
 
   // 클립 경로 설정 함수
   const setCouponPath = () => {
@@ -83,6 +62,52 @@ const QRCode = () => {
     setCouponPath();
   }, [dimensions]); // `dimensions`가 변경될 때마다 클립 경로를 업데이트
 
+  useEffect(() => {
+    const params = {
+      ticketId: newTicketId,
+    };
+    const userParams = {
+      userId: signedUserId,
+    };
+
+    if (newTicketId === 0) {
+      const getTicketId = async () => {
+        try {
+          const res = await axios.get(`/api/order/ticket/ticketOne`, {
+            userParams,
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
+          console.log(res);
+          const result = res.data.resultData.ticketId;
+          console.log(result);
+          setNewTicketId(result);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      getTicketId();
+    } else {
+      const getTicketData = async () => {
+        try {
+          const res = await axios.get(`/api/order/ticket`, {
+            params,
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
+          console.log(res.data.resultData);
+          const ticket = res.data.resultData.ticket;
+          setTicketData({ ...ticket });
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      getTicketData();
+    }
+  }, [newTicketId]);
+
   return (
     <div className="flex flex-col w-full h-dvh px-10 mt-28">
       {/* 시각적 요소 섹션 */}
@@ -94,16 +119,20 @@ const QRCode = () => {
             </span>
           </div>
           <div className="flex flex-col w-full items-center">
-            <span className="text-base -ml-48 text-nowrap">예약시간</span>
+            <span className="text-base -ml-44 text-nowrap">식권 발급 시간</span>
             <div className="flex text-2xl text-center font-semibold gap-8">
-              <span className="flex tracking-widest">2025.01.14</span>
-              <span className="flex tracking-widest">13:00</span>
+              <span className="flex tracking-widest">
+                {newTicketData.reservationTime?.split(" ")[0]}
+              </span>
+              <span className="flex tracking-widest">
+                {newTicketData.reservationTime?.split(" ")[1]?.slice(0, 5)}
+              </span>
             </div>
           </div>
           <div className="flex flex-col w-full items-center gap-2">
             <span className="text-2xl">{newTicketData.menuNames}</span>
             <span className="text-4xl font-bold tracking-wider">
-              {newTicketData.totalAmount.toLocaleString("ko-KR")}
+              {newTicketData.totalAmount.toLocaleString("ko-KR")}원
             </span>
             <span className="text-xl">
               {newTicketData.personCount + 1}명 결제
@@ -116,7 +145,7 @@ const QRCode = () => {
         <div className="p-10 flex flex-col justify-center items-center bg-gray rounded-b-2xl">
           <div className="flex w-full justify-center items-center ">
             <QRCodeSVG
-              value={"http://192.168.0.192:5173/user"}
+              value={`http://192.168.0.192:5173/api/order/ticket?ticketId=${newTicketId}`}
               size={180}
               bgColor="none"
             />

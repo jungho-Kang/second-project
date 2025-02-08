@@ -32,6 +32,8 @@ function EditInfoPage() {
     navigate("/user/userInfo");
   };
 
+  const changeNumber = () => {};
+
   return (
     <div className="h-dvh overflow-x-hidden overflow-y-scroll scrollbar-hide">
       <div className="absolute w-full h-10% flex justify-between items-center px-3 py-5 border-b-2 border-gray border-opacity-70 bg-white ">
@@ -67,7 +69,7 @@ function EditInfoPage() {
               <span>소속</span>
               <label htmlFor="phone">휴대폰</label>
             </div>
-            <div className="flex flex-col gap-6 font-medium text-lg w-1/2 h-full">
+            <div className="flex flex-col gap-6 font-medium text-lg w-2/3 h-full">
               <span>{userData.name}</span>
               <span>{userData.uid}</span>
               <span>{userData.companyName}</span>
@@ -77,7 +79,7 @@ function EditInfoPage() {
                 pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}"
                 defaultValue={userData.phone}
                 autoFocus
-                className="pl-2 w-full"
+                className="px-2 w-full"
               />
             </div>
           </div>
