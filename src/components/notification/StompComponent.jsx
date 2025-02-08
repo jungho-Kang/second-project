@@ -9,10 +9,10 @@ const stompClient = Stomp.over(() => socket); // SockJS 팩토리를 함수로 �
 export const runSocket = () => {
   stompClient.reconnectDelay = 5000; // 자동 재연결 설정
   stompClient.onConnect = frame => {
-    console.log("Connected: " + frame);
+    console.log("Connected 성공 : " + frame);
   };
   stompClient.onError = frame => {
-    console.log("Connected: " + frame);
+    console.log("Connected 실패 : " + frame);
   };
   stompClient.activate();
 };
@@ -21,25 +21,28 @@ export const subscribeToReservationStatus = orderId => {
   const url = `/queue/reservation/${orderId}/user/reservation`;
 
   stompClient.subscribe(url, message => {
-    const messageObj = JSON.parse(message.body);
-    let statusMessage = "";
+    if (message.body) {
+      console.log("수신된 메시지:", message.body);
+    } else {
+      console.warn("빈 메시지 수신");
+    }
 
     try {
-      console.log("식당으로 주문 요청 완료 : ", messageObj);
+      const messageObj = JSON.parse(message.body);
+      console.log("주문 요청 완료 messageObj : ", messageObj);
 
-      switch (messageObj.reservationStatus) {
-        case 1:
-          statusMessage = "예약이 승인되었습니다.";
-          break;
-        case 2:
-          statusMessage = "예약이 거부되었습니다.";
-          break;
-        case 3:
-          statusMessage = "예약이 취소되었습니다.";
-          break;
-      }
+      const statusMessages = {
+        1: "예약이 승인되었습니다.",
+        2: "예약이 거부되었습니다.",
+        3: "예약이 취소되었습니다.",
+      };
+
+      const statusMessage =
+        statusMessages[messageObj.reservationStatus] ||
+        "알 수 없는 상태입니다.";
+      console.log(statusMessage);
     } catch (error) {
-      console.log(error);
+      console.error("메시지 처리 중 오류 발생:", error);
     }
   });
 };
@@ -65,6 +68,7 @@ export const subscribeStoreLogin = restaurantId => {
   stompClient.subscribe(url, message => {
     const messageObj = JSON.parse(message.body);
     let statusMessage = "";
+    console.log("메세지 수신 완료 : ", messageObj);
 
     try {
       console.log("식당 관리자 로그인 : ", messageObj);

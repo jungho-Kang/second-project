@@ -57,10 +57,18 @@ function App() {
           </Route>
           <Route path="placetoorder">
             <Route index element={<PlaceToOrder />} />
-            <Route path="coupon" element={<MealTicketPage />} />
-            <Route path="member" element={<OrderMemberPage />} />
-            <Route path="price" element={<OrderPricePage />} />
-            <Route path="request" element={<OrderRequestPage />} />
+            <Route path="coupon">
+              <Route path=":id" element={<MealTicketPage />} />
+            </Route>
+            <Route path="member">
+              <Route path=":id" element={<OrderMemberPage />} />
+            </Route>
+            <Route path="price">
+              <Route path=":id" element={<OrderPricePage />} />
+            </Route>
+            <Route path="request">
+              <Route path=":id" element={<OrderRequestPage />} />
+            </Route>
           </Route>
           <Route path="restaurant">
             <Route index element={<Restaurant />} />

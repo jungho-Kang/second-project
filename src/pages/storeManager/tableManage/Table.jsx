@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import OrderList from "./OderList";
 import axios from "axios";
 import { getCookie } from "../../../components/cookie";
+import dayjs from "dayjs";
 
 const Table = () => {
   const [isClick, setIsClick] = useState(true);
@@ -13,9 +14,9 @@ const Table = () => {
     const params = {
       restaurantId: sessionRestaurantId,
     };
-    const getOrderList = () => {
+    const getOrderList = async () => {
       try {
-        const res = axios.get(`/api/order/restaurant`, {
+        const res = await axios.get(`/api/order/restaurant`, {
           params,
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -23,6 +24,8 @@ const Table = () => {
         });
         console.log(res.data.resultData);
         const result = res.data.resultData;
+        const orderDetails = result[1].orderDetails;
+        console.log(orderDetails);
         setOrderList([...result]);
       } catch (error) {
         console.log(error);
@@ -44,21 +47,29 @@ const Table = () => {
             {orderList.map((item, index) => (
               <div
                 // onClick={e => openDescriptHandler(e)}
-                key={index}
+                key={item.orderId}
                 // className="w-[calc(33%_-_1rem)] min-w-40 h-48 border-2 border-darkGray bg-white"
                 className={`${isClick ? "w-[calc(33%_-_1rem)]" : "w-[calc(25%_-_1rem)]"} min-w-40 h-48 border-2 border-darkGray bg-white cursor-pointer`}
               >
                 <div className=" px-4 py-1 bg-third">
                   <div className="flex justify-between">
-                    <span>{item.orderNo}</span>
-                    <span className="font-semibold">{item.price}</span>
+                    <div className="flex gap-2 items-center">
+                      <span className="text-sm">주문번호</span>
+                      <span className="text-xl">{item.orderId}</span>
+                    </div>
+                    <span className="font-semibold">{item?.userPhone}</span>
                   </div>
-                  <div>12:37 ~ (16분)</div>
+                  <div className="flex gap-2 tracking-wider items-center">
+                    <span className="text-sm">주문시간</span>
+                    <span className="text-md">
+                      {dayjs(item.reservationTime).format("HH:MM")} ~
+                    </span>
+                  </div>
                 </div>
 
                 <div className="px-3 py-3">
                   <div className="flex justify-between">
-                    <span>{item.menuTitle}</span>
+                    <span>{item[index]?.orderDeatils}</span>
                     <span>x{item.menuQuntity}</span>
                   </div>
                   <div className="pt-1 pl-6 text-darkGray">{item.menuInfo}</div>
