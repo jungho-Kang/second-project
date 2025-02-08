@@ -112,7 +112,7 @@ const OrderRequestPage = () => {
         text: "식권이 생성되었습니다.",
         timer: 2000,
       });
-      navigate("/user/placetoorder/coupon");
+      navigate(`/user/placetoorder/coupon/${newTicketId}`);
     } catch (error) {
       console.log(error);
     }

@@ -1,7 +1,66 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
+import dayjs from "dayjs";
 import LineChartLayout from "./LineChart";
 import SalesPage from "./SalesPage";
+import { getCookie } from "../../../components/cookie";
 
 const SalesConfirm = () => {
+  const [storeData, setStoreData] = useState({});
+  const [salesData, setSalesData] = useState({});
+  const sessionRestaurantId = sessionStorage.getItem("restaurantId");
+  const accessToken = getCookie();
+  const today = dayjs().format("YYYY-MM-DD");
+
+  useEffect(() => {
+    const params = {
+      restaurantId: sessionRestaurantId,
+    };
+    const getRestaurantData = () => {
+      try {
+        const res = axios.get(`/api/restaurant`, {
+          params,
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        console.log(res.data.resultData);
+        const result = res.data.resultData;
+        setStoreData({
+          ...storeData,
+          restaurantName: result.restaurantName,
+          filePath: result.restaurantPics,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getRestaurantData();
+  }, []);
+
+  useEffect(() => {
+    const params = {
+      restaurantId: sessionRestaurantId,
+      date: today,
+    };
+    const getDashboard = async () => {
+      try {
+        const res = await axios.get(`/api/restaurant/dashboard`, {
+          params,
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        console.log(res.data.resultData);
+        const result = res.data.resultData;
+        setSalesData({ ...result });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getDashboard();
+  }, []);
+
   return (
     <>
       <div className="w-full h-full bg-gray">
@@ -10,12 +69,12 @@ const SalesConfirm = () => {
             <div className="flex items-center justify-between mb-10">
               <div className="flex gap-5 items-center">
                 <img
-                  src="/storeimg.png"
+                  src={`http://112.222.157.156:5222/pic/restaurant/${sessionRestaurantId}/${storeData?.filePath}`}
                   alt="식당이미지"
                   className="flex size-36 rounded-full"
                 />
                 <div className="font-semibold text-3xl pb-6 text-nowrap">
-                  동백식당
+                  {storeData?.storeName}
                 </div>
               </div>
               <div className="flex flex-col w-2/5 gap-5">
@@ -24,7 +83,7 @@ const SalesConfirm = () => {
                     일일 총 매출
                   </span>
                   <span className="flex w-full h-full px-3 pb-5 justify-end text-3xl font-semibold">
-                    2,453,050원
+                    {salesData?.dayPoint} 원
                   </span>
                 </div>
                 <div className="w-30% h-20 rounded-md border-2 border-darkGrays">
@@ -32,7 +91,7 @@ const SalesConfirm = () => {
                     01월 총 매출
                   </span>
                   <span className="flex w-full h-full px-3 pb-5 justify-end text-3xl font-semibold">
-                    15,123,150원
+                    {salesData?.monthPoint} 원
                   </span>
                 </div>
               </div>

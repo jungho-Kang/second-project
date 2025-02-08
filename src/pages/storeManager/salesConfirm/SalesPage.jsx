@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { getCookie } from "../../../components/cookie";
 
 const TableDiv = styled.div`
   margin: 30px 35px;
@@ -42,29 +43,36 @@ const TopTitleDiv = styled.div`
 
 function SalesPage() {
   const [salesList, setSalesList] = useState([]);
+  const sessionRestaurantId = sessionStorage.getItem("restaurantId");
+  const accessToken = getCookie();
 
   useEffect(() => {
     const params = {
       restaurantId: 1,
       startDate: "",
-      endDate: "",
+      endData: "",
+      page: 1,
+      size: 15,
     };
     const getSalesList = async () => {
       try {
-        const res = await axios.get(`/api/order/payment-restaurant`, {
+        const res = await axios.get(`/api/restaurant/orderList`, {
           params,
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
         });
-        const paymentList = res.data.resultData.paymentList;
-        console.log(res);
-        console.log(paymentList);
 
-        setSalesList([...paymentList]);
+        console.log(res.data.resultData);
+        const result = res.data.resultData;
+        setSalesList([...result]);
       } catch (error) {
         console.log(error);
       }
     };
     getSalesList();
   }, []);
+  console.log(salesList);
 
   return (
     <TableDiv className="scrollbar-hide">

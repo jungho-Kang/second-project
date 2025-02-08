@@ -7,7 +7,7 @@ const NotificationPage = () => {
   const navigate = useNavigate();
 
   const orderMemberPageNav = () => {
-    navigate(`/user/placetoorder/member`, {
+    navigate(`/user/placetoorder/member/${orderId}`, {
       state: {
         orderId: orderId,
       },
@@ -24,7 +24,7 @@ const NotificationPage = () => {
           인원을 선택해주세요.
         </div>
         <div
-          onClick={() => navigate(`/user/placetoorder/price`)}
+          onClick={() => navigate(`/user/placetoorder/price/${orderId}`)}
           className="flex w-full h-[10%]"
         >
           새로운 결제 요청이 도착했습니다.

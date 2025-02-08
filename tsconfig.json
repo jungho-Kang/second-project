@@ -1,9 +1,4 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ],
   // 컴파일 대상 파일
   "include": ["src/**/*"],
   // 컴파일 옵션

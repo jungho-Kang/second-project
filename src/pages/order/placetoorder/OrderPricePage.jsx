@@ -114,7 +114,7 @@ const PriceOrderPage = () => {
       const result = res.data.resultData;
       if (result >= 0) {
         console.log("결제 승인 요청을 보냈습니다");
-        navigate("/user/placetoorder/request");
+        navigate(`/user/placetoorder/request/${newOrderId}`);
       } else {
         console.log("요청에 실패했습니다. 다시 시도해주세요");
       }
@@ -159,7 +159,7 @@ const PriceOrderPage = () => {
   };
 
   const addMemberHandler = () => {
-    navigate("/user/placetoorder/member");
+    navigate(`/user/placetoorder/member/${newOrderId}`);
   };
 
   return (
