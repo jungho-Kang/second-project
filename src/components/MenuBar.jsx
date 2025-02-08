@@ -4,9 +4,13 @@ import { FiHome } from "react-icons/fi";
 import { GoMilestone } from "react-icons/go";
 import { LuClipboardList } from "react-icons/lu";
 import { LuCircleUserRound } from "react-icons/lu";
+import { useRecoilState } from "recoil";
+import { loginAtom } from "../atoms/userAtom";
+import Swal from "sweetalert2";
 
 const MenuBar = () => {
   const [activeMenu, setActiveMenu] = useState("home"); // 현재 선택된 메뉴 상태
+  const [isLogin, setIsLogin] = useRecoilState(loginAtom);
   const navigate = useNavigate();
 
   const menuItems = [
@@ -15,6 +19,31 @@ const MenuBar = () => {
     { id: "order", label: "주문내역", icon: LuClipboardList },
     { id: "userInfo", label: "내 정보", icon: LuCircleUserRound },
   ];
+
+  const isLoginNav = Id => {
+    if (isLogin === false) {
+      if (Id === "") {
+        navigate(`/user/${Id}`);
+      } else if (Id === "restaurant") {
+        navigate(`/user/${Id}`);
+      } else {
+        Swal.fire({
+          title: "로그인이 필요한 서비스입니다!",
+          text: "확인을 누르시면 로그인 페이지로 이동합니다.",
+          icon: "error",
+          confirmButtonText: "확인",
+          showConfirmButton: true, // ok 버튼 노출 여부
+          allowOutsideClick: false, // 외부 영역 클릭 방지
+        }).then(result => {
+          if (result.isConfirmed) {
+            navigate("/auth");
+          }
+        });
+      }
+    } else {
+      navigate(`/user/${Id}`);
+    }
+  };
 
   return (
     <div className="absolute bottom-0 left-0 w-full h-20 flex bg-white border-t-2 border-gray items-center z-10">
@@ -26,7 +55,7 @@ const MenuBar = () => {
             key={menu.id}
             onClick={() => {
               setActiveMenu(menu.id);
-              navigate(`/user/${menu.id}`);
+              isLoginNav(menu.id);
             }}
             className={`w-1/4 flex flex-col items-center justify-center cursor-pointer`}
           >

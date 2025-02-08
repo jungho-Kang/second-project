@@ -37,18 +37,18 @@ const OrderList = () => {
 
           setPaymentList([...result]);
         } else {
-          Swal.fire({
-            title: "로그인이 필요한 서비스입니다!",
-            text: "확인을 누르시면 로그인 페이지로 이동합니다.",
-            icon: "error",
-            confirmButtonText: "확인",
-            showConfirmButton: true, // ok 버튼 노출 여부
-            allowOutsideClick: false, // 외부 영역 클릭 방지
-          }).then(result => {
-            if (result.isConfirmed) {
-              navigate("/auth");
-            }
-          });
+          // Swal.fire({
+          //   title: "로그인이 필요한 서비스입니다!",
+          //   text: "확인을 누르시면 로그인 페이지로 이동합니다.",
+          //   icon: "error",
+          //   confirmButtonText: "확인",
+          //   showConfirmButton: true, // ok 버튼 노출 여부
+          //   allowOutsideClick: false, // 외부 영역 클릭 방지
+          // }).then(result => {
+          //   if (result.isConfirmed) {
+          //     navigate("/auth");
+          //   }
+          // });
         }
       } catch (error) {
         console.log(error);

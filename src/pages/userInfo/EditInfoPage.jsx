@@ -32,7 +32,7 @@ function EditInfoPage() {
     navigate("/user/userInfo");
   };
 
-  const changeNumber = () => {};
+  // const changeNumber = () => {};
 
   return (
     <div className="h-dvh overflow-x-hidden overflow-y-scroll scrollbar-hide">
