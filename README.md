@@ -1,4 +1,4 @@
-### 아따빠르네 프로젝트 🍽️💼
+### **아따빠르네 프로젝트 🍽️💼**
 
 ---
 
@@ -27,8 +27,20 @@
 
 #### **3. FE 역할 분담 ✍️**
 
-- **강정호**: 로그인관련 기능 (Cookie, recoil), 식당찾기 (Kakao Map), 사용자 예약, 앉아서 주문 기능, 메뉴 CRUD
-- **이한샘**: 알림기능(Socket), 식당 주문내역, QR코드 생성(qrcode.react), 사용자 결제 기능, 사용자 정보, 주문 CRUD
+- **강정호**:
+
+  - 로그인 관련 기능 (Cookie, recoil)
+  - 식당 찾기 (Kakao Map)
+  - 사용자 예약, 앉아서 주문 기능
+  - 메뉴 CRUD
+
+- **이한샘**:
+  - 알림 기능 (Socket)
+  - 식당 주문 내역
+  - QR 코드 생성 (qrcode.react)
+  - 사용자 결제 기능
+  - 사용자 정보 관리
+  - 주문 CRUD
 
 ---
 
@@ -40,14 +52,17 @@
 
 #### **5. 기술 스택 ⚙️**
 
-- React, typeScript, tailwindcss, emotion
+```
+- React, TypeScript, Tailwind CSS, Emotion, Recoil, Yup, Vite
+- qrcode.react, Kakao Map, Swiper, SockJS
+```
 
 ---
 
 #### **6. 설치 및 실행 방법 🖥️**
 
-- **npm i** : 모든 라이브러리 설치
-- **npm run dev** : 프로젝트 실행
+1. **npm i** : 모든 라이브러리 설치
+2. **npm run dev** : 프로젝트 실행
 
 ---
 
@@ -55,13 +70,14 @@
 
 - **회의록**: [Notion](https://www.notion.so/2-17757d27ea1780b5bad3fea038d6931a)
 - **레이아웃**: [Figma](https://www.figma.com/design/NefxkP15saJiPNTBjAluG8/2%EC%B0%A8-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-UI?node-id=18-3&p=f&t=W2wpdpQ5RhGg9GtA-0)
-- **발표 자료**: [Canva](#)
+- **발표 자료**: [Canva](https://www.canva.com/design/DAGeODjVcyI/V7uKqkA6ogICdGNIbhrr5A/edit)
 
 ---
 
 #### **8. 프로젝트 구조 🗂️**
 
-┣ 📂public
+```
+📂public
 ┃ ┣ 📜emailauth.png
 ┃ ┣ 📜loadingImage.jpg
 ┃ ┣ 📜logo.png
@@ -70,7 +86,7 @@
 ┃ ┣ 📜startingPage.png
 ┃ ┣ 📜storeimg.png
 ┃ ┗ 📜storemain.png
-┣ 📂src
+📂src
 ┃ ┣ 📂assets
 ┃ ┃ ┗ 📜vite.svg
 ┃ ┣ 📂atoms
@@ -81,7 +97,7 @@
 ┃ ┣ 📂components
 ┃ ┃ ┣ 📂notification
 ┃ ┃ ┃ ┣ 📜NotificationIcon.jsx
-┃ ┃ ┃ ┣ 📜NotificationMessge.jsx
+┃ ┃ ┃ ┣ 📜NotificationMessage.jsx
 ┃ ┃ ┃ ┣ 📜NotificationPage.jsx
 ┃ ┃ ┃ ┗ 📜StompComponent.jsx
 ┃ ┃ ┣ 📜api.js
@@ -149,29 +165,28 @@
 ┃ ┣ 📜index.css
 ┃ ┣ 📜main.tsx
 ┃ ┗ 📜vite-env.d.ts
-┣ 📂tree
-┣ 📜.env
-┣ 📜.gitignore
-┣ 📜.prettierrc
-┣ 📜eslint.config.js
-┣ 📜index.html
-┣ 📜manifest.json
-┣ 📜package-lock.json
-┣ 📜package.json
-┣ 📜README.md
-┣ 📜tailwind.config.js
-┣ 📜tsconfig.app.json
-┣ 📜tsconfig.json
-┣ 📜tsconfig.node.json
-┗ 📜vite.config.ts
+📂tree
+📜.env
+📜.gitignore
+📜.prettierrc
+📜eslint.config.js
+📜index.html
+📜manifest.json
+📜package-lock.json
+📜package.json
+📜README.md
+📜tailwind.config.js
+📜tsconfig.app.json
+📜tsconfig.json
+📜tsconfig.node.json
+📜vite.config.ts
+```
 
 ---
 
 #### **9. 연락처 📧**
 
 - **강정호**: rkdwjdgh08@gmail.com
-- **이한샘**:
+- **이한샘**: dev.213am@gmail.com
 
 ---
-
-더 수정할 사항이 있으면 말씀해주세요! 😊

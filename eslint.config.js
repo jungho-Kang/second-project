@@ -34,6 +34,7 @@ export default tseslint.config(
       ], // React Fast Refresh 규칙
       "prettier/prettier": "warn", // Prettier 규칙 (포매팅 오류를 에러로 표시)
       "react/prop-types": "off",
+      "@typescript-eslint/no-unused-vars": "off",
     },
     settings: {
       react: {

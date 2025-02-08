@@ -150,15 +150,11 @@ function StoreMenuPage() {
   // 가져온 데이터
   const [getData, setGetData] = useState({});
 
+  const [patchMenuData, setPatchMenuData] = useState({});
+
   // 수정할 메뉴 이미지
-  const [menuEditData, setMenuEditData] = useState({});
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    setValue,
-    watch,
-  } = useForm({
+  const [menuEditPic, setMenuEditPic] = useState();
+  const { register, handleSubmit, setValue } = useForm({
     mode: "onChange",
     resolver: yupResolver(MenuSchema),
   });
@@ -178,6 +174,7 @@ function StoreMenuPage() {
         `/api/restaurant?restaurantId=${restaurantId}`,
       );
       const result = res.data.resultData;
+      // console.log("이거 써!", result);
       setGetData(result);
       setMenuCateList(result.menuCateList);
     } catch (error) {
@@ -220,19 +217,31 @@ function StoreMenuPage() {
     }
   };
 
+  const patchImg = async data => {
+    try {
+      await axios.patch("/api/pic/restaurant/menu", data, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const patchMenu = async data => {
     try {
       await axios.patch("/api/restaurant/menu", data, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "multipart/form-data",
         },
       });
       setIsClick({});
       alert("메뉴가 수정되었습니다.");
       getStoreInfo();
     } catch (error) {
-      console.log(data);
+      // console.log(data);
       console.log(error);
     }
   };
@@ -248,7 +257,7 @@ function StoreMenuPage() {
   const handleSubmitForm = data => {
     console.log("폼데이터:", data);
 
-    const formData = new FormData();
+    const postData = new FormData();
 
     // JSON 형식으로 p 객체 추가
     const pData = {
@@ -258,23 +267,38 @@ function StoreMenuPage() {
       price: data.price,
     };
     console.log(data.pic);
-    formData.append("pic", data.pic[0]); // 파일 추가
-    formData.append(
+    postData.append("pic", data.pic[0]); // 파일 추가
+    // JSON으로 변경
+    postData.append(
       "p",
       new Blob([JSON.stringify(pData)], { type: "application/json" }),
-    ); // JSON으로 변경
+    );
 
-    console.log("FormData 확인:", [...formData.entries()]); // FormData 내부 확인
+    const patchData = {
+      menuId: patchMenuData.menuId,
+      categoryId: patchMenuData.categoryId,
+      menuName: data.menuName,
+      price: data.price,
+    };
+
+    const patchImgData = new FormData();
+    patchImgData.append("pic", data.pic[0]);
+    patchImgData.append(
+      "p",
+      new Blob([JSON.stringify({ menuId: patchMenuData.menuId })], {
+        type: "application/json",
+      }),
+    );
+
+    console.log("FormData 확인:", [...postData.entries()]); // FormData 내부 확인
+    console.log("patchData 확인:", patchData); // FormData 내부 확인
+    console.log("ImgData 확인:", [...patchImgData.entries()]); // FormData 내부 확인
     if (isClick.modal1) {
-      postMenu(formData);
+      postMenu(postData);
     } else if (isClick.modal2) {
-      patchMenu(formData);
+      patchImg(patchImgData);
+      patchMenu(patchData);
     }
-    setValue("categoryName", "");
-    setValue("menuName", "");
-    setValue("price", "");
-    setValue("pic", null);
-    setPreview(null);
   };
 
   useEffect(() => {
@@ -304,11 +328,6 @@ function StoreMenuPage() {
                       <MenuImg
                         src={`http://112.222.157.156:5222/pic/menu/${menu.menuId}/${menu?.menuPic}`}
                         alt="없음"
-                        onClick={() =>
-                          console.log(
-                            `http://112.222.157.156:5222/pic/menu/${menu.menuId}/${menu?.menuPic}`,
-                          )
-                        }
                       />
                       <div
                         style={{
@@ -328,14 +347,22 @@ function StoreMenuPage() {
                           >
                             <FiEdit
                               onClick={() => {
-                                setMenuEditData(prev => ({
+                                setPatchMenuData(prev => ({
                                   ...prev,
-                                  img: `http://112.222.157.156:5222/pic/menu/${menu.menuId}/${menu?.menuPic}`,
-                                  categoryName: item.categoryName,
-                                  menuName: menu.menuName,
-                                  price: menu.price,
+                                  menuId: menu.menuId,
+                                  categoryId: item.categoryId,
                                 }));
+                                setMenuEditPic(
+                                  `http://112.222.157.156:5222/pic/menu/${menu.menuId}/${menu?.menuPic}`,
+                                );
                                 setIsClick({ modal2: true });
+                                setValue("categoryName", item.categoryName);
+                                setValue("menuName", menu.menuName);
+                                setValue("price", menu.price);
+                                setValue(
+                                  "pic",
+                                  `http://112.222.157.156:5222/pic/menu/${menu.menuId}/${menu?.menuPic}`,
+                                );
                                 open();
                               }}
                               style={{
@@ -385,11 +412,16 @@ function StoreMenuPage() {
               marginBottom: 40,
             }}
           >
-            동양백반
+            {getData.restaurantName}
           </TitleDiv>
           <RightMenuDiv
             onClick={() => {
               setIsClick({ modal1: true });
+              setValue("categoryName", "");
+              setValue("menuName", "");
+              setValue("price", "");
+              setValue("pic", null);
+              setPreview(null);
               open();
             }}
           >
@@ -458,7 +490,7 @@ function StoreMenuPage() {
         <Modal>
           <MenuAddDiv>
             <form onSubmit={handleSubmit(handleSubmitForm)}>
-              <img src={preview || menuEditData?.img} />
+              <img src={preview || menuEditPic} />
               <p>
                 <label htmlFor="menuImg">
                   <FaPlusCircle style={{ width: "100%", height: "100%" }} />

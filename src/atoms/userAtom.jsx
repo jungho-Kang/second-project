@@ -26,8 +26,8 @@ export const userDataAtom = atom({
 export const locationAtom = atom({
   key: "locationAtom",
   default: {
-    latitude: 0,
-    longitude: 0,
+    latitude: 35.8682922103488,
+    longitude: 128.594024377585,
   },
 });
 

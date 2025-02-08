@@ -17,16 +17,19 @@ import {
   TitleDiv,
   YupDiv,
 } from "./loginStyle";
+import { useRecoilValue } from "recoil";
+import { roleAtom } from "../../atoms/roleAtom";
+import { STORE, USER } from "../../constants/Role";
 
 const findPwSchema = yup.object({
-  uid: yup
+  id: yup
     .string()
     .min(6, "최소 6자 이상 작성해야 합니다.")
-    .max(12, "최대 12자까지 작성 가능합니다.")
-    .matches(
-      /^[A-Za-z][A-Za-z0-9_]{6,12}$/,
-      "아이디는 숫자, 영문으로 작성 가능합니다.",
-    ),
+    .max(12, "최대 12자까지 작성 가능합니다."),
+  // .matches(
+  //   /^[A-Za-z][A-Za-z0-9_]{6,12}$/,
+  //   "아이디는 숫자, 영문으로 작성 가능합니다.",
+  // ),
   email: yup
     .string()
     .required("이메일은 필수입니다.")
@@ -36,6 +39,7 @@ const findPwSchema = yup.object({
 function FindPwPage() {
   const navigate = useNavigate();
   const [isSubmit, setIsSubmit] = useState(false);
+  const role = useRecoilValue(roleAtom);
 
   const {
     register,
@@ -48,9 +52,17 @@ function FindPwPage() {
   });
 
   // api 완성되면 작업
-  const getPw = async data => {
+  const findPw = async data => {
     try {
-      await axios.get();
+      if (role === USER) {
+        await axios.put("/api/user/find-passowrd", data);
+        alert(`${data.email}로 비밀번호가 전송되었습니다.`);
+        navigate("/auth");
+      } else if (role === STORE) {
+        await axios.put("/api/admin/find-passowrd", data);
+        alert(`${data.email}로 비밀번호가 전송되었습니다.`);
+        navigate("/auth");
+      }
     } catch (error) {
       console.log(error);
     }
@@ -58,10 +70,10 @@ function FindPwPage() {
 
   const handleSubmitForm = data => {
     setIsSubmit(prev => !prev);
-    getPw(data);
+    findPw(data);
   };
 
-  const idVal = watch("uid");
+  const idVal = watch("id");
   const emailVal = watch("email");
   const hasVal = idVal && emailVal;
 
@@ -83,9 +95,9 @@ function FindPwPage() {
               <SignUpInput
                 type="text"
                 placeholder="아이디"
-                {...register("uid")}
+                {...register("id")}
               />
-              <YupDiv>{errors.uid?.message}</YupDiv>
+              <YupDiv>{errors.id?.message}</YupDiv>
             </InputYupDiv>
             <InputYupDiv>
               <SignUpInput
