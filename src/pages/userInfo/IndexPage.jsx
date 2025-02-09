@@ -80,15 +80,15 @@ function IndexPage() {
   };
 
   return (
-    <div className="flex w-full h-dvh items-center overflow-x-hidden overflow-y-scroll scrollbar-hide">
+    <div className="h-dvh overflow-x-hidden overflow-y-scroll scrollbar-hide">
       <Notification />
-      <div className="absolute top-0 left-0 w-full h-10% flex justify-between items-center px-3 py-5 border-b-2 border-gray border-opacity-70 bg-white">
+      <div className="absolute top-0 left-0 w-full flex justify-between items-center px-3 py-5 border-b-2 border-gray border-opacity-70 bg-white">
         <IoMdArrowBack className="text-3xl" onClick={() => navigate(-1)} />
         <span className="text-xl font-semibold">내 정보</span>
         <span>&emsp;</span>
       </div>
-      <div className="flex flex-col h-dvh justify-around mt-48 gap-10 pl-24">
-        <div className="w-full flex flex-col items-center gap-4">
+      <div className="flex flex-col h-dvh justify-around mt-24 gap-10">
+        <div className="w-full h-[30%] flex flex-col items-center gap-4">
           {userData.pic !== null ? (
             <img
               src={userData.pic}
@@ -112,7 +112,7 @@ function IndexPage() {
             {userData.email}
           </span>
         </div>
-        <div className="h-1/3 flex justify-center items-center">
+        <div className="h-[40%] flex justify-center items-center">
           <div className="flex gap-5 items-center">
             <div className="flex flex-col gap-6 font-thin text-lg h-full text-darkGray">
               <span>이름</span>
@@ -128,26 +128,30 @@ function IndexPage() {
             </div>
           </div>
         </div>
-        <div className="flex justify-center gap-5 mb-2">
-          <div
+        <div className="flex h-[20%] justify-center gap-5 mb-32">
+          {/* <div
             onClick={() => navigate("/user/userInfo/edit")}
             className="px-3 py-1 bg-primary rounded-lg text-white font-semibold text-center cursor-pointer"
           >
             회원정보 수정
+          </div> */}
+          <div onClick={() => navigate("/auth/editpw")}>
+            <span className="flex px-3 py-1 bg-primary rounded-lg text-white font-semibold text-center cursor-pointer">
+              비밀번호 변경
+            </span>
           </div>
-          <div
-            onClick={() => navigate("/auth/editpw")}
-            className="px-3 py-1 bg-primary rounded-lg text-white font-semibold text-center cursor-pointer"
-          >
-            비밀번호 변경
+          <div onClick={logoutHandler}>
+            <span className="flex px-3 py-1 bg-primary rounded-lg text-white font-semibold text-center cursor-pointer">
+              로그아웃
+            </span>
           </div>
         </div>
-        <div
+        {/* <div
           onClick={logoutHandler}
           className="flex justify-center text-darkGray underline font-bold mb-32 cursor-pointer"
         >
           로그아웃
-        </div>
+        </div> */}
       </div>
       <MenuBar />
     </div>

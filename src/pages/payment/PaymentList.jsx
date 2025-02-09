@@ -25,31 +25,16 @@ const OrderList = () => {
     };
     const getPaymentList = async () => {
       try {
-        if (sessionUserId) {
-          const res = await axios.get(`/api/user/pastOrderCheck`, {
-            params,
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          });
-          const result = res.data.resultData;
-          console.log(result);
+        const res = await axios.get(`/api/user/pastOrderCheck`, {
+          params,
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        const result = res.data.resultData;
+        console.log(result);
 
-          setPaymentList([...result]);
-        } else {
-          // Swal.fire({
-          //   title: "로그인이 필요한 서비스입니다!",
-          //   text: "확인을 누르시면 로그인 페이지로 이동합니다.",
-          //   icon: "error",
-          //   confirmButtonText: "확인",
-          //   showConfirmButton: true, // ok 버튼 노출 여부
-          //   allowOutsideClick: false, // 외부 영역 클릭 방지
-          // }).then(result => {
-          //   if (result.isConfirmed) {
-          //     navigate("/auth");
-          //   }
-          // });
-        }
+        setPaymentList([...result]);
       } catch (error) {
         console.log(error);
       }
@@ -59,11 +44,11 @@ const OrderList = () => {
 
   useEffect(() => {
     const params = {
-      signedUserId: sessionUserId,
+      userId: sessionUserId,
     };
     const getMyOrder = async () => {
       try {
-        const res = await axios.get(`/api/user/order`, {
+        const res = await axios.get(`/api/user/activeOrderCheck`, {
           params,
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -119,7 +104,7 @@ const OrderList = () => {
           {paymentList.map((item, index) => (
             <div
               key={index}
-              className="w-full h-1/3 bg-white shadow-lg border-y border-y-gray"
+              className="w-full h-1/6 bg-white shadow-lg border-y border-y-gray"
             >
               <div className="w-full h-1/4 flex justify-between items-center px-5 py-3">
                 <span className="text-darkGray">{item.createdAt.slice(0)}</span>

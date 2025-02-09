@@ -1,35 +1,61 @@
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { orderIdAtom } from "../../atoms/restaurantAtom";
+import {
+  isClickIcon,
+  isWhiteIcon,
+  noticeState,
+  priceNoticeAtom,
+  orderNoticeAtom,
+} from "../../atoms/noticeAtom";
 
 const NotificationPage = () => {
   const [orderId, setOrderId] = useRecoilState(orderIdAtom);
+  const [isNotice, setIsNotice] = useRecoilState(noticeState);
+  const [isPriceNotice, setIsPriceNotice] = useRecoilState(priceNoticeAtom);
+  const [isOrderNotice, setIsOrderNotice] = useRecoilState(orderNoticeAtom);
+  const [isClick, setIsClick] = useRecoilState(isClickIcon);
   const navigate = useNavigate();
+  console.log(isNotice);
+  console.log(isPriceNotice);
+  console.log(isOrderNotice);
 
-  const orderMemberPageNav = () => {
+  const orderMemberPageNav = orderId => {
     navigate(`/user/placetoorder/member/${orderId}`, {
       state: {
         orderId: orderId,
       },
     });
+    setIsClick(false);
+  };
+
+  const pricePageNav = orderId => {
+    navigate(`/user/placetoorder/price/${orderId}`, {
+      state: {
+        orderId: orderId,
+      },
+    });
+    setIsClick(false);
   };
   return (
-    <div className="absolute right-4 w-[80%] h-[30%] bg-white z-50 top-12 border-2 border-darkGray rounded-md">
-      <div className="p-5 font-semibold">알림</div>
+    <div className="absolute right-4 w-[80%] h-[50%] bg-white z-50 top-12 border-2 border-darkGray rounded-md pb-6 overflow-x-hidden over overflow-y-scroll scrollbar-hide">
+      <div className="p-5 font-semibold text-darkGray">알림</div>
       <div className="flex flex-col px-5 gap-5 font-medium text-nowrap">
-        <div
-          onClick={() => orderMemberPageNav()}
-          className="flex w-full h-[10%]"
-        >
-          인원을 선택해주세요.
-        </div>
-        <div
-          onClick={() => navigate(`/user/placetoorder/price/${orderId}`)}
-          className="flex w-full h-[10%]"
-        >
-          새로운 결제 요청이 도착했습니다.
-        </div>
-        <div>새로운 결제 요청이 도착했습니다.</div>
+        {isNotice.map(item => (
+          <div
+            key={item.orderId}
+            onClick={() => {
+              if (item.message === "나한테 온 승인요청 메세지") {
+                orderMemberPageNav(item.orderId);
+              } else {
+                pricePageNav(item.orderId);
+              }
+            }}
+            className="flex w-full h-[10%]"
+          >
+            {item.message} [{item.restaurantName}]
+          </div>
+        ))}
       </div>
     </div>
   );

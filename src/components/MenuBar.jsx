@@ -6,11 +6,13 @@ import { LuClipboardList } from "react-icons/lu";
 import { LuCircleUserRound } from "react-icons/lu";
 import { useRecoilState } from "recoil";
 import { loginAtom } from "../atoms/userAtom";
+import { isClickIcon } from "../atoms/noticeAtom";
 import Swal from "sweetalert2";
 
 const MenuBar = () => {
   const [activeMenu, setActiveMenu] = useState("home"); // 현재 선택된 메뉴 상태
   const [isLogin, setIsLogin] = useRecoilState(loginAtom);
+  const [isClick, setIsClick] = useRecoilState(isClickIcon);
   const navigate = useNavigate();
 
   const menuItems = [
@@ -24,8 +26,10 @@ const MenuBar = () => {
     if (isLogin === false) {
       if (Id === "") {
         navigate(`/user/${Id}`);
+        setIsClick(false);
       } else if (Id === "restaurant") {
         navigate(`/user/${Id}`);
+        setIsClick(false);
       } else {
         Swal.fire({
           title: "로그인이 필요한 서비스입니다!",
@@ -34,14 +38,20 @@ const MenuBar = () => {
           confirmButtonText: "확인",
           showConfirmButton: true, // ok 버튼 노출 여부
           allowOutsideClick: false, // 외부 영역 클릭 방지
+          customClass: {
+            popup: "flex w-[80%]",
+            title: "text-xl text-red",
+          },
         }).then(result => {
           if (result.isConfirmed) {
             navigate("/auth");
+            setIsClick(false);
           }
         });
       }
     } else {
       navigate(`/user/${Id}`);
+      setIsClick(false);
     }
   };
 

@@ -99,7 +99,7 @@ const PriceOrderPage = () => {
   const postPaymentApproval = async () => {
     const payload = {
       orderId: newOrderId,
-      userId: memberData.userId,
+      userId: memberData.userId || userId,
       point: memberData.point,
     };
     console.log(payload);

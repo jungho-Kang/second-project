@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { roleAtom } from "../../atoms/roleAtom";
 import { loginAtom, userDataAtom } from "../../atoms/userAtom";
+import { isLoginStoreAtom } from "../../atoms/restaurantAtom";
 import { STORE, USER } from "../../constants/Role";
 import {
   CloseDiv,
@@ -29,6 +30,7 @@ import {
 function LoginPage() {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useRecoilState(loginAtom);
+  const [isLoginStore, setIsLoginStore] = useRecoilState(isLoginStoreAtom);
   const [userData, setUserData] = useRecoilState(userDataAtom);
   const [formData, setFormData] = useState({ id: "", pw: "" });
   const [hasVal, setHasVal] = useState(false);
@@ -70,7 +72,8 @@ function LoginPage() {
         const accessToken = result.accessToken;
         window.sessionStorage.setItem("userId", userId);
         setCookie(accessToken);
-        subscribeUserLogin(userId);
+        setIsLogin(true);
+        // subscribeUserLogin(userId);
       } else if (role === STORE) {
         const res = await axios.post("/api/admin/sign-in", formData);
         console.log(res.data.resultData);
@@ -81,9 +84,9 @@ function LoginPage() {
         const accessToken = result.accessToken;
         window.sessionStorage.setItem("adminId", adminId);
         window.sessionStorage.setItem("restaurantId", restaurantId);
-
         setCookie(accessToken);
-        subscribeStoreLogin(restaurantId);
+        setIsLoginStore(true);
+        // subscribeStoreLogin(restaurantId);
       }
       setIsLogin(true);
       routeHandler();

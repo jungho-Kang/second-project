@@ -166,6 +166,8 @@ function MenuSelectPage() {
 
   const postReservation = async () => {
     const accessToken = getCookie();
+    console.log(postData);
+
     try {
       if (isReserve) {
         const res = await axios.post("/api/reservation", postData, {
@@ -175,7 +177,7 @@ function MenuSelectPage() {
         });
         console.log(res.data.resultData);
         setOrderId(res.data.resultData);
-        subscribeToReservationStatus(res.data.resultData);
+        subscribeToReservationStatus(res.data?.resultData);
       } else {
         const res = await axios.post("/api/order/with-detail", postData, {
           headers: {
@@ -184,7 +186,7 @@ function MenuSelectPage() {
         });
         console.log(res.data.resultData);
         setOrderId(res.data.resultData);
-        subscribeToReservationStatus(res.data.resultData);
+        subscribeToReservationStatus(res.data?.resultData);
       }
       alert(`${time}에 예약이 완료 되었습니다.`);
       navigate("/user");
