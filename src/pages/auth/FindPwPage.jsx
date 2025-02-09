@@ -20,6 +20,7 @@ import {
 import { useRecoilValue } from "recoil";
 import { roleAtom } from "../../atoms/roleAtom";
 import { STORE, USER } from "../../constants/Role";
+import Swal from "sweetalert2";
 
 const findPwSchema = yup.object({
   id: yup
@@ -56,12 +57,30 @@ function FindPwPage() {
     try {
       if (role === USER) {
         await axios.put("/api/user/find-passowrd", data);
-        alert(`${data.email}로 비밀번호가 전송되었습니다.`);
-        navigate("/auth");
+        Swal.fire({
+          title: `${data.email}로 비밀번호가 전송되었습니다.`,
+          icon: "success",
+          confirmButtonText: "확인",
+          showConfirmButton: true, // ok 버튼 노출 여부
+          allowOutsideClick: false, // 외부 영역 클릭 방지
+        }).then(result => {
+          if (result.isConfirmed) {
+            navigate("/auth");
+          }
+        });
       } else if (role === STORE) {
         await axios.put("/api/admin/find-passowrd", data);
-        alert(`${data.email}로 비밀번호가 전송되었습니다.`);
-        navigate("/auth");
+        Swal.fire({
+          title: `${data.email}로 비밀번호가 전송되었습니다.`,
+          icon: "success",
+          confirmButtonText: "확인",
+          showConfirmButton: true, // ok 버튼 노출 여부
+          allowOutsideClick: false, // 외부 영역 클릭 방지
+        }).then(result => {
+          if (result.isConfirmed) {
+            navigate("/auth");
+          }
+        });
       }
     } catch (error) {
       console.log(error);

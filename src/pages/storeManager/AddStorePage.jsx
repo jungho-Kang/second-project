@@ -21,6 +21,7 @@ import {
   YupDiv,
 } from "../auth/loginStyle";
 import { FaCheck } from "react-icons/fa6";
+import Swal from "sweetalert2";
 
 const SignBtn = styled.button`
   color: #fff;
@@ -131,12 +132,21 @@ function AddStorePage() {
     resolver: yupResolver(storeSchema),
   });
 
-  // api 완성되면 작업
+  // 가게 등록 post
   const postStore = async data => {
     try {
       await axios.post("/api/restaurant", data);
-      alert("가게 등록이 완료 되었습니다.");
-      navigate("/store");
+      Swal.fire({
+        title: "가게 등록이 완료 되었습니다.",
+        icon: "success",
+        confirmButtonText: "확인",
+        showConfirmButton: true, // ok 버튼 노출 여부
+        allowOutsideClick: false, // 외부 영역 클릭 방지
+      }).then(result => {
+        if (result.isConfirmed) {
+          navigate("/store");
+        }
+      });
     } catch (error) {
       console.log(error);
     }
@@ -148,7 +158,13 @@ function AddStorePage() {
       setIsSubmit(prev => !prev);
       postStore(data);
     } else {
-      alert("사업자 진위여부를 확인해주세요.");
+      Swal.fire({
+        title: "사업자 진위여부를 확인해주세요.",
+        icon: "error",
+        confirmButtonText: "확인",
+        showConfirmButton: true, // ok 버튼 노출 여부
+        allowOutsideClick: false, // 외부 영역 클릭 방지
+      });
     }
   };
 
@@ -262,7 +278,7 @@ function AddStorePage() {
           <CloseDiv>
             <IoMdArrowBack
               style={{ width: "100%", height: "100%", cursor: "pointer" }}
-              onClick={() => navigate(-1)}
+              onClick={() => navigate("/")}
             />
           </CloseDiv>
         </HeaderDiv>

@@ -324,14 +324,14 @@ function RestaurantPage() {
           // });
         }}
         onTouchEnd={() => {
-          // console.log("UUUU");
+          // console.log("모바일");
           if (changeLocation) {
             setLocation(changeLocation);
           }
           getRestaurantListMove(location.latitude, location.longitude);
         }}
         onMouseUp={() => {
-          // console.log("UPUP", changeLocation);
+          // console.log("PC", changeLocation);
           if (changeLocation) {
             setLocation(changeLocation); // 마우스를 떼면 위치 업데이트
           }
