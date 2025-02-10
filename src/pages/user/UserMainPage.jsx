@@ -135,10 +135,10 @@ const UserMainPage = () => {
               </p>
               <div className="flex flex-col sm:gap-2">
                 <span className="pl-2 text-white text-2xl text-nowrap sm:w-24 sm:text-3xl">
-                  여기 진짜 맛있어요!
+                  여기 가성비 최고 식당이에요!
                 </span>
                 <span className="pl-2 text-white text-2xl text-nowrap sm:w-24 sm:text-3xl">
-                  호불호 없을 누구나 좋아하는 맛
+                  집밥이 생각날 때 꼭 한번 올만한 곳
                 </span>
               </div>
             </div>
@@ -152,10 +152,10 @@ const UserMainPage = () => {
               </p>
               <div className="flex flex-col sm:gap-2">
                 <span className="pl-2 text-white text-2xl text-nowrap sm:w-24 sm:text-3xl">
-                  여기 진짜 맛있어요!
+                  분위기 맛집!
                 </span>
                 <span className="pl-2 text-white text-2xl text-nowrap sm:w-24 sm:text-3xl">
-                  호불호 없을 누구나 좋아하는 맛
+                  특별한 날에 오기 좋은 곳
                 </span>
               </div>
             </div>
@@ -171,7 +171,7 @@ const UserMainPage = () => {
           </div>
           <div className="flex gap-2 pr-5 text-sm">
             <p
-              className={`text-white px-2 py-0.5 rounded-lg font-bold ${categoryId === 1 ? "bg-primary" : "bg-darkGray"}`}
+              className={`text-white px-2 py-0.5 rounded-lg font-bold cursor-pointer ${categoryId === 1 ? "bg-primary" : "bg-darkGray"}`}
               onClick={() => {
                 setCategoryId(1);
                 setPagenation(1);
@@ -180,7 +180,7 @@ const UserMainPage = () => {
               한식
             </p>
             <p
-              className={`text-white px-2 py-0.5 rounded-lg font-bold ${categoryId === 2 ? "bg-primary" : "bg-darkGray"}`}
+              className={`text-white px-2 py-0.5 rounded-lg font-bold cursor-pointer ${categoryId === 2 ? "bg-primary" : "bg-darkGray"}`}
               onClick={() => {
                 setCategoryId(2);
                 setPagenation(1);
@@ -189,7 +189,7 @@ const UserMainPage = () => {
               중식
             </p>
             <p
-              className={`text-white px-2 py-0.5 rounded-lg font-bold ${categoryId === 3 ? "bg-primary" : "bg-darkGray"}`}
+              className={`text-white px-2 py-0.5 rounded-lg font-bold cursor-pointer ${categoryId === 3 ? "bg-primary" : "bg-darkGray"}`}
               onClick={() => {
                 setCategoryId(3);
                 setPagenation(1);
@@ -202,7 +202,7 @@ const UserMainPage = () => {
         <div className="w-full px-4 py-4 flex flex-wrap justify-between">
           {restaurantList.map((data, index) => (
             <div
-              className="w-[calc(50%_-_0.5rem)] pb-3"
+              className="w-[calc(50%_-_0.5rem)] pb-3 cursor-pointer"
               key={index}
               onClick={() => detailNavigateHandler(data)}
             >

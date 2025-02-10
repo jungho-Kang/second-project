@@ -325,7 +325,13 @@ function MenuSelectPage() {
                     <div>{list.menuName}</div>
                     <span>{list.price.toLocaleString("ko-KR")}원</span>
                   </div>
-                  <div style={{ position: "absolute", right: 20 }}>
+                  <div
+                    style={{
+                      position: "absolute",
+                      right: 20,
+                      cursor: "pointer",
+                    }}
+                  >
                     {addMenu.some(item => item.menuId === list.menuId) ? (
                       <FaCheck
                         onClick={() => {
@@ -380,12 +386,12 @@ function MenuSelectPage() {
         <FlexDiv>
           {isClick ? (
             <FaAngleDown
-              style={{ color: "#6F6F6F" }}
+              style={{ color: "#6F6F6F", cursor: "pointer" }}
               onClick={() => setIsClick(false)}
             />
           ) : (
             <FaAngleUp
-              style={{ color: "#6F6F6F" }}
+              style={{ color: "#6F6F6F", cursor: "pointer" }}
               onClick={() => setIsClick(true)}
             />
           )}
@@ -407,11 +413,11 @@ function MenuSelectPage() {
                     }}
                   >
                     <p onClick={() => decreaseCount(idx)}>
-                      <FiMinusCircle />
+                      <FiMinusCircle className="cursor-pointer" />
                     </p>
                     <p>{item.menuCount}</p>
                     <p onClick={() => increaseCount(idx)}>
-                      <FiPlusCircle />
+                      <FiPlusCircle className="cursor-pointer" />
                     </p>
                   </div>
                   <div>
