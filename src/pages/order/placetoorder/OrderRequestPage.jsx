@@ -121,6 +121,8 @@ const OrderRequestPage = () => {
   console.log(newOrderId);
 
   const patchApproval = async userId => {
+    console.log(userId);
+
     const payload = {
       orderId: newOrderId,
       userId: userId,
@@ -199,7 +201,7 @@ const OrderRequestPage = () => {
         </div>
       </div>
       <div className="flex flex-col w-full h-full gap-6">
-        <div className="flex w-full h-[6%] px-6 justify-between items-center border-b border-gray">
+        {/* <div className="flex w-full h-[6%] px-6 justify-between items-center border-b border-gray">
           <span className="flex w-[30%] text-base text-nowrap">
             {userData.name}
           </span>
@@ -236,9 +238,9 @@ const OrderRequestPage = () => {
               {isCompleted[priceList[0]?.userId] ? "수정" : "취소"}
             </span>
           </div>
-        </div>
+        </div> */}
 
-        <div className="flex w-full items-center justify-center ">
+        <div className="flex w-full items-center justify-center mt-6">
           <div className="flex gap-2 px-5 py-2 bg-gray rounded-md">
             <MdOutlineRefresh className="text-2xl" />
             <span
@@ -268,12 +270,15 @@ const OrderRequestPage = () => {
                     </>
                   ) : (
                     <>
-                      <input
+                      {/* <input
                         type="tel"
                         className="flex w-full border border-darkGray px-2 text-end rounded-md"
                         value={inputValues[item.userId]}
+                        defaultValue={item.point}
+                        readOnly
                         onChange={e => inputChangeHandler(e, item.userId)}
-                      />
+                      /> */}
+                      <span>{item.point}</span>
                       <span>원</span>
                     </>
                   )}

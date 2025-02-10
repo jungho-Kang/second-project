@@ -23,16 +23,16 @@ const MenuBar = () => {
     { id: "userInfo", label: "내 정보", icon: LuCircleUserRound },
   ];
 
-  // useEffect(() => {
-  //   const isLoginHandler = () => {
-  //     const userId = sessionStorage.getItem("userId");
-  //     const accessToken = getCookie();
-  //     if (userId && accessToken) {
-  //       setIsLogin(true);
-  //     }
-  //   };
-  //   isLoginHandler();
-  // }, []);
+  useEffect(() => {
+    const isLoginHandler = () => {
+      const userId = sessionStorage.getItem("userId");
+      const accessToken = getCookie();
+      if (userId && accessToken) {
+        setIsLogin(true);
+      }
+    };
+    isLoginHandler();
+  }, []);
 
   const isLoginNav = Id => {
     if (isLogin === false) {

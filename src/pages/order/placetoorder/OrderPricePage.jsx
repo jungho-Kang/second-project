@@ -48,7 +48,7 @@ const PriceOrderPage = () => {
       }
     };
     getOrderId();
-  }, []);
+  }, [newOrderId]);
 
   useEffect(() => {
     const params = {

@@ -162,7 +162,11 @@ const Seatmate = () => {
   console.log(memberData);
 
   const nextBtnHandler = () => {
-    navigate(`/user/placetoorder/price/${newOrderId}`);
+    navigate(`/user/placetoorder/price/${newOrderId}`, {
+      state: {
+        orderId: newOrderId,
+      },
+    });
   };
 
   return (

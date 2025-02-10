@@ -21,10 +21,9 @@ export const subscribeToReservationStatus = orderId => {
   const url = `/queue/reservation/${orderId}/user/reservation`;
 
   stompClient.subscribe(url, message => {
-    if (message.body) {
-      console.log("수신된 메시지:", message.body);
-    } else {
+    if (!message.body) {
       console.warn("빈 메시지 수신");
+      return;
     }
 
     try {
@@ -37,23 +36,100 @@ export const subscribeToReservationStatus = orderId => {
         3: "예약이 취소되었습니다.",
       };
 
+      const reservationStatus = messageObj.reservationStatus;
       const statusMessage =
-        statusMessages[messageObj.reservationStatus] ||
-        "알 수 없는 상태입니다.";
+        statusMessages[reservationStatus] || "알 수 없는 상태입니다.";
       console.log(statusMessage);
-      Swal.fire({
-        title: statusMessages,
-        icon: "success",
 
-        showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
-        confirmButtonColor: "#79BAF2", // confrim 버튼 색깔 지정
-        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-      });
+      // SweetAlert 처리
+      const alertConfig = {
+        1: {
+          title: "예약이 승인되었습니다",
+          icon: "success",
+          confirmButtonColor: "#79BAF2",
+        },
+        2: {
+          title: "예약이 거부되었습니다",
+          icon: "error",
+          confirmButtonColor: "#E44B58",
+        },
+        3: {
+          title: "예약이 취소되었습니다",
+          icon: "warning",
+          confirmButtonColor: "#E44B58",
+        },
+      };
+
+      if (alertConfig[reservationStatus]) {
+        Swal.fire({
+          title: alertConfig[reservationStatus].title,
+          icon: alertConfig[reservationStatus].icon,
+          confirmButtonColor: alertConfig[reservationStatus].confirmButtonColor,
+          confirmButtonText: "확인",
+          showCancelButton: true,
+        });
+      }
     } catch (error) {
       console.error("메시지 처리 중 오류 발생:", error);
     }
   });
 };
+//   stompClient.subscribe(url, message => {
+//     if (message.body) {
+//       console.log("수신된 메시지:", message.body);
+//     } else {
+//       console.warn("빈 메시지 수신");
+//     }
+
+//     try {
+//       const messageObj = JSON.parse(message.body);
+//       console.log("주문 요청 완료 messageObj : ", messageObj);
+
+//       const statusMessages = {
+//         1: "예약이 승인되었습니다.",
+//         2: "예약이 거부되었습니다.",
+//         3: "예약이 취소되었습니다.",
+//       };
+
+//       const statusMessage =
+//         statusMessages[messageObj.reservationStatus] ||
+//         "알 수 없는 상태입니다.";
+//       console.log(statusMessage);
+//       if (statusMessages === 1) {
+//         Swal.fire({
+//           title: "예약이 승인되었습니다",
+//           icon: "success",
+
+//           showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+//           confirmButtonColor: "#79BAF2", // confrim 버튼 색깔 지정
+//           confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+//         });
+//       }
+//       if (statusMessages === 2) {
+//         Swal.fire({
+//           title: "예약이 거부되었습니다",
+//           icon: "error",
+
+//           showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+//           confirmButtonColor: "#E44B58", // confrim 버튼 색깔 지정
+//           confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+//         });
+//       }
+//       if (statusMessages === 3) {
+//         Swal.fire({
+//           title: "예약이 취소되었습니다",
+//           icon: "warning",
+
+//           showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+//           confirmButtonColor: "#E44B58", // confrim 버튼 색깔 지정
+//           confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+//         });
+//       }
+//     } catch (error) {
+//       console.error("메시지 처리 중 오류 발생:", error);
+//     }
+//   });
+// };
 
 export const subscribeUserLogin = userId => {
   const url = `/queue/user/${userId}/user/userPaymentMember`;

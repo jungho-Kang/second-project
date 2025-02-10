@@ -61,21 +61,15 @@ const App = () => {
   const [isLogin, setIsLogin] = useRecoilState(loginAtom);
   const [isLoginStore, setIsLoginStore] = useRecoilState(isLoginStoreAtom);
 
-  useEffect(() => {
-    runSocket();
+  runSocket();
 
-    if (sessionRestaurant && isLoginStore) {
-      subscribeStoreLogin(sessionRestaurant);
-    } else if (!sessionRestaurant) {
-      removeCookieRefresh();
-    }
+  if (sessionRestaurant && isLoginStore) {
+    subscribeStoreLogin(sessionRestaurant);
+  }
 
-    if (sessionUser && isLogin) {
-      subscribeUserLogin(sessionUser);
-    } else if (!sessionUser) {
-      removeCookie();
-    }
-  }, []);
+  if (sessionUser && isLogin) {
+    subscribeUserLogin(sessionUser);
+  }
 
   return (
     <Router>
