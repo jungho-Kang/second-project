@@ -229,6 +229,7 @@ function AddStorePage() {
         // 위도, 경도 저장
         setValue("lat", latitude);
         setValue("lng", longitude);
+        console.log("이 주소의 위도 : ", latitude, ", 경도 : ", longitude);
       }
     } catch (error) {
       console.error("Error fetching coordinates:", error);
@@ -255,7 +256,7 @@ function AddStorePage() {
     // setIsClick(false);
     close();
     setInputAddress({ fullAddress: fullAddress, zoneCode: zoneCode });
-    console.log(fullAddress);
+    // console.log(fullAddress);
     setValue("restaurantAddress", fullAddress);
   };
 
@@ -270,6 +271,12 @@ function AddStorePage() {
     setValue("adminId", adminId);
     setValue("categoryId", 1);
   }, []);
+
+  useEffect(() => {
+    console.log(addressVal);
+    console.log("이 주소의 위도 : ", lat);
+    console.log("이 주소의 경도 : ", lng);
+  }, [addressVal]);
 
   return (
     <div>

@@ -13,6 +13,8 @@ export const LayoutDiv = styled.div`
 `;
 
 export const HeaderDiv = styled.div`
+  width: 100%;
+  padding: 20px 30px;
   @media (max-width: 430px) {
     width: 100%;
     padding: 10px 15px;
@@ -43,6 +45,8 @@ export const TitleDiv = styled.div`
   margin-bottom: 50px;
   font-weight: 700;
   height: 60px;
+  width: 100%;
+  font-size: 34px;
   @media (max-width: 430px) {
     font-size: 20px;
     width: 100%;
@@ -61,6 +65,10 @@ export const LoginBtn = styled.button`
   color: #fff;
   border-radius: 5px;
   margin-bottom: 30px;
+  width: 500px;
+  padding: 15px 0;
+  font-size: 24px;
+  margin-top: 40px;
   @media (max-width: 430px) {
     width: 100%;
     padding: 10px 0;
@@ -80,6 +88,8 @@ export const YupDiv = styled.div`
   gap: 10px;
   color: #f00;
   text-align: left;
+  margin-top: 10px;
+  font-size: 17px;
   @media (max-width: 430px) {
     margin-top: 5px;
     font-size: 11px;
@@ -105,6 +115,8 @@ export const InputYupDiv = styled.div`
 
 export const FormDiv = styled.div`
   margin: 0 auto;
+  max-width: 500px;
+  width: 100%;
   @media (max-width: 430px) {
     width: 100%;
   }
@@ -117,6 +129,7 @@ export const FormDiv = styled.div`
 export const LogoImg = styled.img`
   display: block;
   height: 60px;
+  width: 300px;
   @media (max-width: 430px) {
     width: 230px;
     height: 45px;
@@ -128,6 +141,8 @@ export const LogoImg = styled.img`
 
 export const TextSpan = styled.span`
   cursor: pointer;
+  margin-left: 30px;
+  font-size: 20px;
   @media (max-width: 430px) {
     margin-left: 20px;
   }
@@ -158,6 +173,9 @@ export const RoleDiv = styled.div`
 export const SignUpInput = styled.input`
   border-bottom: 1px solid #bababa;
   color: #bababa;
+  width: 500px;
+  font-size: 24px;
+  padding: 15px 0;
   @media (max-width: 430px) {
     max-width: 430px;
     width: 100%;
