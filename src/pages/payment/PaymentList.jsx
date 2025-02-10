@@ -5,7 +5,6 @@ import { IoIosArrowForward } from "react-icons/io";
 import MenuBar from "../../components/MenuBar";
 import { IoArrowForward } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
 import { getCookie } from "../../components/cookie";
 import QRCode from "../order/placetoorder/QRCode";
 
@@ -14,6 +13,7 @@ const OrderList = () => {
   const [isTap, setIsTap] = useState(true);
   const [orderQuntity, setOrderQuntity] = useState(0);
   const [paymentList, setPaymentList] = useState([]);
+  const [activeList, setActiveList] = useState([]);
 
   // sessionStorage에 저장된 userId 값을 가져옴
   const sessionUserId = window.sessionStorage.getItem("userId");
@@ -25,16 +25,18 @@ const OrderList = () => {
     };
     const getPaymentList = async () => {
       try {
-        const res = await axios.get(`/api/user/pastOrderCheck`, {
-          params,
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        const result = res.data.resultData;
-        console.log(result);
+        if (sessionUserId) {
+          const res = await axios.get(`/api/user/pastOrderCheck`, {
+            params,
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
+          const result = res.data.resultData;
+          console.log(result);
 
-        setPaymentList([...result]);
+          setPaymentList([...result]);
+        }
       } catch (error) {
         console.log(error);
       }
@@ -56,7 +58,7 @@ const OrderList = () => {
         });
         console.log(res.data.resultData);
         const result = res.data.resultData;
-        console.log(result);
+        setActiveList([...result]);
       } catch (error) {
         console.log(error);
       }
@@ -81,8 +83,10 @@ const OrderList = () => {
         </div>
       </div>
       {isTap ? (
-        orderQuntity > 0 ? (
-          <QRCode />
+        activeList.lenth > 0 ? (
+          <div>
+            <div>ㅁㄴㅇ</div>
+          </div>
         ) : (
           <div className="flex flex-col w-full h-dvh justify-center items-center gap-3">
             <ImFileEmpty className="text-8xl text-darkGray" />
@@ -104,7 +108,7 @@ const OrderList = () => {
           {paymentList.map((item, index) => (
             <div
               key={index}
-              className="w-full h-1/6 bg-white shadow-lg border-y border-y-gray"
+              className="w-full h-1/5 bg-white shadow-lg border-y border-y-gray"
             >
               <div className="w-full h-1/4 flex justify-between items-center px-5 py-3">
                 <span className="text-darkGray">{item.createdAt.slice(0)}</span>
@@ -134,9 +138,11 @@ const OrderList = () => {
                         .map(item => item)
                         .slice(0, 1)}
                     </span>
-                    <span className="text-nowrap">
-                      주문 총 가격 {item.menuTotalPrice.toLocaleString("ko-KR")}
-                      원
+                    <span className="flex text-nowrap gap-2 items-center">
+                      <span className="text-darkGray">총 가격</span>
+                      <span className="text-lg">
+                        {item.menuTotalPrice.toLocaleString("ko-KR")}원
+                      </span>
                     </span>
                   </div>
                 </div>

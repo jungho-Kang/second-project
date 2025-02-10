@@ -17,7 +17,6 @@ const QRCode = () => {
     infoH: 0,
   });
 
-  // 클립 경로 설정 함수
   const setCouponPath = () => {
     const visual = document.getElementById("visual");
     const couponW = visual.clientWidth;
@@ -25,9 +24,7 @@ const QRCode = () => {
     const visualH = visual.clientHeight;
     const infoH = info.clientHeight;
 
-    // 시각적 요소에 클립 경로 적용
     visual.style.clipPath = `path('M0 0 L0 ${visualH - 10} Q10 ${visualH - 10} 10 ${visualH} L ${couponW - 10} ${visualH} Q${couponW - 10} ${visualH - 10} ${couponW} ${visualH - 10} L${couponW} 0 Z')`;
-    // 정보 요소에 클립 경로 적용
     info.style.clipPath = `path('M10 0 Q10 10 0 10 L0 ${infoH} L${couponW} ${infoH} L${couponW} 10 Q${couponW - 10} 10 ${couponW - 10} 0 Z')`;
   };
   useEffect(() => {
@@ -60,7 +57,7 @@ const QRCode = () => {
   useEffect(() => {
     // `dimensions` 상태가 업데이트될 때마다 클립 경로를 다시 설정
     setCouponPath();
-  }, [dimensions]); // `dimensions`가 변경될 때마다 클립 경로를 업데이트
+  }, []); // `dimensions`가 변경될 때마다 클립 경로를 업데이트
 
   useEffect(() => {
     const params = {
@@ -122,10 +119,10 @@ const QRCode = () => {
             <span className="text-base -ml-44 text-nowrap">식권 발급 시간</span>
             <div className="flex text-2xl text-center font-semibold gap-8">
               <span className="flex tracking-widest">
-                {newTicketData.reservationTime?.split(" ")[0]}
+                {newTicketData?.reservationTime?.split(" ")[0]}
               </span>
               <span className="flex tracking-widest">
-                {newTicketData.reservationTime?.split(" ")[1]?.slice(0, 5)}
+                {newTicketData?.reservationTime?.split(" ")[1]?.slice(0, 5)}
               </span>
             </div>
           </div>
@@ -134,9 +131,7 @@ const QRCode = () => {
             <span className="text-4xl font-bold tracking-wider">
               {newTicketData.totalAmount.toLocaleString("ko-KR")}원
             </span>
-            <span className="text-xl">
-              {newTicketData.personCount + 1}명 결제
-            </span>
+            <span className="text-xl">{newTicketData.personCount}명 결제</span>
           </div>
         </div>
       </section>
@@ -145,7 +140,7 @@ const QRCode = () => {
         <div className="p-10 flex flex-col justify-center items-center bg-gray rounded-b-2xl">
           <div className="flex w-full justify-center items-center ">
             <QRCodeSVG
-              value={`http://192.168.0.192:5173/api/order/ticket?ticketId=${newTicketId}`}
+              value={`http://112.222.157.156:5222/api/order/ticket?ticketId=${newTicketId}`}
               size={180}
               bgColor="none"
             />

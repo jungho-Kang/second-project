@@ -70,6 +70,7 @@ export const LoginBtn = styled.button`
   font-size: 24px;
   margin-top: 40px;
   @media (max-width: 430px) {
+    font-size: 16px;
     width: 100%;
     padding: 10px 0;
     margin-top: 25px;
@@ -144,6 +145,7 @@ export const TextSpan = styled.span`
   margin-left: 30px;
   font-size: 20px;
   @media (max-width: 430px) {
+    font-size: 16px;
     margin-left: 20px;
   }
   @media (max-width: 1400px) and (min-width: 431px) {
@@ -177,6 +179,7 @@ export const SignUpInput = styled.input`
   font-size: 24px;
   padding: 15px 0;
   @media (max-width: 430px) {
+    font-size: 16px;
     max-width: 430px;
     width: 100%;
     padding: 10px 0;

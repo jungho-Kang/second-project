@@ -3,11 +3,11 @@ import Modal from "../components/Modal";
 
 const useModal = ({ useBlur = true, title } = {}) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [eventData, setEventData] = useState(0);
+  const [eventData, setEventData] = useState({});
 
   const open = useCallback(e => {
     console.log(e);
-    setEventData(e);
+    setEventData({ ...e });
     setIsOpen(() => true);
   }, []);
   const close = useCallback(() => {

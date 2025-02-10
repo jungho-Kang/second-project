@@ -41,6 +41,7 @@ const PriceOrderPage = () => {
         });
         console.log(res.data.resultData);
         const result = res.data.resultData;
+        setMemberData({ ...memberData, orderId: result });
         setNewOrderId(result);
       } catch (error) {
         console.log(error);
@@ -61,7 +62,7 @@ const PriceOrderPage = () => {
             Authorization: `Bearer ${accessToken}`,
           },
         });
-        console.log(res.data.resultData.totalPrice);
+        console.log(res.data.resultData);
         const result = res.data.resultData.totalPrice;
         setTotalPrice(result);
       } catch (error) {
@@ -70,31 +71,6 @@ const PriceOrderPage = () => {
     };
     getTotalPrice();
   }, []);
-
-  // useEffect(() => {
-  //   const params = {
-  //     orderId: newOrderId,
-  //   };
-  //   console.log(params);
-
-  //   const getPaymentMembers = async () => {
-  //     try {
-  //       const res = await axios.get(
-  //         "/api/user/user-payment-member/userPaymentMember",
-  //         {
-  //           params,
-  //           headers: {
-  //             Authorization: `Bearer ${accessToken}`,
-  //           },
-  //         },
-  //       );
-  //       console.log(res);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   getPaymentMembers();
-  // }, [memberData.orderId]);
 
   const postPaymentApproval = async () => {
     const payload = {
@@ -162,11 +138,17 @@ const PriceOrderPage = () => {
     navigate(`/user/placetoorder/member/${newOrderId}`);
   };
 
+  const backArrow = () => {
+    setMemberData(prev => ({ ...prev, point: [], userId: [parseInt(userId)] }));
+    setPaymentMemberData(prev => ({ ...prev }));
+    navigate(-1);
+  };
+
   return (
     <div className="w-full h-dvh overflow-x-hidden overflow-y-scroll scrollbar-hide">
       <div className="flex w-full justify-between py-6 items-center border-b border-gray">
         <div className="flex w-[15%] justify-center">
-          <IoMdArrowBack className="text-3xl" />
+          <IoMdArrowBack className="text-3xl" onClick={() => backArrow()} />
         </div>
         <span className="text-lg font-semibold">금액 선택</span>
         <div className="w-[15%]">
@@ -209,7 +191,6 @@ const PriceOrderPage = () => {
               </>
             )}
           </div>
-
           <div className="flex w-[15%] justify-center gap-2 text-nowrap items-center">
             <span
               onClick={() => inputApprovalHandler(userId)}
@@ -219,45 +200,45 @@ const PriceOrderPage = () => {
             </span>
           </div>
         </div>
-        {paymentMemberData.slice(1).map(item => (
-          <div
-            key={item.userId}
-            className="flex w-full h-[6%] px-6 justify-between items-center border-b border-gray"
-          >
-            <span className="flex w-[40%] text-base text-nowrap">
-              {item.name}({item.uid})
-            </span>
-            <div className="flex w-[35%] gap-2 items-center justify-end">
-              {isCompleted[item.userId] ? (
-                <>
-                  <span className="text-end px-2">
-                    {inputValues[item.userId]?.toLocaleString("ko-KR")}
-                  </span>
-                  <span>원</span>
-                </>
-              ) : (
-                <>
-                  <input
-                    type="tel"
-                    className="flex w-[70%] border border-darkGray px-2 text-end rounded-md"
-                    onChange={e => inputChangeHandler(e, item.userId)}
-                    value={inputValues.price}
-                  />
-                  <span>원</span>
-                </>
-              )}
-            </div>
-            <div className="flex w-[15%] justify-center gap-2 text-nowrap items-center">
-              <span
-                onClick={() => inputApprovalHandler(item.userId)}
-                className="bg-blue px-2 text-white font-medium rounded-md"
-              >
-                {isCompleted[item.userId] ? "수정" : "확인"}
+        {Array.isArray(paymentMemberData) &&
+          paymentMemberData.slice(1).map(item => (
+            <div
+              key={item.userId}
+              className="flex w-full h-[6%] px-6 justify-between items-center border-b border-gray"
+            >
+              <span className="flex w-[40%] text-base text-nowrap">
+                {item.name}({item.uid})
               </span>
+              <div className="flex w-[35%] gap-2 items-center justify-end">
+                {isCompleted[item.userId] ? (
+                  <>
+                    <span className="text-end px-2">
+                      {inputValues[item.userId]?.toLocaleString("ko-KR")}
+                    </span>
+                    <span>원</span>
+                  </>
+                ) : (
+                  <>
+                    <input
+                      type="tel"
+                      className="flex w-[70%] border border-darkGray px-2 text-end rounded-md"
+                      onChange={e => inputChangeHandler(e, item.userId)}
+                      value={inputValues.price}
+                    />
+                    <span>원</span>
+                  </>
+                )}
+              </div>
+              <div className="flex w-[15%] justify-center gap-2 text-nowrap items-center">
+                <span
+                  onClick={() => inputApprovalHandler(item.userId)}
+                  className="bg-blue px-2 text-white font-medium rounded-md"
+                >
+                  {isCompleted[item.userId] ? "수정" : "확인"}
+                </span>
+              </div>
             </div>
-          </div>
-        ))}
-
+          ))}
         <div className="flex w-full h-[5%] justify-center items-center">
           <IoMdAddCircleOutline
             onClick={addMemberHandler}

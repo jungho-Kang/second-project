@@ -52,18 +52,16 @@ const Table = () => {
                 className={`${isClick ? "w-[calc(33%_-_1rem)]" : "w-[calc(25%_-_1rem)]"} min-w-40 h-48 border-2 border-darkGray bg-white cursor-pointer`}
               >
                 <div className=" px-4 py-1 bg-third">
-                  <div className="flex justify-between">
+                  <div className="flex justify-between items-center gap-3">
                     <div className="flex gap-2 items-center">
-                      <span className="text-sm">주문번호</span>
-                      <span className="text-xl">{item.orderId}</span>
+                      <span className="text-sm text-nowrap">주문번호</span>
+                      <span className="text-lg">{item.orderId}</span>
                     </div>
-                    <span className="font-semibold">
-                      {item?.orderDetails.map(item => {
-                        const totalPrice = prev => prev + item.price;
-                        console.log(totalPrice);
-
-                        return totalPrice;
-                      })}
+                    <span className="font-semibold text-nowrap">
+                      {item?.orderDetails
+                        .reduce((prev, current) => prev + current.price, 0)
+                        .toLocaleString("ko-KR")}{" "}
+                      원
                     </span>
                   </div>
                   <div className="flex gap-2 tracking-wider items-center">
