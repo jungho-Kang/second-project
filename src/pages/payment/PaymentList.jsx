@@ -11,7 +11,6 @@ import QRCode from "../order/placetoorder/QRCode";
 const OrderList = () => {
   const navigate = useNavigate();
   const [isTap, setIsTap] = useState(true);
-  const [orderQuntity, setOrderQuntity] = useState(0);
   const [paymentList, setPaymentList] = useState([]);
   const [activeList, setActiveList] = useState([]);
 

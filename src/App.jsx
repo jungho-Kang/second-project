@@ -1,7 +1,7 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import React, { Suspense, lazy, useEffect } from "react";
 import {
-  runSocket,
+  initializeSocket,
   subscribeStoreLogin,
   subscribeUserLogin,
 } from "./components/notification/StompComponent";
@@ -61,15 +61,15 @@ const App = () => {
   const [isLogin, setIsLogin] = useRecoilState(loginAtom);
   const [isLoginStore, setIsLoginStore] = useRecoilState(isLoginStoreAtom);
 
-  runSocket();
+  initializeSocket();
 
-  if (sessionRestaurant && isLoginStore) {
-    subscribeStoreLogin(sessionRestaurant);
-  }
+  // if (sessionRestaurant && isLoginStore) {
+  //   subscribeStoreLogin(sessionRestaurant);
+  // }
 
-  if (sessionUser && isLogin) {
-    subscribeUserLogin(sessionUser);
-  }
+  // if (sessionUser && isLogin) {
+  //   subscribeUserLogin(sessionUser);
+  // }
 
   return (
     <Router>

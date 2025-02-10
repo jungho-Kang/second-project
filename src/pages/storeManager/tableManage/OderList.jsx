@@ -16,7 +16,6 @@ const OrderList = () => {
     const getOrderList = async () => {
       const params = {
         restaurantId: sessionStoreId,
-        // restaurantId: 1,
       };
       try {
         const res = await axios.get(`/api/order/restaurant/reservation`, {
@@ -53,7 +52,7 @@ const OrderList = () => {
       console.log(res);
       Swal.fire({
         title: "주문을 승인했습니다!",
-        text: "주문을 확인해주세요.",
+        text: "사용자 결제완료 후 테이블 목록에 추가됩니다",
         icon: "success",
       });
       close();
@@ -123,7 +122,7 @@ const OrderList = () => {
                   ))}
                 </span>
                 <span className="flex w-[30%] justify-center text-black">
-                  {item.orderDetails[0].createdAt.split(" ")?.[1].slice(0, 5)}
+                  {item.orderDetails[0]?.createdAt.split(" ")?.[1].slice(0, 5)}
                 </span>
               </li>
             ),
@@ -139,7 +138,7 @@ const OrderList = () => {
               <div className="flex w-full px-10 gap-3 items-center">
                 <span className="flex w-[25%]">주문한 메뉴</span>
                 <span className="text-xl">
-                  {eventData?.orderDetails?.menuName}
+                  {eventData?.orderDetails?.[0]?.menuName || "메뉴 정보 없음"}
                 </span>
               </div>
               <div className="flex w-full px-10 gap-3 items-center">

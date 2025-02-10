@@ -117,7 +117,6 @@ const PriceOrderPage = () => {
         [userId]: !prev[userId],
       };
 
-      // 완료 상태가 true에서 false로 변경된 경우 값 빼기
       if (prev[userId]) {
         setTotalPrice(prevPrice => prevPrice + Number(inputValues[userId]));
       } else {
@@ -140,9 +139,11 @@ const PriceOrderPage = () => {
 
   const backArrow = () => {
     setMemberData(prev => ({ ...prev, point: [], userId: [parseInt(userId)] }));
-    setPaymentMemberData(prev => ({ ...prev }));
+    setPaymentMemberData(prev => [...prev]);
     navigate(-1);
   };
+
+  console.log(paymentMemberData);
 
   return (
     <div className="w-full h-dvh overflow-x-hidden overflow-y-scroll scrollbar-hide">
@@ -166,51 +167,21 @@ const PriceOrderPage = () => {
             {totalPrice?.toLocaleString("ko-KR")}
           </span>
         </div>
-        <div className="flex w-full h-[6%] px-6 justify-between items-center border-b border-gray">
-          <span className="flex w-[40%] text-base text-nowrap">
-            {userData.name}({userData.uid})
-          </span>
-          <div className="flex w-[35%] gap-2 items-center justify-end">
-            {isCompleted[userId] ? (
-              <>
-                <span className="text-end px-2">
-                  {inputValues[userId]?.toLocaleString("ko-KR")}
-                </span>
-
-                <span>원</span>
-              </>
-            ) : (
-              <>
-                <input
-                  type="tel"
-                  className="flex w-[70%] border border-darkGray px-2 text-end rounded-md"
-                  onChange={e => inputChangeHandler(e, userData.userId)}
-                  value={inputValues.price}
-                />
-                <span>원</span>
-              </>
-            )}
-          </div>
-          <div className="flex w-[15%] justify-center gap-2 text-nowrap items-center">
-            <span
-              onClick={() => inputApprovalHandler(userId)}
-              className="bg-blue px-2 text-white font-medium rounded-md"
-            >
-              {isCompleted[userId] ? "수정" : "확인"}
-            </span>
-          </div>
-        </div>
         {Array.isArray(paymentMemberData) &&
-          paymentMemberData.slice(1).map(item => (
+          paymentMemberData?.map(item => (
             <div
               key={item.userId}
               className="flex w-full h-[6%] px-6 justify-between items-center border-b border-gray"
             >
+              {/* 멤버 이름 및 UID */}
               <span className="flex w-[40%] text-base text-nowrap">
                 {item.name}({item.uid})
               </span>
+
+              {/* 결제 금액 입력 또는 표시 */}
               <div className="flex w-[35%] gap-2 items-center justify-end">
                 {isCompleted[item.userId] ? (
+                  // 결제 완료 시 금액 표시
                   <>
                     <span className="text-end px-2">
                       {inputValues[item.userId]?.toLocaleString("ko-KR")}
@@ -218,21 +189,24 @@ const PriceOrderPage = () => {
                     <span>원</span>
                   </>
                 ) : (
+                  // 결제 미완료 시 입력 필드 제공
                   <>
                     <input
                       type="tel"
                       className="flex w-[70%] border border-darkGray px-2 text-end rounded-md"
                       onChange={e => inputChangeHandler(e, item.userId)}
-                      value={inputValues.price}
+                      value={inputValues[item.userId] || ""}
                     />
                     <span>원</span>
                   </>
                 )}
               </div>
+
+              {/* 확인 또는 수정 버튼 */}
               <div className="flex w-[15%] justify-center gap-2 text-nowrap items-center">
                 <span
                   onClick={() => inputApprovalHandler(item.userId)}
-                  className="bg-blue px-2 text-white font-medium rounded-md"
+                  className="bg-blue px-2 text-white font-medium rounded-md cursor-pointer"
                 >
                   {isCompleted[item.userId] ? "수정" : "확인"}
                 </span>

@@ -295,6 +295,7 @@ function RestaurantPage() {
   if (!isMapLoaded) {
     return <div>지도를 불러오는 중입니다...</div>;
   }
+
   return (
     <div
       className="w-full h-dvh overflow-hidden overflow-y-scroll scrollbar-hide relative"
@@ -432,7 +433,7 @@ function RestaurantPage() {
         <div
           className="scrollable-content scrollbar-hide"
           style={{
-            maxHeight: height === 250 ? 180 : 680,
+            maxHeight: height === 250 ? 180 : 840,
             overflowY: "scroll",
             overflowX: "hidden",
           }}

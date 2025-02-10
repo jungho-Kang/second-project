@@ -139,25 +139,31 @@ const Seatmate = () => {
   };
 
   const changeCheckHandler = e => {
-    console.log(e);
+    const userId = e.userId; // 또는 e.target.value 등 적절한 방식으로 userId 추출
 
+    // setPaymentMember 업데이트
     setPaymentMember(prev => {
-      const isSelected = prev.userId?.includes(e.userId);
+      const userIds = prev.userId || []; // 기본값으로 빈 배열 설정
+      const isSelected = userIds.includes(userId);
       return {
         ...prev,
         userId: isSelected
-          ? prev.userId.filter(id => id !== e.userId)
-          : [...prev.userId, e.userId],
+          ? userIds.filter(id => id !== userId) // 선택 해제
+          : [...userIds, userId], // 선택 추가
       };
     });
+
+    // setMemberData 업데이트
     setMemberData(prev => {
-      const exists = prev?.some(member => member.userId === e.userId);
-      if (exists) {
-        return prev?.filter(member => member.userId !== e.userId);
+      const updatedMembers = prev.filter(member => member.userId !== userId);
+      // userId가 없는 경우 새 멤버 추가
+      if (updatedMembers.length === prev.length) {
+        return [...prev, e];
       }
-      return [...prev, e];
+      return updatedMembers;
     });
   };
+
   console.log(paymentMember);
   console.log(memberData);
 
