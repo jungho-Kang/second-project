@@ -55,15 +55,13 @@ const SideBar = () => {
     <div className="flex flex-col w-44 h-dvh justify-between items-center bg-white border-r border-r-gray drop-shadow-md">
       <div className="w-full mt-8">
         <div className="flex mb-6 px-4 w-44 justify-center items-center">
-          <img
-            src={"/logo.png"}
-            className="flex w-full h-full rounded-full pb-6"
-          />
+          <img src={"/logo.png"} className="flex w-full h-full pb-6" />
         </div>
+
         <div className="flex flex-col justify-between">
           {/* 테이블 메뉴 */}
           <div
-            className={`flex gap-3 pl-8 py-4 items-center ${
+            className={`flex gap-3 pl-8 py-4 items-center cursor-pointer ${
               activeMenu === "table"
                 ? "bg-primary text-white ml-6 rounded-l-full"
                 : ""
@@ -75,7 +73,7 @@ const SideBar = () => {
           </div>
           {/* 메뉴 */}
           <div
-            className={`flex gap-3 pl-8 py-4 items-center ${
+            className={`flex gap-3 pl-8 py-4 items-center cursor-pointer ${
               activeMenu === "menu"
                 ? "bg-primary text-white ml-6 rounded-l-full"
                 : ""
@@ -88,7 +86,7 @@ const SideBar = () => {
 
           {/* 매출확인 */}
           <div
-            className={`flex gap-3 pl-8 py-4 items-center ${
+            className={`flex gap-3 pl-8 py-4 items-center cursor-pointer ${
               activeMenu === "sales"
                 ? "bg-primary text-white ml-6 rounded-l-full"
                 : ""

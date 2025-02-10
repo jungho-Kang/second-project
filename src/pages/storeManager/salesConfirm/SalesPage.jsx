@@ -41,7 +41,7 @@ function SalesPage() {
 
   useEffect(() => {
     const params = {
-      restaurantId: 1,
+      restaurantId: sessionRestaurantId,
       startDate: "",
       endData: "",
       page: 1,
