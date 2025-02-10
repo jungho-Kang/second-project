@@ -68,11 +68,19 @@ const SalesConfirm = () => {
           <div className="px-8 pt-8 ">
             <div className="flex items-center justify-between mb-10">
               <div className="flex gap-5 items-center">
-                <img
-                  src={`http://112.222.157.156:5222/pic/restaurant/${sessionRestaurantId}/${storeData?.filePath}`}
-                  alt="식당이미지"
-                  className="flex size-36 rounded-full"
-                />
+                {storeData?.filePath ? (
+                  <img
+                    src={`http://112.222.157.156:5222/pic/restaurant/${sessionRestaurantId}/${storeData?.filePath}`}
+                    alt="식당이미지"
+                    className="flex size-36 rounded-full"
+                  />
+                ) : (
+                  <img
+                    src="/restaurant_default.png"
+                    alt="식당 기본이미지"
+                    className="flex size-36 rounded-full bg-cover bg-gray py-4"
+                  />
+                )}
                 <div className="font-semibold text-3xl pb-6 text-nowrap">
                   {storeData?.storeName}
                 </div>
@@ -83,7 +91,7 @@ const SalesConfirm = () => {
                     일일 총 매출
                   </span>
                   <span className="flex w-full h-full px-3 pb-5 justify-end text-3xl font-semibold">
-                    {salesData?.dayPoint} 원
+                    {salesData?.dayPoint?.toLocaleString("ko-KR")} 원
                   </span>
                 </div>
                 <div className="w-30% h-20 rounded-md border-2 border-darkGrays">
@@ -91,7 +99,7 @@ const SalesConfirm = () => {
                     01월 총 매출
                   </span>
                   <span className="flex w-full h-full px-3 pb-5 justify-end text-3xl font-semibold">
-                    {salesData?.monthPoint} 원
+                    {salesData?.monthPoint?.toLocaleString("ko-KR")} 원
                   </span>
                 </div>
               </div>

@@ -112,7 +112,7 @@ const OrderList = () => {
                 <span className="flex w-[30%] justify-center text-black">
                   {item.orderId}
                 </span>
-                <span className="flex w-[30%] justify-center text-black">
+                <span className="flex flex-col w-[30%] justify-center text-black">
                   {item.orderDetails.map((data, index) => (
                     <div key={index}>{data?.menuName}</div>
                   ))}
@@ -120,7 +120,7 @@ const OrderList = () => {
                 <span className="flex w-[30%] justify-center text-black">
                   {item.orderDetails.map((data, index) => (
                     <div key={index}>
-                      {data?.createdAt.split(" ")?.[1].slice(0, 5)}
+                      {data[0]?.createdAt.split(" ")?.[1].slice(0, 5)}
                     </div>
                   ))}
                 </span>
