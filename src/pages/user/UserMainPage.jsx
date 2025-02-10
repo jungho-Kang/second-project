@@ -112,8 +112,11 @@ const UserMainPage = () => {
           className="mySwiper"
         >
           {/* Swiper 1 */}
-          <SwiperSlide className="relative">
-            <img src="/startingPage.png" alt="" />
+          <SwiperSlide
+            className="relative cursor-pointer"
+            onClick={() => navigate("/user/restaurant/detail/1")}
+          >
+            <img src="/swiper1.jpg" alt="" />
             <div className="absolute left-2 bottom-8 font-bold">
               <p className="w-14 px-1 py-1 rounded-lg bg-primary text-white mb-2 text-center text-xs text-nowrap sm:w-24 sm:text-2xl">
                 추천식당
@@ -129,8 +132,11 @@ const UserMainPage = () => {
             </div>
           </SwiperSlide>
           {/* Swiper 2 */}
-          <SwiperSlide className="relative">
-            <img src="/startingPage.png" alt="" />
+          <SwiperSlide
+            className="relative cursor-pointer"
+            onClick={() => navigate("/user/restaurant/detail/14")}
+          >
+            <img src="/swiper2.jpg" alt="" />
             <div className="absolute left-2 bottom-8 font-bold">
               <p className="w-14 px-1 py-1 rounded-lg bg-primary text-white mb-2 text-center text-xs text-nowrap sm:w-24 sm:text-2xl">
                 추천식당
@@ -146,8 +152,11 @@ const UserMainPage = () => {
             </div>
           </SwiperSlide>
           {/* Swiper 3 */}
-          <SwiperSlide className="relative">
-            <img src="/startingPage.png" alt="" />
+          <SwiperSlide
+            className="relative cursor-pointer"
+            onClick={() => navigate("/user/restaurant/detail/11")}
+          >
+            <img src="/swiper3.jpg" alt="" />
             <div className="absolute left-2 bottom-8 font-bold">
               <p className="w-14 px-1 py-1 rounded-lg bg-primary text-white mb-2 text-center text-xs text-nowrap sm:w-24 sm:text-2xl">
                 추천식당
