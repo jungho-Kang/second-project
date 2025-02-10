@@ -46,9 +46,9 @@ const NotificationPage = () => {
             key={item.orderId}
             onClick={() => {
               if (item.message === "나한테 온 승인요청 메세지") {
-                orderMemberPageNav(item.orderId);
-              } else {
                 pricePageNav(item.orderId);
+              } else {
+                orderMemberPageNav(item.orderId);
               }
             }}
             className="flex w-full h-[10%]"

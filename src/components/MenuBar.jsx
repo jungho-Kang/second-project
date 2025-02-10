@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiHome } from "react-icons/fi";
 import { GoMilestone } from "react-icons/go";
@@ -21,6 +21,16 @@ const MenuBar = () => {
     { id: "order", label: "주문내역", icon: LuClipboardList },
     { id: "userInfo", label: "내 정보", icon: LuCircleUserRound },
   ];
+
+  useEffect(() => {
+    const isLoginHandler = () => {
+      const userId = sessionStorage.getItem("userId");
+      if (userId) {
+        setIsLogin(true);
+      }
+    };
+    isLoginHandler();
+  }, []);
 
   const isLoginNav = Id => {
     if (isLogin === false) {

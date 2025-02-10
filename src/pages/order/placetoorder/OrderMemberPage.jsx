@@ -153,7 +153,10 @@ const Seatmate = () => {
   return (
     <div className="w-full h-dvh overflow-x-hidden overflow-y-scroll scrollbar-hide">
       <div className="flex w-full justify-between py-6 items-center border-b border-gray">
-        <div className="flex w-[15%] justify-center">
+        <div
+          onClick={() => navigate(-1)}
+          className="flex w-[15%] justify-center"
+        >
           <IoMdArrowBack className="text-3xl" />
         </div>
         <span className="text-lg font-semibold">인원 선택</span>

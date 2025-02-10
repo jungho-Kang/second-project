@@ -72,8 +72,8 @@ function IndexPage() {
   }, []);
 
   const logoutHandler = () => {
-    removeCookie("/");
-    removeCookieRefresh("/");
+    removeCookie();
+    removeCookieRefresh();
     window.sessionStorage.removeItem("userId");
     setIsLogin(false);
     navigate("/auth");

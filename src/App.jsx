@@ -71,7 +71,6 @@ const App = () => {
 
   return (
     <Router>
-      {/* Suspense로 Lazy Loading 로딩 상태 처리 */}
       <Suspense fallback={<div>Loading...</div>}>
         <Routes>
           <Route path="/" element={<IndexPage />} />

@@ -11,6 +11,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { isWhiteIcon, noticeState } from "../../atoms/noticeAtom";
 import MenuBar from "../../components/MenuBar";
 import Notification from "../../components/notification/NotificationIcon";
+import { loginAtom } from "../../atoms/userAtom";
 
 const UserMainPage = () => {
   const [restaurantList, setRestaurantList] = useState([]);
@@ -18,10 +19,19 @@ const UserMainPage = () => {
   const [categoryId, setCategoryId] = useState(1);
   const navigate = useNavigate();
   const [isWhite, setIsWhite] = useRecoilState(isWhiteIcon);
+  const [isLogin, setIsLogin] = useRecoilState(loginAtom);
   // 알림 아이콘 흰색
 
   useEffect(() => {
     setIsWhite(true);
+
+    const isLoginHandler = () => {
+      const userId = sessionStorage.getItem("userId");
+      if (userId) {
+        setIsLogin(true);
+      }
+    };
+    isLoginHandler();
   }, []);
 
   const { ref, inView } = useInView({
