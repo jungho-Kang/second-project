@@ -38,10 +38,10 @@ const NotificationPage = () => {
     setIsClick(false);
   };
   return (
-    <div className="absolute right-4 w-[80%] h-[50%] bg-white z-50 top-12 border-2 border-darkGray rounded-md pb-6 overflow-x-hidden over overflow-y-scroll scrollbar-hide">
+    <div className="absolute right-4 w-[80%] bg-white z-50 top-12 border-2 border-darkGray rounded-md pb-6 overflow-x-hidden over overflow-y-scroll scrollbar-hide">
       <div className="p-5 font-semibold text-darkGray">알림</div>
       <div className="flex flex-col px-5 gap-5 font-medium text-nowrap">
-        {isNotice.map(item => (
+        {isNotice?.map(item => (
           <div
             key={item.orderId}
             onClick={() => {
@@ -56,6 +56,13 @@ const NotificationPage = () => {
             {item.message} [{item.restaurantName}]
           </div>
         ))}
+        {isNotice ? (
+          <span className="text-darkGray tracking-wide">
+            새로운 알림이 없습니다
+          </span>
+        ) : (
+          <></>
+        )}
       </div>
     </div>
   );

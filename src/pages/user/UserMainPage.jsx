@@ -94,10 +94,10 @@ const UserMainPage = () => {
   return (
     <div className="w-full h-dvh overflow-x-hidden overflow-y-scroll scrollbar-hide">
       <Notification />
-      <div className="flex justify-center">
+      <div className="flex justify-center w-full sm:h-[50%]">
         <Swiper
           slidesPerView={1}
-          spaceBetween={30}
+          // spaceBetween={30}
           loop={true}
           pagination={{
             clickable: true,
@@ -113,14 +113,14 @@ const UserMainPage = () => {
           <SwiperSlide className="relative">
             <img src="/startingPage.png" alt="" />
             <div className="absolute left-2 bottom-8 font-bold">
-              <p className="w-14 px-1 py-1 rounded-lg bg-primary text-white mb-2 text-center text-xs text-nowrap">
+              <p className="w-14 px-1 py-1 rounded-lg bg-primary text-white mb-2 text-center text-xs text-nowrap sm:w-24 sm:text-2xl">
                 추천식당
               </p>
-              <div className="flex flex-col">
-                <span className="pl-2 text-white text-2xl">
+              <div className="flex flex-col sm:gap-2">
+                <span className="pl-2 text-white text-2xl text-nowrap sm:w-24 sm:text-3xl">
                   여기 진짜 맛있어요!
                 </span>
-                <span className="pl-2 text-white text-2xl">
+                <span className="pl-2 text-white text-2xl text-nowrap sm:w-24 sm:text-3xl">
                   호불호 없을 누구나 좋아하는 맛
                 </span>
               </div>
@@ -130,14 +130,14 @@ const UserMainPage = () => {
           <SwiperSlide className="relative">
             <img src="/startingPage.png" alt="" />
             <div className="absolute left-2 bottom-8 font-bold">
-              <p className="w-14 px-1 py-1 rounded-lg bg-primary text-white mb-2 text-center text-xs text-nowrap">
+              <p className="w-14 px-1 py-1 rounded-lg bg-primary text-white mb-2 text-center text-xs text-nowrap sm:w-24 sm:text-2xl">
                 추천식당
               </p>
-              <div className="flex flex-col">
-                <span className="pl-2 text-white text-2xl">
+              <div className="flex flex-col sm:gap-2">
+                <span className="pl-2 text-white text-2xl text-nowrap sm:w-24 sm:text-3xl">
                   여기 진짜 맛있어요!
                 </span>
-                <span className="pl-2 text-white text-2xl">
+                <span className="pl-2 text-white text-2xl text-nowrap sm:w-24 sm:text-3xl">
                   호불호 없을 누구나 좋아하는 맛
                 </span>
               </div>
@@ -147,14 +147,14 @@ const UserMainPage = () => {
           <SwiperSlide className="relative">
             <img src="/startingPage.png" alt="" />
             <div className="absolute left-2 bottom-8 font-bold">
-              <p className="w-14 px-1 py-1 rounded-lg bg-primary text-white mb-2 text-center text-xs text-nowrap">
+              <p className="w-14 px-1 py-1 rounded-lg bg-primary text-white mb-2 text-center text-xs text-nowrap sm:w-24 sm:text-2xl">
                 추천식당
               </p>
-              <div className="flex flex-col">
-                <span className="pl-2 text-white text-2xl">
+              <div className="flex flex-col sm:gap-2">
+                <span className="pl-2 text-white text-2xl text-nowrap sm:w-24 sm:text-3xl">
                   여기 진짜 맛있어요!
                 </span>
-                <span className="pl-2 text-white text-2xl">
+                <span className="pl-2 text-white text-2xl text-nowrap sm:w-24 sm:text-3xl">
                   호불호 없을 누구나 좋아하는 맛
                 </span>
               </div>
@@ -207,11 +207,18 @@ const UserMainPage = () => {
               onClick={() => detailNavigateHandler(data)}
             >
               <div className="flex w-full">
-                <img
-                  src={`http://112.222.157.156:5222/pic/restaurant/${data.restaurantId}/${data.restaurantAroundPicList?.filePath}`}
-                  alt="메뉴사진"
-                  className="w-full h-44"
-                />
+                {data.restaurantAroundPicList?.filePath ? (
+                  <img
+                    src={`http://112.222.157.156:5222/pic/restaurant/${data.restaurantId}/${data.restaurantAroundPicList?.filePath}`}
+                    alt="/restaurant_default.png"
+                    className="w-full h-44 sm:h-72 lg:h-80 tb:h-96"
+                  />
+                ) : (
+                  <img
+                    src="/restaurant_default.png"
+                    className="w-full h-44 bg-cover bg-gray py-4 sm:h-96"
+                  />
+                )}
               </div>
               <div className="w-[100%] flex justify-between pt-1 gap-0.5">
                 <div className="w-[70%]">

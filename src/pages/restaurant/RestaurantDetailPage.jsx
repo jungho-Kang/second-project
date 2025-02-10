@@ -243,11 +243,19 @@ function StoreDetailPage() {
   }, []);
   return (
     <div style={{ height: "100vh" }}>
-      <img
-        src={`http://112.222.157.156:5222/pic/restaurant/${formData?.restaurantId}/${formData?.restaurantPics?.filePath}`}
-        alt="가게 이미지"
-        style={{ width: "100%", height: 260, position: "relative" }}
-      />
+      {formData?.restaurantPics?.filePath ? (
+        <img
+          src={`http://112.222.157.156:5222/pic/restaurant/${formData?.restaurantId}/${formData?.restaurantPics?.filePath}`}
+          alt="가게 이미지"
+          style={{ width: "100%", height: 260, position: "relative" }}
+        />
+      ) : (
+        <img
+          src={"/restaurant_default.png"}
+          className="bg-cover bg-gray py-6"
+        />
+      )}
+
       <BackDiv>
         <IoMdArrowBack
           style={{ width: "100%", height: "100%" }}

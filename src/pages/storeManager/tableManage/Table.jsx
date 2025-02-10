@@ -24,8 +24,8 @@ const Table = () => {
         });
         console.log(res.data.resultData);
         const result = res.data.resultData;
-        const orderDetails = result[1].orderDetails;
-        console.log(orderDetails);
+        // const orderDetails = result[1].orderDetails;
+        // console.log(orderDetails);
         setOrderList([...result]);
       } catch (error) {
         console.log(error);
@@ -44,7 +44,7 @@ const Table = () => {
         <div className="w-100% h-[calc(100%_-_4rem)] mx-4 my-8 bg-white rounded-lg overflow-hidden overflow-y-scroll scrollbar-hide">
           <div className="flex flex-wrap ml-5 mt-5 gap-4 bg-white justify-start">
             {/* 주문카드 시작 */}
-            {orderList.map((item, index) => (
+            {orderList.map(item => (
               <div
                 // onClick={e => openDescriptHandler(e)}
                 key={item.orderId}
@@ -57,7 +57,14 @@ const Table = () => {
                       <span className="text-sm">주문번호</span>
                       <span className="text-xl">{item.orderId}</span>
                     </div>
-                    <span className="font-semibold">{item?.userPhone}</span>
+                    <span className="font-semibold">
+                      {item?.orderDetails.map(item => {
+                        const totalPrice = prev => prev + item.price;
+                        console.log(totalPrice);
+
+                        return totalPrice;
+                      })}
+                    </span>
                   </div>
                   <div className="flex gap-2 tracking-wider items-center">
                     <span className="text-sm">주문시간</span>
@@ -66,12 +73,13 @@ const Table = () => {
                     </span>
                   </div>
                 </div>
-
                 <div className="px-3 py-3">
-                  <div className="flex justify-between">
-                    <span>{item[index]?.orderDeatils}</span>
-                    <span>x{item.menuQuntity}</span>
-                  </div>
+                  {item.orderDetails.map((item, index) => (
+                    <div key={index} className="flex justify-between">
+                      <span>{item?.menuName}</span>
+                      <span>x{item?.menuCount}</span>
+                    </div>
+                  ))}
                   <div className="pt-1 pl-6 text-darkGray">{item.menuInfo}</div>
                 </div>
               </div>
