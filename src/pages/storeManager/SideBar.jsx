@@ -10,6 +10,7 @@ import { useRecoilState } from "recoil";
 import { roleAtom } from "../../atoms/roleAtom";
 import { STORE } from "../../constants/Role";
 import { removeCookie, removeCookieRefresh } from "../../components/cookie";
+import Swal from "sweetalert2";
 
 const SubMenuDiv = styled.div`
   padding: 5px 10px;
@@ -101,9 +102,8 @@ const SideBar = () => {
 
         {/* 내 매장 메뉴 */}
         <div
-          className={`flex gap-3 pl-8 items-center mt-3 ${
-            menuClick.store ? "bg-primary text-white" : ""
-          }`}
+          // ${ menuClick.store ? "bg-primary text-white" : ""}
+          className={`flex gap-3 pl-8 items-center mt-3 cursor-pointer`}
           onClick={() =>
             setMenuClick({ ...menuClick, store: !menuClick.store })
           }
@@ -143,10 +143,19 @@ const SideBar = () => {
         onClick={() => {
           window.sessionStorage.removeItem("adminId");
           window.sessionStorage.removeItem("restaurantId");
-          removeCookie("/");
-          removeCookieRefresh("/");
-          alert("로그아웃 되었습니다.");
-          navigate("/");
+          removeCookie();
+          removeCookieRefresh();
+          Swal.fire({
+            title: "로그아웃 되었습니다.",
+            icon: "success",
+            confirmButtonText: "확인",
+            showConfirmButton: true, // ok 버튼 노출 여부
+            allowOutsideClick: false, // 외부 영역 클릭 방지
+          }).then(result => {
+            if (result.isConfirmed) {
+              navigate("/");
+            }
+          });
         }}
         className="rounded-md bg-primary text-white font-bold tracking-wider px-6 py-2 mb-16 cursor-pointer hover:bg-primaryFocus"
       >

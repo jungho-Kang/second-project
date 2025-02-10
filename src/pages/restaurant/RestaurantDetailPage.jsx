@@ -8,6 +8,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { reserveState } from "../../atoms/restaurantAtom";
 import { getCookie } from "../../components/cookie";
+import Swal from "sweetalert2";
 
 const BackDiv = styled.div`
   background-color: #fff;
@@ -201,16 +202,34 @@ function StoreDetailPage() {
         setIsReserve(true);
         setIsModal(true);
       } else {
-        alert("로그인이 필요한 서비스입니다.");
-        navigate("/auth");
+        Swal.fire({
+          title: "로그인이 필요한 서비스입니다.",
+          icon: "error",
+          confirmButtonText: "확인",
+          showConfirmButton: true,
+          allowOutsideClick: false,
+        }).then(result => {
+          if (result.isConfirmed) {
+            navigate("/auth");
+          }
+        });
       }
     } else {
       if (token) {
         setIsReserve(false);
         navigate(`/user/restaurant/detail/reserve/${id}`);
       } else {
-        alert("로그인이 필요한 서비스입니다.");
-        navigate("/auth");
+        Swal.fire({
+          title: "로그인이 필요한 서비스입니다.",
+          icon: "error",
+          confirmButtonText: "확인",
+          showConfirmButton: true,
+          allowOutsideClick: false,
+        }).then(result => {
+          if (result.isConfirmed) {
+            navigate("/auth");
+          }
+        });
       }
     }
   };
@@ -366,7 +385,13 @@ function StoreDetailPage() {
                     state: reserveInfo,
                   });
                 } else {
-                  alert("시간과 인원을 선택해주세요");
+                  Swal.fire({
+                    title: "시간과 인원을 선택해주세요.",
+                    icon: "error",
+                    confirmButtonText: "확인",
+                    showConfirmButton: true, // ok 버튼 노출 여부
+                    allowOutsideClick: false, // 외부 영역 클릭 방지
+                  });
                 }
               }}
             >

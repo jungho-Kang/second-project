@@ -72,11 +72,21 @@ function IndexPage() {
   }, []);
 
   const logoutHandler = () => {
-    removeCookie("/");
-    removeCookieRefresh("/");
+    removeCookie();
+    removeCookieRefresh();
     window.sessionStorage.removeItem("userId");
     setIsLogin(false);
-    navigate("/auth");
+    Swal.fire({
+      title: "로그아웃 되었습니다.",
+      icon: "success",
+      confirmButtonText: "확인",
+      showConfirmButton: true,
+      allowOutsideClick: false,
+    }).then(result => {
+      if (result.isConfirmed) {
+        navigate("/user");
+      }
+    });
   };
 
   return (

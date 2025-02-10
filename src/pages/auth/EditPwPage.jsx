@@ -21,6 +21,7 @@ import { getCookie } from "../../components/cookie";
 import { useRecoilValue } from "recoil";
 import { roleAtom } from "../../atoms/roleAtom";
 import { STORE, USER } from "../../constants/Role";
+import Swal from "sweetalert2";
 
 const editPwSchema = yup.object({
   newUpw: yup
@@ -64,16 +65,34 @@ function FindPwPage() {
             Authorization: `Bearer ${accessToken}`,
           },
         });
-        alert("비밀번호가 변경 되었습니다.");
-        navigate("/user");
+        Swal.fire({
+          title: "비밀번호가 변경 되었습니다.",
+          icon: "success",
+          confirmButtonText: "확인",
+          showConfirmButton: true, // ok 버튼 노출 여부
+          allowOutsideClick: false, // 외부 영역 클릭 방지
+        }).then(result => {
+          if (result.isConfirmed) {
+            navigate("/user");
+          }
+        });
       } else if (role === STORE) {
         await axios.put("/api/admin/upw", data, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
         });
-        alert("비밀번호가 변경 되었습니다.");
-        navigate("/store");
+        Swal.fire({
+          title: "비밀번호가 변경 되었습니다.",
+          icon: "success",
+          confirmButtonText: "확인",
+          showConfirmButton: true, // ok 버튼 노출 여부
+          allowOutsideClick: false, // 외부 영역 클릭 방지
+        }).then(result => {
+          if (result.isConfirmed) {
+            navigate("/store");
+          }
+        });
       }
     } catch (error) {
       console.log(error);

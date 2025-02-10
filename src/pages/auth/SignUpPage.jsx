@@ -19,6 +19,7 @@ import {
   TitleDiv,
   YupDiv,
 } from "./loginStyle";
+import Swal from "sweetalert2";
 
 const SignUpSchema = yup.object({
   roleId: yup.string(),
@@ -86,9 +87,18 @@ function SignUpPage() {
     try {
       // console.log("보낼 데이터", data);
       await axios.post("/api/admin/sign-up", data);
-      alert("회원가입이 완료 되었습니다.");
+      Swal.fire({
+        title: "회원가입이 완료 되었습니다.",
+        icon: "success",
+        confirmButtonText: "확인",
+        showConfirmButton: true, // ok 버튼 노출 여부
+        allowOutsideClick: false, // 외부 영역 클릭 방지
+      }).then(result => {
+        if (result.isConfirmed) {
+          navigate("/auth/signup/emailauth");
+        }
+      });
       console.log("보낸 데이터??", data);
-      navigate("/auth/signup/emailauth");
     } catch (error) {
       console.log("보낸 데이터??", data);
       console.log(error);

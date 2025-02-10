@@ -13,6 +13,7 @@ import dayjs from "dayjs";
 import { userDataAtom } from "../../atoms/userAtom";
 import { getCookie } from "../../components/cookie";
 import { subscribeToReservationStatus } from "../../components/notification/StompComponent";
+import Swal from "sweetalert2";
 
 const BackDiv = styled.div`
   background-color: #fff;
@@ -186,8 +187,17 @@ function MenuSelectPage() {
         setOrderId(res.data.resultData);
         subscribeToReservationStatus(res.data.resultData);
       }
-      alert(`${time}에 예약이 완료 되었습니다.`);
-      navigate("/user");
+      Swal.fire({
+        title: `${time}에 예약이 완료 되었습니다.`,
+        icon: "success",
+        confirmButtonText: "확인",
+        showConfirmButton: true, // ok 버튼 노출 여부
+        allowOutsideClick: false, // 외부 영역 클릭 방지
+      }).then(result => {
+        if (result.isConfirmed) {
+          navigate("/user");
+        }
+      });
     } catch (error) {
       console.log(error);
     }

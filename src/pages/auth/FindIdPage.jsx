@@ -20,6 +20,7 @@ import {
 import { useRecoilValue } from "recoil";
 import { roleAtom } from "../../atoms/roleAtom";
 import { STORE, USER } from "../../constants/Role";
+import Swal from "sweetalert2";
 
 const loginSchema = yup.object({
   name: yup
@@ -42,6 +43,7 @@ function FindIdPage() {
     handleSubmit,
     formState: { errors },
     watch,
+    setValue,
   } = useForm({
     mode: "onChange",
     resolver: yupResolver(loginSchema),
@@ -58,10 +60,27 @@ function FindIdPage() {
           `/api/admin/find-id?name=${data.name}&email=${data.email}`,
         );
       }
-      alert(`${data.email} 이메일로 아이디가 전송되었습니다.`);
-      navigate("/auth");
+      Swal.fire({
+        title: `${data.email} 이메일로 아이디가 전송되었습니다.`,
+        icon: "success",
+        confirmButtonText: "확인",
+        showConfirmButton: true, // ok 버튼 노출 여부
+        allowOutsideClick: false, // 외부 영역 클릭 방지
+      }).then(result => {
+        if (result.isConfirmed) {
+          navigate("/auth");
+        }
+      });
     } catch (error) {
-      alert("이름과 이메일이 일치하지 않습니다.");
+      Swal.fire({
+        title: "이름과 이메일이 일치하지 않습니다.",
+        icon: "error",
+        confirmButtonText: "확인",
+        showConfirmButton: true, // ok 버튼 노출 여부
+        allowOutsideClick: false, // 외부 영역 클릭 방지
+      });
+      setValue("name", "");
+      setValue("email", "");
       setIsSubmit(false);
       console.log(error);
     }

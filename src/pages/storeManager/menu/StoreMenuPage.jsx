@@ -11,6 +11,7 @@ import axios from "axios";
 import { useForm } from "react-hook-form";
 import { getCookie } from "../../../components/cookie";
 import useModal from "../../../components/useModal";
+import Swal from "sweetalert2";
 
 const LayoutDiv = styled.div`
   display: flex;
@@ -193,7 +194,7 @@ function StoreMenuPage() {
           },
         },
       );
-      alert("메뉴가 삭제 되었습니다.");
+
       getStoreInfo();
     } catch (error) {
       console.log(error);
@@ -209,7 +210,13 @@ function StoreMenuPage() {
         },
       });
       setIsClick({});
-      alert("메뉴가 추가되었습니다.");
+      Swal.fire({
+        title: "메뉴가 추가되었습니다.",
+        icon: "success",
+        confirmButtonText: "확인",
+        showConfirmButton: true, // ok 버튼 노출 여부
+        allowOutsideClick: false, // 외부 영역 클릭 방지
+      });
       getStoreInfo();
     } catch (error) {
       console.log(data);
@@ -238,12 +245,40 @@ function StoreMenuPage() {
         },
       });
       setIsClick({});
-      alert("메뉴가 수정되었습니다.");
+      Swal.fire({
+        title: "메뉴가 수정되었습니다.",
+        icon: "success",
+        confirmButtonText: "확인",
+        showConfirmButton: true, // ok 버튼 노출 여부
+        allowOutsideClick: false, // 외부 영역 클릭 방지
+      });
       getStoreInfo();
     } catch (error) {
       // console.log(data);
       console.log(error);
     }
+  };
+
+  // 삭제 버튼
+  const handleClickDelete = (cateId, menuId) => {
+    Swal.fire({
+      title: "메뉴를 삭제하시겠습니까?",
+      text: "삭제한 메뉴는 복구할 수 없습니다.",
+      icon: "warning",
+
+      showCancelButton: true,
+      confirmButtonColor: "#79BAF2",
+      cancelButtonColor: "#E44B58",
+      confirmButtonText: "확인",
+      cancelButtonText: "취소",
+
+      reverseButtons: false,
+    }).then(result => {
+      if (result.isConfirmed) {
+        deleteMenu(cateId, menuId);
+        Swal.fire("메뉴가 삭제 되었습니다.", "", "success");
+      }
+    });
   };
 
   const handleChangePreview = e => {
@@ -373,7 +408,7 @@ function StoreMenuPage() {
                             />
                             <IoMdClose
                               onClick={() =>
-                                deleteMenu(item.categoryId, menu.menuId)
+                                handleClickDelete(item.categoryId, menu.menuId)
                               }
                               style={{
                                 width: 25,

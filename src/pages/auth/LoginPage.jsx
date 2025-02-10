@@ -25,6 +25,7 @@ import {
   subscribeStoreLogin,
   subscribeUserLogin,
 } from "../../components/notification/StompComponent";
+import Swal from "sweetalert2";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -88,7 +89,13 @@ function LoginPage() {
       setIsLogin(true);
       routeHandler();
     } catch (error) {
-      alert("아이디와 비밀번호가 일치하지 않습니다.");
+      Swal.fire({
+        title: "아이디와 비밀번호가 일치하지 않습니다.",
+        icon: "error",
+        confirmButtonText: "확인",
+        showConfirmButton: true, // ok 버튼 노출 여부
+        allowOutsideClick: false, // 외부 영역 클릭 방지
+      });
       console.log(error);
     }
   };
@@ -111,7 +118,7 @@ function LoginPage() {
         <CloseDiv>
           <IoMdClose
             style={{ width: "100%", height: "100%", cursor: "pointer" }}
-            onClick={() => navigate(-1)}
+            onClick={() => navigate("/")}
           />
         </CloseDiv>
       </HeaderDiv>

@@ -18,10 +18,10 @@ export const setCookieRefresh = (value, options) => {
   return cookies.set("refresh-token", value, { ...options });
 };
 
-export const removeCookie = options => {
-  return cookies.remove("accessToken", { ...options });
+export const removeCookie = () => {
+  return cookies.remove("accessToken", { path: "/" });
 };
 
-export const removeCookieRefresh = options => {
-  return cookies.remove("refresh-token", { ...options });
+export const removeCookieRefresh = () => {
+  return cookies.remove("refresh-token", { path: "/" });
 };
