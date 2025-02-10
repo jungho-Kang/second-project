@@ -16,6 +16,28 @@ const QRCode = () => {
     visualH: 0,
     infoH: 0,
   });
+  const [ticketStatus, setTicketStatus] = useState(0);
+
+  // 티켓 사용 여부를 확인하기 위해서 3초마다 체크
+  useEffect(() => {
+    const intervalId = setInterval(async () => {
+      const params = {
+        ticketId: newTicketId,
+      };
+      try {
+        const res = await axios.get("/api/order/ticket/status", { params });
+        const result = res.data.resultData;
+        if (result.status === 1) {
+          setTicketStatus(1);
+          clearInterval(intervalId);
+        }
+      } catch (error) {
+        console.error("티켓 상태 조회 실패:", error);
+      }
+    }, 3000);
+
+    return () => clearInterval(intervalId);
+  }, [newTicketId]);
 
   const setCouponPath = () => {
     const visual = document.getElementById("visual");

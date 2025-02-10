@@ -2,11 +2,13 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import useModal from "../../../components/useModal";
+import { reloadOrderAtom } from "../../../atoms/restaurantAtom";
+import { useRecoilState } from "recoil";
 
 const OrderList = () => {
   const [orderDataList, setOrderDataList] = useState([]);
   const [orderMenuList, setOrderMenuList] = useState([]);
-  const [reloadOrders, setReloadOrders] = useState(false);
+  const [reloadOrders, setReloadOrders] = useRecoilState(reloadOrderAtom);
   const sessionStoreId = window.sessionStorage.getItem("restaurantId");
   const { Modal, open, close, eventData } = useModal({
     title: "주문 정보를 확인해주세요",
@@ -31,12 +33,13 @@ const OrderList = () => {
 
         setOrderDataList([...result]);
         setOrderMenuList([...menuList.flat()]);
+        triggerReload();
       } catch (error) {
         console.log(error);
       }
     };
     getOrderList();
-  }, [reloadOrders]);
+  }, []);
 
   const triggerReload = () => setReloadOrders(prev => !prev);
 

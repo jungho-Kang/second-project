@@ -84,7 +84,7 @@ const OrderRequestPage = () => {
       );
       console.log(res.data.resultData);
       const result = res.data.resultData;
-      setPriceList([...result.getApprovalStatus]);
+      setPriceList([...result]);
     } catch (error) {
       console.log(error);
     }
@@ -214,11 +214,10 @@ const OrderRequestPage = () => {
             </span>
           </div>
         </div>
-
         {Array.isArray(priceList) &&
-          priceList.map(item => (
+          priceList.map((item, index) => (
             <div
-              key={item.userId}
+              key={index}
               className="flex w-full h-[6%] px-6 justify-between items-center border-b border-gray"
             >
               <span className="flex w-[30%] text-base text-nowrap">
