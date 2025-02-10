@@ -109,36 +109,30 @@ const PriceOrderPage = () => {
   };
   console.log("금액 : ", inputValues);
   console.log("사람 : ", memberData);
-  const inputApprovalHandler = useCallback(
-    userId => {
-      setIsCompleted(prev => {
-        const updatedStatus = {
-          ...prev,
-          [userId]: !prev[userId],
-        };
 
-        const inputNumber = parseInt(inputValues[userId]);
+  const inputApprovalHandler = userId => {
+    setIsCompleted(prev => {
+      const updatedStatus = {
+        ...prev,
+        [userId]: !prev[userId],
+      };
 
-        // 상태 업데이트 후 totalPrice 변경
-        setTotalPrice(prevPrice => {
-          const updatedPrice = updatedStatus[userId]
-            ? prevPrice + inputNumber // 상태가 'true'로 변경된 경우 가격 더하기
-            : prevPrice - inputNumber; // 상태가 'false'로 변경된 경우 가격 빼기
+      // 완료 상태가 true에서 false로 변경된 경우 값 빼기
+      if (prev[userId]) {
+        setTotalPrice(prevPrice => prevPrice + Number(inputValues[userId]));
+      } else {
+        setTotalPrice(prevPrice => prevPrice - Number(inputValues[userId]));
+      }
+      return updatedStatus;
+    });
 
-          return updatedPrice;
-        });
+    const inputNUmber = parseInt(inputValues[userId]);
 
-        // 멤버 데이터에 포인트 추가
-        setMemberData(prev => ({
-          ...prev,
-          point: [...prev.point, inputNumber],
-        }));
-
-        return updatedStatus;
-      });
-    },
-    [inputValues],
-  );
+    setMemberData(prev => ({
+      ...prev,
+      point: [...prev.point, inputNUmber],
+    }));
+  };
 
   const addMemberHandler = () => {
     navigate(`/user/placetoorder/member/${newOrderId}`);
