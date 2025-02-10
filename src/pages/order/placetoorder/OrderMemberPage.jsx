@@ -25,8 +25,6 @@ const Seatmate = () => {
   const userId = sessionStorage.getItem("userId");
   const accessToken = getCookie();
 
-  const selectMember = paymentMember.userId.length;
-
   useEffect(() => {
     const params = {
       userId: userId,
@@ -43,9 +41,7 @@ const Seatmate = () => {
         const result = res.data.resultData;
         setUserData({ ...result });
         setMemberData(prev => {
-          // 기존 배열을 복사합니다.
           const loginMemberData = [...prev];
-          // 첫 번째 요소를 업데이트합니다.
           loginMemberData[0] = {
             name: result.name,
             uid: result.uid,
@@ -54,21 +50,50 @@ const Seatmate = () => {
           return loginMemberData;
         });
         setPaymentMember(prev => {
-          const isSelected = prev.userId?.includes(result.userId);
+          const userIdList = prev.userId || [];
+          const isSelected = userIdList.includes(result.userId);
           return {
             ...prev,
             userId: isSelected
-              ? prev.userId.filter(id => id !== result.userId)
-              : [...prev.userId, result.userId],
+              ? userIdList.filter(id => id !== result.userId)
+              : [...userIdList, result.userId],
           };
         });
-
-        searchMember();
       } catch (error) {
         console.log(error);
       }
     };
     getUserData();
+  }, []);
+
+  useEffect(() => {
+    const searchMember = async (name = inputValue) => {
+      const accessToken = getCookie();
+      const params = {
+        companyId: userData.companyId,
+        page: 1,
+        size: 30,
+        name: name,
+      };
+      console.log(params);
+
+      try {
+        const res = await axios.get(
+          "/api/user/user-payment-member/searchPeople",
+          {
+            params,
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          },
+        );
+        const result = res.data.resultData.memberList;
+        setSearchResult([...result]);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    searchMember();
   }, [inputValue]);
 
   const searchMember = async (name = inputValue) => {
@@ -98,15 +123,13 @@ const Seatmate = () => {
     }
   };
 
-  console.log(searchResult);
-
   const changeInputHandler = e => {
     const searchTarget = e.target.value;
 
     setInputValue(searchTarget);
   };
 
-  const onkKeyDownHandler = e => {
+  const onKeyDownHandler = e => {
     console.log(e);
     console.log(inputValue);
 
@@ -128,13 +151,10 @@ const Seatmate = () => {
       };
     });
     setMemberData(prev => {
-      // 기존 배열에서 같은 userId를 가진 객체가 있는지 확인합니다.
-      const exists = prev.some(member => member.userId === e.userId);
+      const exists = prev?.some(member => member.userId === e.userId);
       if (exists) {
-        // 이미 존재하면 해당 항목을 배열에서 제거합니다.
-        return prev.filter(member => member.userId !== e.userId);
+        return prev?.filter(member => member.userId !== e.userId);
       }
-      // 없으면 새 데이터를 배열에 추가합니다.
       return [...prev, e];
     });
   };
@@ -142,12 +162,7 @@ const Seatmate = () => {
   console.log(memberData);
 
   const nextBtnHandler = () => {
-    navigate(`/user/placetoorder/price/${newOrderId}`, {
-      state: {
-        orderId: newOrderId,
-        userId: [paymentMember.userId],
-      },
-    });
+    navigate(`/user/placetoorder/price/${newOrderId}`);
   };
 
   return (
@@ -204,7 +219,7 @@ const Seatmate = () => {
                 className="w-[90%] border border-darkGray rounded-md px-2"
                 placeholder="회사 내 인원을 이름으로 검색해보세요"
                 onChange={e => changeInputHandler(e)}
-                onKeyDown={e => onkKeyDownHandler(e)}
+                onKeyDown={e => onKeyDownHandler(e)}
                 value={inputValue}
               />
               <IoMdSearch

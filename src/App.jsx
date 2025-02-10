@@ -1,5 +1,5 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import React, { Suspense, lazy } from "react";
+import React, { Suspense, lazy, useEffect } from "react";
 import {
   runSocket,
   subscribeStoreLogin,
@@ -9,6 +9,7 @@ import { useRecoilState } from "recoil";
 import { loginAtom } from "./atoms/userAtom";
 import { isLoginStoreAtom } from "./atoms/restaurantAtom";
 import Loading from "./components/Loading";
+import { removeCookie, removeCookieRefresh } from "./components/cookie";
 
 const IndexPage = lazy(() => import("./pages/IndexPage"));
 const EditPwPage = lazy(() => import("./pages/auth/EditPwPage"));
@@ -60,15 +61,21 @@ const App = () => {
   const [isLogin, setIsLogin] = useRecoilState(loginAtom);
   const [isLoginStore, setIsLoginStore] = useRecoilState(isLoginStoreAtom);
 
-  runSocket();
+  useEffect(() => {
+    runSocket();
 
-  if (sessionRestaurant && isLoginStore) {
-    subscribeStoreLogin(sessionRestaurant);
-  }
+    if (sessionRestaurant && isLoginStore) {
+      subscribeStoreLogin(sessionRestaurant);
+    } else if (!sessionRestaurant) {
+      removeCookieRefresh();
+    }
 
-  if (sessionUser && isLogin) {
-    subscribeUserLogin(sessionUser);
-  }
+    if (sessionUser && isLogin) {
+      subscribeUserLogin(sessionUser);
+    } else if (!sessionUser) {
+      removeCookie();
+    }
+  }, []);
 
   return (
     <Router>

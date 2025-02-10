@@ -42,8 +42,10 @@ const OrderList = () => {
   const triggerReload = () => setReloadOrders(prev => !prev);
 
   const confirmClickHandler = async () => {
+    console.log(eventData);
+
     const payload = {
-      orderId: eventData,
+      orderId: eventData.orderId,
       reservationStatus: 1,
     };
     try {
@@ -63,12 +65,13 @@ const OrderList = () => {
 
   const dismissClickHandler = async () => {
     const payload = {
-      orderId: eventData,
+      orderId: eventData.orderId,
       reservationStatus: 2,
     };
     try {
       const res = await axios.put(`/api/order/access`, payload);
       console.log(res);
+      close();
       triggerReload();
     } catch (error) {
       console.log(error);
@@ -105,7 +108,7 @@ const OrderList = () => {
               </li>
             ) : (
               <li
-                onClick={() => open(item.orderId)}
+                onClick={() => open(item)}
                 key={index}
                 className="flex w-full items-center justify-between px-6 py-2 border-b border-gray"
               >
@@ -114,15 +117,13 @@ const OrderList = () => {
                 </span>
                 <span className="flex flex-col w-[30%] justify-center text-black">
                   {item.orderDetails.map((data, index) => (
-                    <div key={index}>{data?.menuName}</div>
+                    <div key={index} className="truncate">
+                      {data?.menuName}
+                    </div>
                   ))}
                 </span>
                 <span className="flex w-[30%] justify-center text-black">
-                  {item.orderDetails.map((data, index) => (
-                    <div key={index}>
-                      {data[0]?.createdAt.split(" ")?.[1].slice(0, 5)}
-                    </div>
-                  ))}
+                  {item.orderDetails[0].createdAt.split(" ")?.[1].slice(0, 5)}
                 </span>
               </li>
             ),
@@ -130,26 +131,39 @@ const OrderList = () => {
         </ul>
         <Modal>
           <div className="flex flex-col w-full h-full justify-between">
-            <div className="flex flex-col w-full h-[60%] gap-4 pt-10">
+            <div className="flex flex-col w-full h-[60%] gap-4 pt-10 items-center">
               <div className="flex w-full px-10 gap-3">
                 <span className="flex w-[25%]">주문번호</span>
-                <span>12</span>
+                <span className="text-xl">{eventData?.orderId}</span>
               </div>
-              <div className="flex w-full px-10 gap-3">
+              <div className="flex w-full px-10 gap-3 items-center">
                 <span className="flex w-[25%]">주문한 메뉴</span>
-                <span>asd</span>
+                <span className="text-xl">
+                  {eventData?.orderDetails?.menuName}
+                </span>
               </div>
-              <div className="flex w-full px-10 gap-3">
+              <div className="flex w-full px-10 gap-3 items-center">
                 <span className="flex w-[25%]">주문한 사람</span>
-                <span>asdd</span>
+                <span className="text-xl">{eventData?.userName}</span>
               </div>
-              <div className="flex w-full px-10 gap-3">
+              <div className="flex w-full px-10 gap-3 items-center">
                 <span className="flex w-[25%]">핸드폰 번호</span>
-                <span>123123123</span>
+                {eventData.userPhone === null ? (
+                  <span className="text-darkGray">등록된 번호가 없어요</span>
+                ) : (
+                  <span className="text-xl">
+                    {eventData?.userPhone
+                      ?.replace(/[^0-9]/g, "")
+                      ?.replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/g, "$1-$2-$3")
+                      ?.replace(/(-{1,2})$/g, "")}
+                  </span>
+                )}
               </div>
-              <div className="flex w-full h-[20%] px-10 gap-3">
+              <div className="flex w-full h-[20%] px-10 gap-3 items-center">
                 <span className="flex w-[25%]">인원 수</span>
-                <span>1 명</span>
+                <span className="text-xl">
+                  {eventData?.reservationPeopleCount} 명
+                </span>
               </div>
             </div>
             <div className="flex w-full justify-center gap-10 mb-10">

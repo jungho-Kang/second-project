@@ -16,20 +16,20 @@ const SalesConfirm = () => {
     const params = {
       restaurantId: sessionRestaurantId,
     };
-    const getRestaurantData = () => {
+    const getRestaurantData = async () => {
       try {
-        const res = axios.get(`/api/restaurant`, {
+        const res = await axios.get(`/api/restaurant`, {
           params,
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
         });
-        console.log(res.data.resultData);
+        console.log(res);
         const result = res.data.resultData;
         setStoreData({
           ...storeData,
           restaurantName: result.restaurantName,
-          filePath: result.restaurantPics,
+          filePath: result.restaurantPics.filePath,
         });
       } catch (error) {
         console.log(error);
@@ -82,7 +82,7 @@ const SalesConfirm = () => {
                   />
                 )}
                 <div className="font-semibold text-3xl pb-6 text-nowrap">
-                  {storeData?.storeName}
+                  {storeData?.restaurantName}
                 </div>
               </div>
               <div className="flex flex-col w-2/5 gap-5">
@@ -96,7 +96,7 @@ const SalesConfirm = () => {
                 </div>
                 <div className="w-30% h-20 rounded-md border-2 border-darkGrays">
                   <span className="flex w-full text-start px-3 pt-2 text-darkGray">
-                    01월 총 매출
+                    {dayjs().format("MM")}월 총 매출
                   </span>
                   <span className="flex w-full h-full px-3 pb-5 justify-end text-3xl font-semibold">
                     {salesData?.monthPoint?.toLocaleString("ko-KR")} 원

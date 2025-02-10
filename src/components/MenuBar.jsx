@@ -8,6 +8,7 @@ import { useRecoilState } from "recoil";
 import { loginAtom } from "../atoms/userAtom";
 import { isClickIcon } from "../atoms/noticeAtom";
 import Swal from "sweetalert2";
+import { getCookie } from "./cookie";
 
 const MenuBar = () => {
   const [activeMenu, setActiveMenu] = useState("home"); // 현재 선택된 메뉴 상태
@@ -22,15 +23,16 @@ const MenuBar = () => {
     { id: "userInfo", label: "내 정보", icon: LuCircleUserRound },
   ];
 
-  useEffect(() => {
-    const isLoginHandler = () => {
-      const userId = sessionStorage.getItem("userId");
-      if (userId) {
-        setIsLogin(true);
-      }
-    };
-    isLoginHandler();
-  }, []);
+  // useEffect(() => {
+  //   const isLoginHandler = () => {
+  //     const userId = sessionStorage.getItem("userId");
+  //     const accessToken = getCookie();
+  //     if (userId && accessToken) {
+  //       setIsLogin(true);
+  //     }
+  //   };
+  //   isLoginHandler();
+  // }, []);
 
   const isLoginNav = Id => {
     if (isLogin === false) {

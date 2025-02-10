@@ -10,12 +10,12 @@ export const getCookieRefresh = () => {
   return cookies.get("refresh-token");
 };
 
-export const setCookie = (value, options) => {
-  return cookies.set("accessToken", value, { ...options });
+export const setCookie = (value, options = {}) => {
+  return cookies.set("accessToken", value, { path: "/", ...options });
 };
 
-export const setCookieRefresh = (value, options) => {
-  return cookies.set("refresh-token", value, { ...options });
+export const setCookieRefresh = (value, options = {}) => {
+  return cookies.set("refresh-token", value, { path: "/", ...options });
 };
 
 export const removeCookie = () => {
