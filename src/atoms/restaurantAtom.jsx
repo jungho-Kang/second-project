@@ -1,5 +1,10 @@
 import { atom } from "recoil";
 
+export const isLoginStoreAtom = atom({
+  key: "isLoginStoreAtom",
+  default: false,
+});
+
 // true 이면 예약상태, false이면 앉아서 주문
 export const reserveState = atom({
   key: "reserveState",

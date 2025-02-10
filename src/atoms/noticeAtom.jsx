@@ -17,3 +17,15 @@ export const isClickIcon = atom({
   key: "isClickIcon",
   default: false,
 });
+
+// 결제 관련 알림이 있는지 없는지
+export const priceNoticeAtom = atom({
+  key: "priceNoticeAtom",
+  default: false,
+});
+
+// 주문 관련 알림이 있는지 없는지
+export const orderNoticeAtom = atom({
+  key: "orderNoticeAtom",
+  default: false,
+});

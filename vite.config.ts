@@ -14,9 +14,9 @@ export default defineConfig({
     host: "0.0.0.0", // 모든 IP에서 접근 가능하도록 설정
     proxy: {
       "/api": {
-        target: "http://112.222.157.156:5222",
-        changeOrigin: true,
-        secure: false,
+        target: "http://112.222.157.156:5222", // 요청을 보낼 대상 서버
+        changeOrigin: true, // Origin 헤더를 target으로 변경
+        secure: false, // SSL 인증서 무시
       },
     },
   },

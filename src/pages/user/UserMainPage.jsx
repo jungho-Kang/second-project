@@ -11,27 +11,32 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { isWhiteIcon, noticeState } from "../../atoms/noticeAtom";
 import MenuBar from "../../components/MenuBar";
 import Notification from "../../components/notification/NotificationIcon";
+import { loginAtom } from "../../atoms/userAtom";
 
 const UserMainPage = () => {
   const [restaurantList, setRestaurantList] = useState([]);
   const [pagenation, setPagenation] = useState(1);
   const [categoryId, setCategoryId] = useState(1);
   const navigate = useNavigate();
-  const [isNotice, setIsNotice] = useRecoilState(noticeState);
   const [isWhite, setIsWhite] = useRecoilState(isWhiteIcon);
+  const [isLogin, setIsLogin] = useRecoilState(loginAtom);
   // 알림 아이콘 흰색
 
   useEffect(() => {
     setIsWhite(true);
+
+    const isLoginHandler = () => {
+      const userId = sessionStorage.getItem("userId");
+      if (userId) {
+        setIsLogin(true);
+      }
+    };
+    isLoginHandler();
   }, []);
 
   const { ref, inView } = useInView({
     threshold: 0.7, // 화면의 70%가 보일 때 감지
   });
-
-  useEffect(() => {
-    console.log("ref 연결 상태: ", ref.current);
-  }, []);
 
   useEffect(() => {
     setPagenation(1);
@@ -45,12 +50,6 @@ const UserMainPage = () => {
         const res = await axios.get("/api/restaurant/main", { params });
         const result = res.data.resultData;
 
-        const detailAddress = result.map(data => {
-          return data.restaurantAddress.match(
-            /^(?:대구광역시|대구)\s*(.+)/,
-          )?.[1];
-        });
-        console.log(detailAddress);
         setRestaurantList([...result]);
       } catch (error) {
         console.log(error);
@@ -73,12 +72,6 @@ const UserMainPage = () => {
           const res = await axios.get("/api/restaurant/main", { params });
           const result = res.data.resultData;
 
-          const detailAddress = result.map(data => {
-            return data.restaurantAddress.match(
-              /^(?:대구광역시|대구)\s*(.+)/,
-            )?.[1];
-          });
-          console.log(detailAddress);
           setRestaurantList([...restaurantList, ...result]);
         } catch (error) {
           console.log(error);
