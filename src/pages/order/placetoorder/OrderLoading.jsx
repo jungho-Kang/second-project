@@ -1,6 +1,19 @@
+import { useEffect } from "react";
 import { ClipLoader } from "react-spinners";
 
 const OrderLoading = () => {
+  useEffect(() => {
+    const usedCoupon = () => {
+      try {
+        const res = axios.patch(`/api/order/ticket?ticketId=${newTicketId}`);
+        console.log(res);
+        alert("식권이 사용 완료 되었습니다");
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    usedCoupon();
+  }, []);
   return (
     <div className="relative w-full h-dvh flex justify-center items-center overflow-x-hidden overflow-y-scroll scrollbar-hide">
       <img

@@ -12,6 +12,7 @@ import { isWhiteIcon, noticeState } from "../../atoms/noticeAtom";
 import MenuBar from "../../components/MenuBar";
 import Notification from "../../components/notification/NotificationIcon";
 import { loginAtom } from "../../atoms/userAtom";
+import { getCookie } from "../../components/cookie";
 
 const UserMainPage = () => {
   const [restaurantList, setRestaurantList] = useState([]);
@@ -27,7 +28,8 @@ const UserMainPage = () => {
 
     const isLoginHandler = () => {
       const userId = sessionStorage.getItem("userId");
-      if (userId) {
+      const accessToken = getCookie();
+      if (userId && accessToken) {
         setIsLogin(true);
       }
     };

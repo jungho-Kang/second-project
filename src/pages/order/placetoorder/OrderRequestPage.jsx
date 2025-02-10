@@ -106,13 +106,14 @@ const OrderRequestPage = () => {
       );
       console.log(res.data.resultData);
       const result = res.data.resultData;
+      window.sessionStorage.setItem("ticketId", result);
       setNewTicketId(result);
       Swal.fire({
         title: "결제 완료!",
         text: "식권이 생성되었습니다.",
         timer: 2000,
       });
-      navigate(`/user/placetoorder/coupon/${newTicketId}`);
+      navigate(`/user/placetoorder/coupon/${result}`);
     } catch (error) {
       console.log(error);
     }
@@ -178,11 +179,11 @@ const OrderRequestPage = () => {
       });
     }
   };
-  console.log(priceList);
 
   const cancleButtonClick = userId => {
     setIsCompleted(!isCompleted);
   };
+  console.log(priceList);
 
   return (
     <div className="w-full h-dvh overflow-x-hidden overflow-y-scroll scrollbar-hide">
@@ -248,48 +249,51 @@ const OrderRequestPage = () => {
             </span>
           </div>
         </div>
-        {priceList.slice(1).map(item => (
-          <div
-            key={item.userId}
-            className="flex w-full h-[6%] px-6 justify-between items-center border-b border-gray"
-          >
-            <span className="flex w-[30%] text-base text-nowrap">
-              {item.name}
-            </span>
-            <div className="flex w-[35%] gap-2 items-center justify-end">
-              {isCompleted[item.userId] ? (
-                <>
-                  <span className="text-end px-2">{item.point}</span>
-                  <span>원</span>
-                </>
-              ) : (
-                <>
-                  <input
-                    type="tel"
-                    className="flex w-full border border-darkGray px-2 text-end rounded-md"
-                    value={inputValues[item.userId]}
-                    onChange={e => inputChangeHandler(e, item.userId)}
-                  />
-                  <span>원</span>
-                </>
-              )}
-            </div>
-            <div className="flex w-[20%] justify-center gap-2 text-nowrap items-center">
-              <span
-                onClick={() => inputApprovalHandler(item.userId)}
-                className="bg-blue px-2 text-white font-semibold rounded-md cursor-pointer"
+        {Array.isArray(priceList) &&
+          priceList
+            .filter(item => item.userId !== userId)
+            .map(item => (
+              <div
+                key={item.userId}
+                className="flex w-full h-[6%] px-6 justify-between items-center border-b border-gray"
               >
-                승인
-              </span>
-              <span
-                onClick={() => cancleButtonClick(item.userId)}
-                className="bg-red px-2 text-white font-semibold rounded-md cursor-pointer"
-              >
-                {isCompleted[item.userId] ? "수정" : "취소"}
-              </span>
-            </div>
-          </div>
-        ))}
+                <span className="flex w-[30%] text-base text-nowrap">
+                  {item.name}
+                </span>
+                <div className="flex w-[35%] gap-2 items-center justify-end">
+                  {isCompleted[item.userId] ? (
+                    <>
+                      <span className="text-end px-2">{item.point}</span>
+                      <span>원</span>
+                    </>
+                  ) : (
+                    <>
+                      <input
+                        type="tel"
+                        className="flex w-full border border-darkGray px-2 text-end rounded-md"
+                        value={inputValues[item.userId]}
+                        onChange={e => inputChangeHandler(e, item.userId)}
+                      />
+                      <span>원</span>
+                    </>
+                  )}
+                </div>
+                <div className="flex w-[20%] justify-center gap-2 text-nowrap items-center">
+                  <span
+                    onClick={() => inputApprovalHandler(item.userId)}
+                    className="bg-blue px-2 text-white font-semibold rounded-md cursor-pointer"
+                  >
+                    승인
+                  </span>
+                  <span
+                    onClick={() => cancleButtonClick(item.userId)}
+                    className="bg-red px-2 text-white font-semibold rounded-md cursor-pointer"
+                  >
+                    {isCompleted[item.userId] ? "수정" : "취소"}
+                  </span>
+                </div>
+              </div>
+            ))}
 
         <div className="flex w-full justify-center gap-10">
           <span

@@ -20,13 +20,14 @@ function IndexPage() {
   const [userData, setUserData] = useRecoilState(userDataAtom);
   const [isWhite, setIsWhite] = useRecoilState(isWhiteIcon);
   const [isLogin, setIsLogin] = useRecoilState(loginAtom);
-  // 알림 아이콘 검정색
-  setIsWhite(false);
 
   // sessionStorage에 저장된 userId 값을 가져옴
   const sessionUserId = window.sessionStorage.getItem("userId");
 
   useEffect(() => {
+    // 알림 아이콘 검정색
+    setIsWhite(false);
+
     const getUserInfo = async () => {
       try {
         if (sessionUserId) {
@@ -50,19 +51,6 @@ function IndexPage() {
           console.log(res);
 
           setUserData({ ...resultData, phone: phoneNumber, point: pointParse });
-        } else {
-          // Swal.fire({
-          //   title: "로그인이 필요한 서비스입니다!",
-          //   text: "확인을 누르시면 로그인 페이지로 이동합니다.",
-          //   icon: "error",
-          //   confirmButtonText: "확인",
-          //   showConfirmButton: true, // ok 버튼 노출 여부
-          //   allowOutsideClick: false, // 외부 영역 클릭 방지
-          // }).then(result => {
-          //   if (result.isConfirmed) {
-          //     navigate("/auth");
-          //   }
-          // });
         }
       } catch (error) {
         console.log(error);

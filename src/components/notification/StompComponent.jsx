@@ -41,6 +41,14 @@ export const subscribeToReservationStatus = orderId => {
         statusMessages[messageObj.reservationStatus] ||
         "알 수 없는 상태입니다.";
       console.log(statusMessage);
+      Swal.fire({
+        title: statusMessages,
+        icon: "success",
+
+        showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+        confirmButtonColor: "#79BAF2", // confrim 버튼 색깔 지정
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+      });
     } catch (error) {
       console.error("메시지 처리 중 오류 발생:", error);
     }
