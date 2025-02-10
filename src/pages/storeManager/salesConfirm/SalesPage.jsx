@@ -8,13 +8,6 @@ const TableDiv = styled.div`
   overflow-y: scroll;
 `;
 
-const TableBtn = styled.button`
-  border: 1px solid #929292;
-  padding: 5px 15px;
-  border-radius: 5px;
-  background-color: #fff;
-`;
-
 const TableTitleDiv = styled.div`
   display: flex;
   justify-content: space-between;
@@ -63,7 +56,7 @@ function SalesPage() {
           },
         });
 
-        console.log(res.data.resultData);
+        console.log("이거 뭐야?", res.data);
         const result = res.data.resultData;
         setSalesList([...result]);
       } catch (error) {

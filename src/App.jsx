@@ -8,6 +8,7 @@ import {
 import { useRecoilState } from "recoil";
 import { loginAtom } from "./atoms/userAtom";
 import { isLoginStoreAtom } from "./atoms/restaurantAtom";
+import Loading from "./components/Loading";
 
 const IndexPage = lazy(() => import("./pages/IndexPage"));
 const EditPwPage = lazy(() => import("./pages/auth/EditPwPage"));
@@ -71,7 +72,7 @@ const App = () => {
 
   return (
     <Router>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Loading />}>
         <Routes>
           <Route path="/" element={<IndexPage />} />
           <Route path="/auth">
