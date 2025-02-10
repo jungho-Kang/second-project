@@ -1,13 +1,31 @@
 import { useEffect } from "react";
+import axios from "axios";
 import { ClipLoader } from "react-spinners";
+import { useRecoilState } from "recoil";
+import { useNavigate } from "react-router-dom";
+import { ticketIdAtom } from "../../../atoms/userAtom";
+import Swal from "sweetalert2";
 
 const OrderLoading = () => {
+  const navigate = useNavigate();
+  const [newTicketId, setTicketId] = useRecoilState(ticketIdAtom);
+
   useEffect(() => {
     const usedCoupon = () => {
       try {
         const res = axios.patch(`/api/order/ticket?ticketId=${newTicketId}`);
         console.log(res);
-        alert("식권이 사용 완료 되었습니다");
+        Swal.fire({
+          title: "식권 사용완료!",
+          icon: "success",
+          confirmButtonText: "확인",
+          showConfirmButton: true,
+          allowOutsideClick: false,
+        }).then(result => {
+          if (result.isConfirmed) {
+            navigate("/user");
+          }
+        });
       } catch (error) {
         console.log(error);
       }

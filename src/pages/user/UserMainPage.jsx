@@ -28,7 +28,7 @@ const UserMainPage = () => {
 
     const isLoginHandler = () => {
       const userId = sessionStorage.getItem("userId");
-      const accessToken = getCookie();
+      const accessToken = getCookie("accessToken");
       if (userId && accessToken) {
         setIsLogin(true);
       }

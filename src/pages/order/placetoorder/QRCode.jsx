@@ -27,6 +27,12 @@ const QRCode = () => {
     visual.style.clipPath = `path('M0 0 L0 ${visualH - 10} Q10 ${visualH - 10} 10 ${visualH} L ${couponW - 10} ${visualH} Q${couponW - 10} ${visualH - 10} ${couponW} ${visualH - 10} L${couponW} 0 Z')`;
     info.style.clipPath = `path('M10 0 Q10 10 0 10 L0 ${infoH} L${couponW} ${infoH} L${couponW} 10 Q${couponW - 10} 10 ${couponW - 10} 0 Z')`;
   };
+
+  useEffect(() => {
+    // `dimensions` 상태가 업데이트될 때마다 클립 경로를 다시 설정
+    setCouponPath();
+  }, [newTicketId]);
+
   useEffect(() => {
     // 요소 크기를 추적하여 상태에 저장
     const updateDimensions = () => {
@@ -53,11 +59,6 @@ const QRCode = () => {
       window.removeEventListener("resize", updateDimensions);
     };
   }, []);
-
-  useEffect(() => {
-    // `dimensions` 상태가 업데이트될 때마다 클립 경로를 다시 설정
-    setCouponPath();
-  }, []); // `dimensions`가 변경될 때마다 클립 경로를 업데이트
 
   useEffect(() => {
     const params = {
@@ -140,7 +141,7 @@ const QRCode = () => {
         <div className="p-10 flex flex-col justify-center items-center bg-gray rounded-b-2xl">
           <div className="flex w-full justify-center items-center ">
             <QRCodeSVG
-              value={`http://112.222.157.156:5222/api/order/ticket?ticketId=${newTicketId}`}
+              value={`http://112.222.157.156:5222/user/placetoorder`}
               size={180}
               bgColor="none"
             />

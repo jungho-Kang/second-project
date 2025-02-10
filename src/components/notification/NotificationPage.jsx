@@ -20,23 +20,28 @@ const NotificationPage = () => {
   console.log(isPriceNotice);
   console.log(isOrderNotice);
 
-  const orderMemberPageNav = orderId => {
-    navigate(`/user/placetoorder/member/${orderId}`, {
+  const orderMemberPageNav = id => {
+    navigate(`/user/placetoorder/member/${id}`, {
       state: {
-        orderId: orderId,
+        orderId: id,
       },
     });
+    setOrderId(id);
     setIsClick(false);
   };
 
-  const pricePageNav = orderId => {
-    navigate(`/user/placetoorder/price/${orderId}`, {
+  const pricePageNav = id => {
+    navigate(`/user/placetoorder/price/${id}`, {
       state: {
-        orderId: orderId,
+        orderId: id,
       },
     });
+    setOrderId(id);
     setIsClick(false);
   };
+
+  console.log(isNotice);
+
   return (
     <div className="absolute right-4 w-[80%] bg-white z-50 top-12 border-2 border-darkGray rounded-md pb-6 overflow-x-hidden over overflow-y-scroll scrollbar-hide">
       <div className="p-5 font-semibold text-darkGray">알림</div>
