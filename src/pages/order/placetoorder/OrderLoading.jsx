@@ -9,6 +9,15 @@ import Swal from "sweetalert2";
 const OrderLoading = () => {
   const navigate = useNavigate();
   const [newTicketId, setTicketId] = useRecoilState(ticketIdAtom);
+  console.log(newTicketId);
+
+  const QRscan = () => {
+    try {
+      const res = axios.patch;
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     const usedCoupon = () => {
@@ -32,6 +41,7 @@ const OrderLoading = () => {
     };
     usedCoupon();
   }, []);
+
   return (
     <div className="relative w-full h-dvh flex justify-center items-center overflow-x-hidden overflow-y-scroll scrollbar-hide">
       <img

@@ -2,11 +2,13 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import useModal from "../../../components/useModal";
+import { reloadOrderAtom } from "../../../atoms/restaurantAtom";
+import { useRecoilState } from "recoil";
 
 const OrderList = () => {
   const [orderDataList, setOrderDataList] = useState([]);
   const [orderMenuList, setOrderMenuList] = useState([]);
-  const [reloadOrders, setReloadOrders] = useState(false);
+  const [reloadOrders, setReloadOrders] = useRecoilState(reloadOrderAtom);
   const sessionStoreId = window.sessionStorage.getItem("restaurantId");
   const { Modal, open, close, eventData } = useModal({
     title: "주문 정보를 확인해주세요",
@@ -16,7 +18,6 @@ const OrderList = () => {
     const getOrderList = async () => {
       const params = {
         restaurantId: sessionStoreId,
-        // restaurantId: 1,
       };
       try {
         const res = await axios.get(`/api/order/restaurant/reservation`, {
@@ -32,12 +33,13 @@ const OrderList = () => {
 
         setOrderDataList([...result]);
         setOrderMenuList([...menuList.flat()]);
+        triggerReload();
       } catch (error) {
         console.log(error);
       }
     };
     getOrderList();
-  }, [reloadOrders]);
+  }, []);
 
   const triggerReload = () => setReloadOrders(prev => !prev);
 
@@ -53,7 +55,7 @@ const OrderList = () => {
       console.log(res);
       Swal.fire({
         title: "주문을 승인했습니다!",
-        text: "주문을 확인해주세요.",
+        text: "사용자 결제완료 후 테이블 목록에 추가됩니다",
         icon: "success",
       });
       close();
@@ -123,7 +125,7 @@ const OrderList = () => {
                   ))}
                 </span>
                 <span className="flex w-[30%] justify-center text-black">
-                  {item.orderDetails[0].createdAt.split(" ")?.[1].slice(0, 5)}
+                  {item.orderDetails[0]?.createdAt.split(" ")?.[1].slice(0, 5)}
                 </span>
               </li>
             ),
@@ -139,7 +141,7 @@ const OrderList = () => {
               <div className="flex w-full px-10 gap-3 items-center">
                 <span className="flex w-[25%]">주문한 메뉴</span>
                 <span className="text-xl">
-                  {eventData?.orderDetails?.menuName}
+                  {eventData?.orderDetails?.[0]?.menuName || "메뉴 정보 없음"}
                 </span>
               </div>
               <div className="flex w-full px-10 gap-3 items-center">

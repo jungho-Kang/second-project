@@ -33,9 +33,7 @@ export const locationAtom = atom({
 
 export const ticketIdAtom = atom({
   key: "ticketIdAtom",
-  default: {
-    ticketId: 0,
-  },
+  default: null,
 });
 
 export const ticketDataAtom = atom({

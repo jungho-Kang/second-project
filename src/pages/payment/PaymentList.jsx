@@ -11,7 +11,6 @@ import QRCode from "../order/placetoorder/QRCode";
 const OrderList = () => {
   const navigate = useNavigate();
   const [isTap, setIsTap] = useState(true);
-  const [orderQuntity, setOrderQuntity] = useState(0);
   const [paymentList, setPaymentList] = useState([]);
   const [activeList, setActiveList] = useState([]);
 
@@ -56,7 +55,7 @@ const OrderList = () => {
             Authorization: `Bearer ${accessToken}`,
           },
         });
-        console.log(res.data.resultData);
+        console.log(res.data);
         const result = res.data.resultData;
         setActiveList([...result]);
       } catch (error) {
@@ -65,6 +64,7 @@ const OrderList = () => {
     };
     getMyOrder();
   }, []);
+  console.log(activeList);
 
   return (
     <div className="w-full h-dvh flex flex-col justify-between overflow-hidden overflow-y-scroll scrollbar-hide mb-32">
@@ -83,10 +83,10 @@ const OrderList = () => {
         </div>
       </div>
       {isTap ? (
-        activeList.lenth > 0 ? (
-          <div>
-            <div>ㅁㄴㅇ</div>
-          </div>
+        activeList.lenth === 0 ? (
+          <>
+            <QRCode />
+          </>
         ) : (
           <div className="flex flex-col w-full h-dvh justify-center items-center gap-3">
             <ImFileEmpty className="text-8xl text-darkGray" />

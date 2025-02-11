@@ -5,6 +5,11 @@ export const isLoginStoreAtom = atom({
   default: false,
 });
 
+export const reloadOrderAtom = atom({
+  key: "reloadOrderAtom",
+  default: false,
+});
+
 // true 이면 예약상태, false이면 앉아서 주문
 export const reserveState = atom({
   key: "reserveState",
@@ -62,9 +67,9 @@ export const paymentMemberAtom = atom({
   key: "paymentMemberAtom",
   default: [
     {
-      name: "",
-      uid: "",
-      userId: 0,
+      name: null,
+      uid: null,
+      userId: null,
     },
   ],
 });

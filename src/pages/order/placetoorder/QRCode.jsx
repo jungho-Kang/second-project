@@ -16,6 +16,28 @@ const QRCode = () => {
     visualH: 0,
     infoH: 0,
   });
+  const [ticketStatus, setTicketStatus] = useState(0);
+
+  // 티켓 사용 여부를 확인하기 위해서 3초마다 체크
+  useEffect(() => {
+    const intervalId = setInterval(async () => {
+      const params = {
+        ticketId: newTicketId,
+      };
+      try {
+        const res = await axios.get("/api/order/ticket/status", { params });
+        const result = res.data.resultData;
+        if (result.status === 1) {
+          setTicketStatus(1);
+          clearInterval(intervalId);
+        }
+      } catch (error) {
+        console.error("티켓 상태 조회 실패:", error);
+      }
+    }, 3000);
+
+    return () => clearInterval(intervalId);
+  }, [newTicketId]);
 
   const setCouponPath = () => {
     const visual = document.getElementById("visual");
@@ -29,82 +51,68 @@ const QRCode = () => {
   };
 
   useEffect(() => {
-    // `dimensions` 상태가 업데이트될 때마다 클립 경로를 다시 설정
     setCouponPath();
   }, [newTicketId]);
 
   useEffect(() => {
-    // 요소 크기를 추적하여 상태에 저장
+    const visual = document.getElementById("visual");
+    const info = document.getElementById("info");
     const updateDimensions = () => {
-      const visual = document.getElementById("visual");
-      const info = document.getElementById("info");
-
       if (visual && info) {
-        const couponW = visual.clientWidth;
-        const visualH = visual.clientHeight;
-        const infoH = info.clientHeight;
-
-        setDimensions({ couponW, visualH, infoH });
+        setDimensions({
+          couponW: visual.clientWidth,
+          visualH: visual.clientHeight,
+          infoH: info.clientHeight,
+        });
       }
     };
 
-    // 컴포넌트 초기 로드 시 클립 경로 설정
     updateDimensions();
-
-    // 창 크기 조정 시 클립 경로를 다시 설정하도록 이벤트 리스너 추가
     window.addEventListener("resize", updateDimensions);
 
-    // 컴포넌트 언마운트 시 이벤트 리스너 제거
-    return () => {
-      window.removeEventListener("resize", updateDimensions);
-    };
+    return () => window.removeEventListener("resize", updateDimensions);
   }, []);
 
   useEffect(() => {
-    const params = {
-      ticketId: newTicketId,
-    };
-    const userParams = {
-      userId: signedUserId,
-    };
-
-    if (newTicketId === 0) {
-      const getTicketId = async () => {
-        try {
-          const res = await axios.get(`/api/order/ticket/ticketOne`, {
-            userParams,
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          });
-          console.log(res);
-          const result = res.data.resultData.ticketId;
-          console.log(result);
-          setNewTicketId(result);
-        } catch (error) {
-          console.log(error);
-        }
-      };
-      getTicketId();
+    if (!newTicketId || newTicketId <= 0) {
+      fetchTicketId();
     } else {
-      const getTicketData = async () => {
-        try {
-          const res = await axios.get(`/api/order/ticket`, {
-            params,
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          });
-          console.log(res.data.resultData);
-          const ticket = res.data.resultData.ticket;
-          setTicketData({ ...ticket });
-        } catch (error) {
-          console.log(error);
-        }
-      };
-      getTicketData();
+      fetchTicketData(newTicketId);
     }
   }, [newTicketId]);
+
+  const fetchTicketId = async () => {
+    try {
+      const res = await axios.get("/api/order/ticket/ticketOne", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        params: { userId: signedUserId },
+      });
+      console.log(res.data);
+
+      setNewTicketId(res.data.resultData.ticketId);
+    } catch (error) {
+      console.error("티켓 ID를 가져오는 중 오류 발생:", error);
+    }
+  };
+
+  const fetchTicketData = async ticketId => {
+    try {
+      const res = await axios.get("/api/order/ticket", {
+        params: { ticketId },
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      console.log(res);
+
+      setTicketData(res.data.resultData.ticket);
+    } catch (error) {
+      console.error("티켓 데이터를 가져오는 중 오류 발생:", error);
+      alert("티켓 정보를 가져오는 중 오류가 발생했습니다. 다시 시도해주세요.");
+    }
+  };
 
   return (
     <div className="flex flex-col w-full h-dvh px-10 mt-28">

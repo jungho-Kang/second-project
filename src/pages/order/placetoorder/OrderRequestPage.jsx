@@ -17,13 +17,13 @@ const OrderRequestPage = () => {
   const [newOrderId, setNewOrderId] = useRecoilState(orderIdAtom);
   const [newTicketId, setNewTicketId] = useRecoilState(ticketIdAtom);
 
-  const userId = sessionStorage.getItem("userId");
+  const sessionUserId = sessionStorage.getItem("userId");
   const navigate = useNavigate();
   const accessToken = getCookie();
 
   useEffect(() => {
     const params = {
-      userId: userId,
+      userId: sessionUserId,
     };
     const getOrderId = async () => {
       try {
@@ -84,11 +84,12 @@ const OrderRequestPage = () => {
       );
       console.log(res.data.resultData);
       const result = res.data.resultData;
-      setPriceList([...result.getApprovalStatus]);
+      setPriceList([...result]);
     } catch (error) {
       console.log(error);
     }
   };
+
   // 모든 유저가 결제 승인 후 서버에 최종적으로 결제 요청
   const postPayment = async () => {
     const payload = {
@@ -182,8 +183,9 @@ const OrderRequestPage = () => {
     }
   };
 
-  const cancleButtonClick = userId => {
+  const cancleButtonClick = sessionUserId => {
     setIsCompleted(!isCompleted);
+    console.log(sessionUserId);
   };
   console.log(priceList);
 
@@ -201,45 +203,6 @@ const OrderRequestPage = () => {
         </div>
       </div>
       <div className="flex flex-col w-full h-full gap-6">
-        {/* <div className="flex w-full h-[6%] px-6 justify-between items-center border-b border-gray">
-          <span className="flex w-[30%] text-base text-nowrap">
-            {userData.name}
-          </span>
-          <div className="flex w-[35%] gap-2 items-center justify-end">
-            {isCompleted[priceList.userId] ? (
-              <>
-                <span className="text-end px-2">{priceList[0]?.point}</span>
-                <span>원</span>
-              </>
-            ) : (
-              <>
-                <input
-                  type="tel"
-                  className="flex w-full border border-darkGray px-2 text-end rounded-md"
-                  placeholder={priceList[0]?.point}
-                  value={inputValues[userId]}
-                  onChange={e => inputChangeHandler(e, priceList[0]?.userId)}
-                />
-                <span>원</span>
-              </>
-            )}
-          </div>
-          <div className="flex w-[20%] justify-center gap-2 text-nowrap items-center">
-            <span
-              onClick={() => inputApprovalHandler(priceList[0]?.userId)}
-              className="bg-blue px-2 text-white font-semibold rounded-md cursor-pointer"
-            >
-              {isCompleted[priceList[0]?.userId] ? "승인" : "확인"}
-            </span>
-            <span
-              onClick={() => cancleButtonClick(priceList[0]?.userId)}
-              className="bg-red px-2 text-white font-semibold rounded-md cursor-pointer"
-            >
-              {isCompleted[priceList[0]?.userId] ? "수정" : "취소"}
-            </span>
-          </div>
-        </div> */}
-
         <div className="flex w-full items-center justify-center mt-6">
           <div className="flex gap-2 px-5 py-2 bg-gray rounded-md">
             <MdOutlineRefresh className="text-2xl" />
@@ -252,37 +215,53 @@ const OrderRequestPage = () => {
           </div>
         </div>
         {Array.isArray(priceList) &&
-          priceList
-            .filter(item => item.userId !== userId)
-            .map(item => (
-              <div
-                key={item.userId}
-                className="flex w-full h-[6%] px-6 justify-between items-center border-b border-gray"
-              >
-                <span className="flex w-[30%] text-base text-nowrap">
-                  {item.name}
-                </span>
-                <div className="flex w-[35%] gap-2 items-center justify-end">
-                  {isCompleted[item.userId] ? (
-                    <>
-                      <span className="text-end px-2">{item.point}</span>
-                      <span>원</span>
-                    </>
-                  ) : (
-                    <>
-                      {/* <input
-                        type="tel"
-                        className="flex w-full border border-darkGray px-2 text-end rounded-md"
-                        value={inputValues[item.userId]}
-                        defaultValue={item.point}
-                        readOnly
-                        onChange={e => inputChangeHandler(e, item.userId)}
-                      /> */}
-                      <span>{item.point}</span>
-                      <span>원</span>
-                    </>
-                  )}
-                </div>
+          priceList.map((item, index) => (
+            <div
+              key={index}
+              className="flex w-full h-[6%] px-6 justify-between items-center border-b border-gray"
+            >
+              <span className="flex w-[30%] text-base text-nowrap">
+                {item.name}
+              </span>
+              <div className="flex w-[40%] gap-2 items-center justify-end">
+                {isCompleted[item.userId] ? (
+                  <>
+                    <span className="text-end px-2 text-nowrap">
+                      {item.point}
+                    </span>
+                    <span>원</span>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex items-center gap-4">
+                      <div>
+                        {item.approvalStatus === 0 ? (
+                          <span className="text-red font-semibold text-nowrap text-opacity-70">
+                            대기중
+                          </span>
+                        ) : item.approvalStatus === 1 ? (
+                          <span className="text-blue font-semibold text-nowrap">
+                            승인
+                          </span>
+                        ) : (
+                          <span className="text-red font-semibold text-nowrap">
+                            거절
+                          </span>
+                        )}
+                      </div>
+
+                      <div>
+                        <span className="text-end px-1 text-nowrap">
+                          {item.point}
+                        </span>
+                        <span>원</span>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+              {/* 현재 사용자와 일치하지 않는 경우에만 버튼 표시 */}
+              {item.userId === parseInt(sessionUserId) ? (
                 <div className="flex w-[20%] justify-center gap-2 text-nowrap items-center">
                   <span
                     onClick={() => inputApprovalHandler(item.userId)}
@@ -294,22 +273,31 @@ const OrderRequestPage = () => {
                     onClick={() => cancleButtonClick(item.userId)}
                     className="bg-red px-2 text-white font-semibold rounded-md cursor-pointer"
                   >
-                    {isCompleted[item.userId] ? "수정" : "취소"}
+                    {isCompleted[item.userId] ? "수정" : "거절"}
                   </span>
                 </div>
-              </div>
-            ))}
-
+              ) : (
+                <div className="flex w-[20%] justify-center gap-2 text-nowrap items-center pointer-events-none">
+                  <span className="bg-blue px-2 text-white font-semibold rounded-md"></span>
+                  <span className="bg-red px-2 text-white font-semibold rounded-md"></span>
+                </div>
+              )}
+            </div>
+          ))}
         <div className="flex w-full justify-center gap-10">
-          <span
-            onClick={() => postPayment()}
-            className="bg-primary text-white text-lg px-2 py-1 rounded-md cursor-pointer"
-          >
-            결제 요청
-          </span>
-          <span className="bg-red text-white text-lg px-2 py-1 rounded-md cursor-pointer">
-            결제 취소
-          </span>
+          {priceList?.userId !== parseInt(sessionUserId) && (
+            <>
+              <span
+                onClick={() => postPayment()}
+                className="bg-primary text-white text-lg px-2 py-1 rounded-md cursor-pointer"
+              >
+                결제 요청
+              </span>
+              <span className="bg-red text-white text-lg px-2 py-1 rounded-md cursor-pointer">
+                결제 취소
+              </span>
+            </>
+          )}
         </div>
       </div>
     </div>
